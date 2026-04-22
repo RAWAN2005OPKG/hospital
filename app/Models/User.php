@@ -13,10 +13,9 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
         'role',
-        'phone',
-        'address',
     ];
 
     protected $hidden = [
@@ -24,40 +23,29 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
-
-    // العلاقات
-    public function doctor()
+    protected function casts(): array
     {
-        return $this->hasOne(Doctor::class);
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 
-    public function appointmentsAsPatient()
+    // التحقق من أنه admin
+    public function isAdmin()
     {
-        return $this->hasMany(Appointment::class, 'patient_id');
+        return $this->role === 'admin';
     }
 
-    public function medicalRecordsAsPatient()
-    {
-        return $this->hasMany(MedicalRecord::class, 'patient_id');
-    }
-
-    // الدوال المساعدة
-    public function isPatient(): bool
-    {
-        return $this->role === 'patient';
-    }
-
-    public function isDoctor(): bool
+    // التحقق من أنه طبيب
+    public function isDoctor()
     {
         return $this->role === 'doctor';
     }
 
-    public function isAdmin(): bool
+    // التحقق من أنه مريض
+    public function isPatient()
     {
-        return $this->role === 'admin';
+        return $this->role === 'patient';
     }
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نوفيكا – مستشفى طبي متكامل</title>
+    <title>صحتي – مستشفى طبي متكامل</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -198,7 +198,6 @@
             width: 100%; max-width: 460px;
             border-radius: 28px; overflow: hidden;
             aspect-ratio: 3/4;
-            background: linear-gradient(145deg, var(--teal), var(--dark));
             box-shadow: var(--shadow-lg), 0 0 0 6px rgba(255,255,255,.45);
             position: relative;
         }
@@ -658,7 +657,7 @@
 
     <div class="hero-visual">
         <div class="hero-img-frame">
-            <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600&q=80" alt="طبيبة نوفيكا">
+            <img src="https://i.pinimg.com/736x/92/16/68/9216680f7fc62d03dc2f9b8d76704c32.jpg" alt="طبيبة روان">
         </div>
         <div class="float-card fc-right">
             <div class="fc-num">{{ $departments->count() }}</div>
@@ -718,7 +717,7 @@
                 <div class="dept-name">{{ $dept->name }}</div>
                 <div class="dept-count">
                     <i class="fa-solid fa-user-doctor"></i>
-                    {{ $dept->doctors_count }}
+php                    {{ $dept->doctors_count }}
                     {{ $dept->doctors_count == 1 ? 'طبيب' : 'أطباء' }}
                 </div>
             </a>
@@ -958,7 +957,7 @@
             <h4>تواصل معنا</h4>
             <ul>
                 <li><a href="tel:+8801616876080">+8801616876080</a></li>
-                <li><a href="mailto:info@nuvica.com">info@nuvica.com</a></li>
+                <li><a href="mailto:info@nuvica.com">rawan@nuvica.com</a></li>
                 <li><a href="{{ route('contact') }}">نموذج التواصل</a></li>
                 <li><a href="{{ route('contact') }}">احجز موعداً</a></li>
                 
