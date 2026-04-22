@@ -1,82 +1,63 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\AppointmentController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\MedicalRecordController;
+use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ContactController;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+// Public Routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/about', [HomeController::class, 'about'])->name('about');
+Route::get('/doctors', [DoctorController::class, 'index'])->name('doctors.index');
+Route::get('/doctors/{doctor}', [DoctorController::class, 'show'])->name('doctors.show');
+Route::get('/departments', [DoctorController::class, 'departments'])->name('departments.index');
+Route::get('/departments/{department}', [DoctorController::class, 'departmentShow'])->name('departments.show');
+Route::get('/contact', [ContactController::class, 'show'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
-Route::middleware('auth')->group(function () {
-    // لوحة التحكم الرئيسية
-    Route::get('/dashboard', function () {
-        $user = auth()->user();
-        
-        if ($user->isDoctor()) {
-            return redirect()->route('doctor.dashboard');
-        } elseif ($user->isAdmin()) {
-            return redirect()->route('admin.dashboard');
-        } else {
-            return redirect()->route('patient.dashboard');
-        }
-    })->name('dashboard');
-
-    // مسارات المريض
-    Route::prefix('patient')->name('patient.')->group(function () {
-        Route::get('/dashboard', function () {
-            $user = auth()->user();
-            $appointmentsCount = $user->appointmentsAsPatient()->count();
-            $recordsCount = $user->medicalRecordsAsPatient()->count();
-            return view('patient.dashboard', compact('appointmentsCount', 'recordsCount'));
-        })->name('dashboard');
-
-        Route::get('/appointments', [AppointmentController::class, 'myAppointments'])->name('appointments');
-        Route::post('/appointments/{id}/cancel', [AppointmentController::class, 'cancel'])->name('cancel-appointment');
-        Route::get('/medical-records', [MedicalRecordController::class, 'index'])->name('medical-records');
-        Route::get('/medical-records/{id}', [MedicalRecordController::class, 'show'])->name('medical-record-detail');
-    });
-
-    // مسارات الطبيب
-    Route::prefix('doctor')->name('doctor.')->middleware('role:doctor')->group(function () {
-        Route::get('/dashboard', [DoctorController::class, 'dashboard'])->name('dashboard');
-        Route::get('/appointments', [DoctorController::class, 'appointments'])->name('appointments');
-        Route::get('/appointments/{id}', [DoctorController::class, 'appointmentDetail'])->name('appointment-detail');
-        Route::post('/appointments/{id}/medical-record', [DoctorController::class, 'addMedicalRecord'])->name('add-medical-record');
-        Route::post('/appointments/{id}/confirm', [DoctorController::class, 'confirmAppointment'])->name('confirm-appointment');
-        Route::post('/appointments/{id}/cancel', [DoctorController::class, 'cancelAppointment'])->name('cancel-appointment');
-        Route::get('/patient/{id}/records', [DoctorController::class, 'patientRecords'])->name('patient-records');
-    });
-
-    // مسارات الإدارة
-    Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-        Route::get('/departments', [AdminController::class, 'departments'])->name('departments');
-        Route::post('/departments', [AdminController::class, 'storeDepartment'])->name('store-department');
-        Route::put('/departments/{id}', [AdminController::class, 'updateDepartment'])->name('update-department');
-        Route::delete('/departments/{id}', [AdminController::class, 'deleteDepartment'])->name('delete-department');
-        Route::get('/doctors', [AdminController::class, 'doctors'])->name('doctors');
-        Route::get('/appointments', [AdminController::class, 'appointments'])->name('appointments');
-        Route::get('/users', [AdminController::class, 'users'])->name('users');
-        Route::get('/statistics', [AdminController::class, 'statistics'])->name('statistics');
-    });
-
-    // مسارات الحجز
-    Route::prefix('appointments')->name('appointments.')->group(function () {
-        Route::get('/search', [AppointmentController::class, 'searchDoctors'])->name('search');
-        Route::get('/doctor/{id}', [AppointmentController::class, 'doctorDetail'])->name('doctor-detail');
-        Route::get('/doctor/{id}/book', [AppointmentController::class, 'bookingForm'])->name('booking-form');
-        Route::get('/doctor/{id}/slots', [AppointmentController::class, 'availableSlots'])->name('available-slots');
-        Route::post('/store', [AppointmentController::class, 'store'])->name('store');
-    });
-
-    // مسارات الملف الشخصي
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// Protected Routes - Patient
+Route::middleware(['auth', 'role:patient'])->group(function () {
+    Route::get('/patient/dashboard', [PatientController::class, 'dashboard'])->name('patient.dashboard');
+    Route::get('/patient/appointments', [PatientController::class, 'appointments'])->name('patient.appointments');
+    Route::post('/patient/appointments/{appointment}/cancel', [PatientController::class, 'cancelAppointment'])->name('patient.cancel-appointment');
+    Route::get('/patient/medical-records', [PatientController::class, 'medicalRecords'])->name('patient.medical-records');
+    Route::get('/patient/medical-records/{record}', [PatientController::class, 'medicalRecordDetail'])->name('patient.medical-record-detail');
+    Route::get('/appointments/create/{doctor}', [AppointmentController::class, 'create'])->name('appointments.create');
+    Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
 });
 
+// Protected Routes - Doctor
+Route::middleware(['auth', 'role:doctor'])->group(function () {
+    Route::get('/doctor/dashboard', [DoctorController::class, 'dashboard'])->name('doctor.dashboard');
+    Route::get('/doctor/appointments', [DoctorController::class, 'appointments'])->name('doctor.appointments');
+    Route::get('/doctor/appointments/{appointment}', [DoctorController::class, 'appointmentDetail'])->name('doctor.appointment-detail');
+    Route::post('/doctor/appointments/{appointment}/confirm', [DoctorController::class, 'confirmAppointment'])->name('doctor.confirm-appointment');
+    Route::post('/doctor/appointments/{appointment}/cancel', [DoctorController::class, 'cancelAppointment'])->name('doctor.cancel-appointment');
+    Route::post('/doctor/appointments/{appointment}/medical-record', [DoctorController::class, 'addMedicalRecord'])->name('doctor.add-medical-record');
+    Route::get('/doctor/schedule', [DoctorController::class, 'schedule'])->name('doctor.schedule');
+    Route::get('/doctor/patient-records', [DoctorController::class, 'patientRecords'])->name('doctor.patient-records');
+});
+
+// Protected Routes - Admin
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/doctors', [AdminController::class, 'doctors'])->name('admin.doctors');
+    Route::get('/admin/appointments', [AdminController::class, 'appointments'])->name('admin.appointments');
+    Route::get('/admin/departments', [AdminController::class, 'departments'])->name('admin.departments');
+    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+});
+
+// Profile Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
+});
+
+// Authentication Routes
 require __DIR__.'/auth.php';

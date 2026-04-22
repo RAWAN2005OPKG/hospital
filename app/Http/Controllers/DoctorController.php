@@ -3,164 +3,185 @@
 namespace App\Http\Controllers;
 
 use App\Models\Doctor;
+use App\Models\Department;
+use App\Models\Specialization;
+use App\Models\Schedule;
 use App\Models\Appointment;
 use App\Models\MedicalRecord;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 
 class DoctorController extends Controller
 {
-    public function __construct()
+    public function index(Request $request)
     {
-        $this->middleware('auth');
-        $this->middleware('role:doctor');
+        $query = Doctor::with('user', 'specialization', 'department');
+        
+        if ($request->search) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%');
+            });
+        }
+        
+        if ($request->department_id) {
+            $query->where('department_id', $request->department_id);
+        }
+        
+        if ($request->specialization_id) {
+            $query->where('specialization_id', $request->specialization_id);
+        }
+        
+        $doctors = $query->paginate(12);
+        $departments = Department::all();
+        $specializations = Specialization::all();
+        
+        return view('doctors.index', compact('doctors', 'departments', 'specializations'));
     }
-
-    // لوحة تحكم الطبيب
+    
+    public function show(Doctor $doctor)
+    {
+        $doctor->load('user', 'specialization', 'department');
+        $schedules = Schedule::where('doctor_id', $doctor->id)->get();
+        
+        return view('doctors.show', compact('doctor', 'schedules'));
+    }
+    
+    public function departments()
+    {
+        $departments = Department::withCount('doctors')->get();
+        
+        return view('departments.index', compact('departments'));
+    }
+    
+    public function departmentShow(Department $department)
+    {
+        $doctors = $department->doctors()->with('user', 'specialization')->paginate(12);
+        
+        return view('departments.show', compact('department', 'doctors'));
+    }
+    
+    // Doctor Dashboard
     public function dashboard()
     {
-        $doctor = Doctor::where('user_id', auth()->id())->firstOrFail();
+        $doctor = auth()->user()->doctor;
         
+        $totalAppointments = Appointment::where('doctor_id', $doctor->id)->count();
         $todayAppointments = Appointment::where('doctor_id', $doctor->id)
             ->whereDate('appointment_date', today())
-            ->where('status', '!=', 'cancelled')
+            ->count();
+        $completedAppointments = Appointment::where('doctor_id', $doctor->id)
+            ->where('status', 'completed')
+            ->count();
+        $pendingAppointments = Appointment::where('doctor_id', $doctor->id)
+            ->where('status', 'pending')
+            ->count();
+        
+        $schedules = Schedule::where('doctor_id', $doctor->id)->get();
+        
+        $todayAppointmentsList = Appointment::where('doctor_id', $doctor->id)
+            ->whereDate('appointment_date', today())
             ->with('patient')
             ->orderBy('appointment_time')
             ->get();
-
-        $stats = [
-            'total_appointments' => Appointment::where('doctor_id', $doctor->id)->count(),
-            'completed' => Appointment::where('doctor_id', $doctor->id)->where('status', 'completed')->count(),
-            'pending' => Appointment::where('doctor_id', $doctor->id)->where('status', 'pending')->count(),
-            'today_appointments' => $todayAppointments->count(),
-        ];
-
-        return view('doctor.dashboard', compact('doctor', 'todayAppointments', 'stats'));
-    }
-
-    // قائمة المواعيد
-    public function appointments(Request $request)
-    {
-        $doctor = Doctor::where('user_id', auth()->id())->firstOrFail();
         
-        $query = Appointment::where('doctor_id', $doctor->id)->with('patient');
-
-        if ($request->status) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->date) {
-            $query->whereDate('appointment_date', $request->date);
-        }
-
-        $appointments = $query->orderBy('appointment_date', 'desc')
-            ->orderBy('appointment_time', 'desc')
+        return view('doctor.dashboard', compact(
+            'doctor',
+            'totalAppointments',
+            'todayAppointments',
+            'completedAppointments',
+            'pendingAppointments',
+            'schedules',
+            'todayAppointmentsList'
+        ));
+    }
+    
+    public function appointments()
+    {
+        $doctor = auth()->user()->doctor;
+        $appointments = Appointment::where('doctor_id', $doctor->id)
+            ->with('patient')
+            ->orderBy('appointment_date', 'desc')
             ->paginate(15);
-
+        
         return view('doctor.appointments', compact('appointments'));
     }
-
-    // تفاصيل الموعد
-    public function appointmentDetail($id)
+    
+    public function appointmentDetail(Appointment $appointment)
     {
-        $appointment = Appointment::findOrFail($id);
-        $doctor = Doctor::where('user_id', auth()->id())->firstOrFail();
-
-        if ($appointment->doctor_id !== $doctor->id) {
-            abort(403, 'غير مصرح لك بالوصول إلى هذا الموعد');
+        if ($appointment->doctor_id !== auth()->user()->doctor->id) {
+            abort(403);
         }
-
+        
+        $appointment->load('patient', 'doctor', 'medicalRecord');
+        
         return view('doctor.appointment-detail', compact('appointment'));
     }
-
-    // إضافة تقرير طبي
-    public function addMedicalRecord(Request $request, $appointmentId)
+    
+    public function confirmAppointment(Appointment $appointment)
     {
-        $request->validate([
-            'diagnosis' => 'required|string|min:10',
-            'treatment' => 'required|string|min:10',
-            'prescription' => 'nullable|string',
-            'notes' => 'nullable|string',
-        ]);
-
-        $appointment = Appointment::findOrFail($appointmentId);
-        $doctor = Doctor::where('user_id', auth()->id())->firstOrFail();
-
-        if ($appointment->doctor_id !== $doctor->id) {
+        if ($appointment->doctor_id !== auth()->user()->doctor->id) {
             abort(403);
         }
-
-        if ($appointment->medicalRecord) {
-            return redirect()->back()->with('error', 'تم إضافة تقرير طبي لهذا الموعد مسبقاً');
-        }
-
-        MedicalRecord::create([
-            'patient_id' => $appointment->patient_id,
-            'doctor_id' => $doctor->id,
-            'appointment_id' => $appointmentId,
-            'diagnosis' => $request->diagnosis,
-            'treatment' => $request->treatment,
-            'prescription' => $request->prescription,
-            'notes' => $request->notes,
-        ]);
-
-        $appointment->update(['status' => 'completed']);
-
-        return redirect()->route('doctor.appointments')->with('success', 'تم إضافة التقرير الطبي بنجاح');
-    }
-
-    // سجلات المريض
-    public function patientRecords($patientId)
-    {
-        $doctor = Doctor::where('user_id', auth()->id())->firstOrFail();
         
-        $records = MedicalRecord::where('patient_id', $patientId)
-            ->where('doctor_id', $doctor->id)
-            ->with('appointment')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        return view('doctor.patient-records', compact('records', 'patientId'));
-    }
-
-    // تأكيد الموعد
-    public function confirmAppointment($id)
-    {
-        $appointment = Appointment::findOrFail($id);
-        $doctor = Doctor::where('user_id', auth()->id())->firstOrFail();
-
-        if ($appointment->doctor_id !== $doctor->id) {
-            abort(403);
-        }
-
         $appointment->update(['status' => 'confirmed']);
-
+        
         return redirect()->back()->with('success', 'تم تأكيد الموعد بنجاح');
     }
-
-    // إلغاء الموعد
-    public function cancelAppointment(Request $request, $id)
+    
+    public function cancelAppointment(Appointment $appointment)
     {
-        $request->validate([
-            'reason' => 'required|string|min:10',
-        ]);
-
-        $appointment = Appointment::findOrFail($id);
-        $doctor = Doctor::where('user_id', auth()->id())->firstOrFail();
-
-        if ($appointment->doctor_id !== $doctor->id) {
+        if ($appointment->doctor_id !== auth()->user()->doctor->id) {
             abort(403);
         }
-
-        if ($appointment->status === 'completed') {
-            return redirect()->back()->with('error', 'لا يمكن إلغاء موعد مكتمل');
+        
+        $appointment->update(['status' => 'cancelled']);
+        
+        return redirect()->back()->with('success', 'تم إلغاء الموعد');
+    }
+    
+    public function addMedicalRecord(Request $request, Appointment $appointment)
+    {
+        if ($appointment->doctor_id !== auth()->user()->doctor->id) {
+            abort(403);
         }
-
-        $appointment->update([
-            'status' => 'cancelled',
-            'notes' => $request->reason,
+        
+        $validated = $request->validate([
+            'diagnosis' => 'required|string',
+            'treatment' => 'required|string',
+            'notes' => 'nullable|string',
         ]);
-
-        return redirect()->back()->with('success', 'تم إلغاء الموعد بنجاح');
+        
+        MedicalRecord::create([
+            'appointment_id' => $appointment->id,
+            'doctor_id' => auth()->user()->doctor->id,
+            'patient_id' => $appointment->patient_id,
+            'diagnosis' => $validated['diagnosis'],
+            'treatment' => $validated['treatment'],
+            'notes' => $validated['notes'] ?? null,
+        ]);
+        
+        $appointment->update(['status' => 'completed']);
+        
+        return redirect()->back()->with('success', 'تم إضافة السجل الطبي بنجاح');
+    }
+    
+    public function schedule()
+    {
+        $doctor = auth()->user()->doctor;
+        $schedules = Schedule::where('doctor_id', $doctor->id)->get();
+        
+        return view('doctor.schedule', compact('schedules'));
+    }
+    
+    public function patientRecords(Doctor $doctor)
+    {
+        if ($doctor->id !== auth()->user()->doctor->id) {
+            abort(403);
+        }
+        
+        $records = MedicalRecord::where('doctor_id', $doctor->id)
+            ->with('patient')
+            ->paginate(15);
+        
+        return view('doctor.patient-records', compact('records'));
     }
 }

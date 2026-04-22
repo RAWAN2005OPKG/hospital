@@ -1,211 +1,202 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="rtl" class="dark">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Hospital System') }} - @yield('title', 'Dashboard')</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'صحتي - نظام إدارة صحتك')</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        * { font-family: 'Cairo', sans-serif; }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.4); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.6); }
-    </style>
-    @stack('styles')
-</head>
-<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen antialiased overflow-hidden">
-    <div x-data="{ darkMode: true, sidebarOpen: window.innerWidth >= 1024 }" class="flex h-screen">
+        * {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+        }
         
-        <!-- Animated Background -->
-        <div class="fixed inset-0 z-0">
-            <div class="absolute top-1/4 -left-1/4 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s"></div>
-            <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s"></div>
-        </div>
-
-        <!-- Sidebar -->
-        <aside x-show="sidebarOpen" x-transition:enter="transition ease-out duration-300" 
-               x-transition:enter-start="-translate-x-full" 
-               x-transition:enter-end="translate-x-0"
-               class="fixed lg:relative inset-y-0 lg:inset-auto -left-full lg:left-auto z-50 w-72 h-screen lg:h-auto bg-black/40 backdrop-blur-2xl border-l border-white/10 shadow-2xl lg:shadow-none flex flex-col">
-            
-            <!-- Logo Section -->
-            <div class="p-6 border-b border-white/10">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
-                        <i class="fas fa-heartbeat text-xl text-white"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold text-white">مستشفى الحياة</h1>
-                        <p class="text-xs text-white/50">Hospital System</p>
-                    </div>
+        :root {
+            --primary: #5b8fc7;
+            --secondary: #1abc9c;
+            --dark-blue: #1e3a5f;
+            --light-bg: #e8f4f8;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e8f4f8 0%, #f0f9ff 100% );
+            color: #1e293b;
+        }
+        
+        .btn-primary {
+            @apply px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full hover:shadow-lg transition font-semibold;
+        }
+        
+        .btn-secondary {
+            @apply px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-full hover:shadow-lg transition font-semibold;
+        }
+        
+        .btn-outline {
+            @apply px-6 py-3 border-2 border-blue-600 text-blue-600 rounded-full hover:bg-blue-50 transition font-semibold;
+        }
+        
+        .card {
+            @apply bg-white rounded-3xl shadow-lg p-6 border border-blue-100 hover:shadow-2xl transition;
+        }
+        
+        .input-field {
+            @apply w-full px-4 py-3 border-2 border-blue-200 rounded-2xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition;
+        }
+        
+        .section-title {
+            @apply text-4xl font-bold text-blue-900 mb-2;
+        }
+        
+        .green-dot {
+            @apply w-10 h-10 bg-gradient-to-br from-green-400 to-green-500 rounded-full flex items-center justify-center text-white shadow-lg;
+        }
+        
+        .nav-link {
+            @apply text-gray-700 hover:text-blue-600 transition font-semibold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2 space-x-reverse">
+                    <i class="fas fa-heart text-2xl text-red-500"></i>
+                    <span class="text-2xl font-bold text-blue-900">صحتي</span>
                 </div>
-            </div>
 
-            <!-- Navigation -->
-            <nav class="flex-1 px-4 py-6 overflow-y-auto space-y-2">
+                <!-- Menu -->
                 @auth
-                    <div x-data="{ userRole: '{{ auth()->user()->role }}' }">
-                        
-                        <!-- Patient Links -->
-                        <template x-if="userRole === 'patient'">
-                            <div class="space-y-1">
-                                <x-nav-link href="{{ route('patient.dashboard') }}" :active="request()->routeIs('patient.*')" icon="fa-home">
-                                    الرئيسية
-                                </x-nav-link>
-                                <x-nav-link href="{{ route('patient.appointments') }}" :active="request()->routeIs('patient.appointments')" icon="fa-calendar-check">
-                                    مواعيدي
-                                </x-nav-link>
-                                <x-nav-link href="{{ route('patient.medical-records') }}" :active="request()->routeIs('patient.medical-records*')" icon="fa-file-medical">
-                                    السجلات الطبية
-                                </x-nav-link>
-                            </div>
-                        </template>
-
-                        <!-- Doctor Links -->
-                        <template x-if="userRole === 'doctor'">
-                            <div class="space-y-1">
-                                <x-nav-link href="{{ route('doctor.dashboard') }}" :active="request()->routeIs('doctor.dashboard')" icon="fa-home">
-                                    الرئيسية
-                                </x-nav-link>
-                                <x-nav-link href="{{ route('doctor.appointments') }}" :active="request()->routeIs('doctor.appointments')" icon="fa-calendar">
-                                    المواعيد
-                                </x-nav-link>
-                                <x-nav-link href="{{ route('doctor.patients') }}" :active="request()->routeIs('doctor.patients')" icon="fa-users">
-                                    المرضى
-                                </x-nav-link>
-                            </div>
-                        </template>
-
-                        <!-- Admin Links -->
-                        <template x-if="userRole === 'admin'">
-                            <div class="space-y-1">
-                                <x-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')" icon="fa-home">
-                                    الرئيسية
-                                </x-nav-link>
-                                <x-nav-link href="{{ route('admin.departments') }}" :active="request()->routeIs('admin.departments')" icon="fa-building">
-                                    الأقسام
-                                </x-nav-link>
-                                <x-nav-link href="{{ route('admin.doctors') }}" :active="request()->routeIs('admin.doctors')" icon="fa-user-md">
-                                    الأطباء
-                                </x-nav-link>
-                                <x-nav-link href="{{ route('admin.appointments') }}" :active="request()->routeIs('admin.appointments')" icon="fa-calendar-alt">
-                                    المواعيد
-                                </x-nav-link>
-                                <x-nav-link href="{{ route('admin.users') }}" :active="request()->routeIs('admin.users')" icon="fa-users">
-                                    المستخدمين
-                                </x-nav-link>
-                            </div>
-                        </template>
+                    <div class="hidden md:flex items-center space-x-8 space-x-reverse">
+                        @if(auth()->user()->role === 'doctor')
+                            <a href="{{ route('doctor.dashboard') }}" class="nav-link">لوحة التحكم</a>
+                            <a href="{{ route('doctor.appointments') }}" class="nav-link">مواعيدي</a>
+                        @elseif(auth()->user()->role === 'admin')
+                            <a href="{{ route('admin.dashboard') }}" class="nav-link">الإدارة</a>
+                        @else
+                            <a href="{{ route('home') }}" class="nav-link">الرئيسية</a>
+                            <a href="{{ route('doctors.index') }}" class="nav-link">الأطباء</a>
+                            <a href="{{ route('patient.appointments') }}" class="nav-link">مواعيدي</a>
+                        @endif
                     </div>
-
-                    <!-- Common Links -->
-                    <div class="pt-6 mt-6 border-t border-white/10 space-y-1">
-                        <x-nav-link href="{{ route('appointments.search') }}" icon="fa-search">
-                            حجز موعد
-                        </x-nav-link>
-                        <x-nav-link href="{{ route('profile.edit') }}" :active="request()->routeIs('profile.*')" icon="fa-user">
-                            الملف الشخصي
-                        </x-nav-link>
+                @else
+                    <div class="hidden md:flex items-center space-x-8 space-x-reverse">
+                        <a href="{{ route('home') }}" class="nav-link">الرئيسية</a>
+                        <a href="{{ route('doctors.index') }}" class="nav-link">الأطباء</a>
+                        <a href="{{ route('about') }}" class="nav-link">من نحن</a>
                     </div>
                 @endauth
-            </nav>
 
-            <!-- Footer -->
-            <div class="p-4 border-t border-white/10">
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-all group">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span class="font-medium">تسجيل الخروج</span>
-                    </button>
-                </form>
-            </div>
-        </aside>
-
-        <!-- Mobile Overlay -->
-        <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"></div>
-
-        <!-- Main Content -->
-        <main class="flex-1 flex flex-col overflow-hidden relative z-10">
-            
-            <!-- Header -->
-            <header class="bg-black/20 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
-                <div class="px-4 lg:px-8 py-4">
-                    <div class="flex items-center justify-between">
-                        <!-- Mobile Menu Button -->
-                        <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden p-3 bg-white/10 hover:bg-white/20 rounded-xl transition-all">
-                            <i class="fas fa-bars text-white"></i>
-                        </button>
-
-                        <!-- Page Title -->
-                        <div class="flex items-center gap-4">
-                            <h2 class="text-xl lg:text-2xl font-bold text-white">@yield('header')</h2>
-                        </div>
-                        
-                        <!-- User Menu -->
-                        <div class="flex items-center gap-4">
-                            <!-- Notifications -->
-                            <button class="relative p-3 bg-white/10 hover:bg-white/20 rounded-xl transition-all text-white">
-                                <i class="fas fa-bell"></i>
-                                <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    @auth
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 space-x-reverse">
+                                <img src="https://via.placeholder.com/40x40?text=User" alt="صورة المستخدم" class="w-10 h-10 rounded-full">
+                                <span class="text-sm font-bold text-gray-800">{{ auth( )->user()->name }}</span>
                             </button>
-                            
-                            <!-- Profile -->
-                            <div class="flex items-center gap-3 p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-all cursor-pointer">
-                                <img class="w-10 h-10 rounded-xl ring-2 ring-purple-500 shadow-lg" 
-                                     src="{{ auth()->user()->profile_photo_url ?? 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()->name).'&background=8B5CF6&color=fff&size=128' }}" 
-                                     alt="">
-                                <div class="hidden sm:block">
-                                    <p class="font-bold text-white text-sm">{{ auth()->user()->name }}</p>
-                                    <p class="text-xs text-white/60">{{ auth()->user()->role === 'admin' ? 'مدير النظام' : (auth()->user()->role === 'doctor' ? 'طبيب' : 'مريض') }}</p>
-                                </div>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
+                                <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-t-2xl">
+                                    <i class="fas fa-user ml-2"></i>البروفايل
+                                </a>
+                                <form method="POST" action="{{ route('logout') }}" class="block">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-b-2xl">
+                                        <i class="fas fa-sign-out-alt ml-2"></i>تسجيل الخروج
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                    </div>
+                    @else
+                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600 transition font-semibold">تسجيل الدخول</a>
+                        <a href="{{ route('register') }}" class="btn-primary">إنشاء حساب</a>
+                    @endauth
                 </div>
-            </header>
-
-            <!-- Content Area -->
-            <div class="flex-1 p-4 lg:p-8 overflow-y-auto">
-                
-                <!-- Flash Messages -->
-                @if (session('success'))
-                    <div class="mb-6 bg-emerald-500/20 backdrop-blur-xl border border-emerald-500/30 rounded-2xl p-4 flex items-center gap-4 animate-fade-in">
-                        <div class="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-check text-white"></i>
-                        </div>
-                        <p class="text-emerald-100 font-medium">{{ session('success') }}</p>
-                    </div>
-                @endif
-
-                @if (session('error'))
-                    <div class="mb-6 bg-red-500/20 backdrop-blur-xl border border-red-500/30 rounded-2xl p-4 flex items-center gap-4 animate-fade-in">
-                        <div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-exclamation text-white"></i>
-                        </div>
-                        <p class="text-red-100 font-medium">{{ session('error') }}</p>
-                    </div>
-                @endif
-
-                @yield('content')
             </div>
-        </main>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        @if ($errors->any())
+            <div class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-2xl flex items-center">
+                <i class="fas fa-exclamation-circle ml-3 text-xl"></i>
+                <div>
+                    <h4 class="font-bold mb-1">حدثت أخطاء:</h4>
+                    <ul class="list-disc list-inside text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
+        @if (session('success'))
+            <div class="mb-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded-2xl flex items-center">
+                <i class="fas fa-check-circle ml-3 text-xl"></i>
+                {{ session('success') }}
+            </div>
+        @endif
     </div>
 
-    @stack('scripts')
-    
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('nav', () => ({
-                active: window.location.pathname
-            }))
-        })
-    </script>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        @yield('content')
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-blue-900 to-blue-800 text-white mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 space-x-reverse mb-4">
+                        <i class="fas fa-heart text-2xl text-red-400"></i>
+                        <h3 class="text-xl font-bold">صحتي</h3>
+                    </div>
+                    <p class="text-blue-100">نظام إدارة صحتك الموثوق</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">الروابط</h4>
+                    <ul class="space-y-2 text-blue-100">
+                        <li><a href="{{ route('home') }}" class="hover:text-white">الرئيسية</a></li>
+                        <li><a href="{{ route('about') }}" class="hover:text-white">من نحن</a></li>
+                        <li><a href="{{ route('doctors.index') }}" class="hover:text-white">الأطباء</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">التواصل</h4>
+                    <ul class="space-y-2 text-blue-100">
+                        <li><i class="fas fa-phone ml-2"></i>+966 50 000 0000</li>
+                        <li><i class="fas fa-envelope ml-2"></i>info@sahati.com</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">تابعنا</h4>
+                    <div class="flex space-x-4 space-x-reverse">
+                        <a href="#" class="hover:text-blue-300"><i class="fab fa-facebook text-2xl"></i></a>
+                        <a href="#" class="hover:text-blue-300"><i class="fab fa-twitter text-2xl"></i></a>
+                        <a href="#" class="hover:text-blue-300"><i class="fab fa-instagram text-2xl"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-blue-700 pt-8 text-center text-blue-100">
+                <p>&copy; 2024 صحتي. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    @stack('scripts' )
 </body>
 </html>
