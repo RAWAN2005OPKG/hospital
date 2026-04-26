@@ -23,7 +23,7 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|string|unique:users,phone|regex:/^[0-9\+\-\s]{9,}$/',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:patient,doctor,admin',
+            'role' => 'required|in:patient,doctor',
         ], [
             'name.required' => 'الاسم مطلوب',
             'email.required' => 'البريد الإلكتروني مطلوب',

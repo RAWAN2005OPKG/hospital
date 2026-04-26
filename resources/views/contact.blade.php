@@ -1,80 +1,59 @@
+{{-- contact.blade.php --}}
 @extends('layouts.app')
-
-@section('title', 'اتصل بنا - صحتي')
-
+@section('title','تواصل معنا')
 @section('content')
-<div class="mb-8">
-    <h1 class="section-title">اتصل بنا</h1>
-    <p class="section-subtitle">نحن هنا للإجابة على جميع استفساراتك</p>
+<div class="page-header">
+    <div class="container"><h1>تواصل معنا</h1><p>نحن هنا للإجابة على جميع استفساراتك</p></div>
 </div>
-
-<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-    <!-- Contact Info -->
-    <div class="md:col-span-1">
-        <div class="card mb-6">
-            <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mb-4">
-                <i class="fas fa-phone text-2xl text-blue-600"></i>
+<section class="section-sm"><div class="container">
+<div style="display:grid;grid-template-columns:1fr 1.6fr;gap:2.5rem;align-items:start">
+    <div>
+        @foreach([['fa-location-dot','العنوان','=غزة الشفاء'],['fa-phone','الهاتف','02-2345678'],['fa-envelope','البريد','info@صحتي.com'],['fa-clock','ساعات العمل','السبت — الخميس: 8ص — 8م']] as [$icon,$title,$val])
+        <div class="card" style="margin-bottom:1rem">
+            <div class="card-body" style="display:flex;align-items:center;gap:1rem;padding:1.25rem">
+                <div style="width:48px;height:48px;border-radius:12px;background:var(--blue-lt);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">
+                    <i class="fa-solid {{ $icon }}"></i>
+                </div>
+                <div>
+                    <div style="font-weight:700;font-size:.88rem">{{ $title }}</div>
+                    <div style="font-size:.85rem;color:var(--muted)">{{ $val }}</div>
+                </div>
             </div>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">الهاتف</h3>
-            <p class="text-gray-600">+966 50 000 0000</p>
         </div>
-        
-        <div class="card mb-6">
-            <div class="w-16 h-16 bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center mb-4">
-                <i class="fas fa-envelope text-2xl text-teal-600"></i>
-            </div>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">البريد الإلكتروني</h3>
-            <p class="text-gray-600">info@sahati.com</p>
-        </div>
-        
-        <div class="card">
-            <div class="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center mb-4">
-                <i class="fas fa-map-marker-alt text-2xl text-green-600"></i>
-            </div>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">العنوان</h3>
-            <p class="text-gray-600">الرياض، السعودية</p>
-        </div>
+        @endforeach
     </div>
-    
-    <!-- Contact Form -->
-    <div class="md:col-span-2">
-        <div class="card">
-            <form action="{{ route('contact.store') }}" method="POST">
-                @csrf
-                
-                <div class="mb-6">
-                    <label class="block text-lg font-bold text-gray-800 mb-3">الاسم</label>
-                    <input type="text" name="name" class="input-field" required>
-                </div>
-                
-                <div class="mb-6">
-                    <label class="block text-lg font-bold text-gray-800 mb-3">البريد الإلكتروني</label>
-                    <input type="email" name="email" class="input-field" required>
-                </div>
-                
-                <div class="mb-6">
-                    <label class="block text-lg font-bold text-gray-800 mb-3">الموضوع</label>
-                    <input type="text" name="subject" class="input-field" required>
-                </div>
-                
-                <div class="mb-6">
-                    <label class="block text-lg font-bold text-gray-800 mb-3">الرسالة</label>
-                    <textarea name="message" class="input-field" rows="6" required></textarea>
-                </div>
-                
-                <button type="submit" class="btn-primary w-full">
-                    <i class="fas fa-paper-plane ml-2"></i>إرسال الرسالة
-                </button>
-            </form>
+    <div class="card">
+        <div class="card-header"><span><i class="fa-solid fa-paper-plane" style="color:var(--blue);margin-left:.4rem"></i>أرسل رسالة</span></div>
+        <div class="card-body">
+        <form method="POST" action="{{ route('contact.store') }}">@csrf
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="form-group">
+                <label class="form-label">الاسم *</label>
+                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
+                @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="form-group">
+                <label class="form-label">البريد الإلكتروني *</label>
+                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required>
+                @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">الموضوع *</label>
+            <input type="text" name="subject" class="form-control @error('subject') is-invalid @enderror" value="{{ old('subject') }}" required>
+            @error('subject')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        </div>
+        <div class="form-group">
+            <label class="form-label">الرسالة *</label>
+            <textarea name="message" class="form-control @error('message') is-invalid @enderror" rows="5" required>{{ old('message') }}</textarea>
+            @error('message')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:.8rem">
+            <i class="fa-solid fa-paper-plane"></i> إرسال الرسالة
+        </button>
+        </form>
         </div>
     </div>
 </div>
-
-<!-- Map Section -->
-<div class="card">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">موقعنا</h2>
-    <div class="h-96 bg-gray-200 rounded-xl flex items-center justify-center">
-        <i class="fas fa-map text-6xl text-gray-400"></i>
-    </div>
-</div>
+</div></section>
 @endsection

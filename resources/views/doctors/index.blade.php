@@ -1,103 +1,93 @@
+{{-- ════ doctors/index.blade.php ════ --}}
 @extends('layouts.app')
-
-@section('title', 'الأطباء - صحتي')
-
+@section('title','الدكاترة')
 @section('content')
-<div class="mb-12">
-    <h1 class="section-title">الأطباء المتخصصون</h1>
-    <p class="text-gray-600 text-lg">اختر الطبيب المناسب لك</p>
+
+<div class="page-header">
+    <div class="container">
+        <h1>فريقنا الطبي</h1>
+        <p>نخبة من الأطباء المتخصصين في مختلف التخصصات</p>
+        <div class="breadcrumb"><a href="{{ route('home') }}">الرئيسية</a> / الدكاترة</div>
+    </div>
 </div>
 
-<!-- Search & Filters -->
-<div class="card mb-8">
-    <form action="{{ route('doctors.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">البحث</label>
-            <input type="text" name="search" placeholder="ابحث عن طبيب..." class="input-field" value="{{ request('search') }}">
+<section class="section-sm">
+<div class="container">
+
+{{-- Filters --}}
+<div class="card" style="margin-bottom:2rem">
+    <div class="card-body">
+    <form method="GET" style="display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap">
+        <div style="flex:1;min-width:200px">
+            <label class="form-label">بحث</label>
+            <div style="position:relative">
+                <i class="fa-solid fa-magnifying-glass" style="position:absolute;right:.9rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.82rem"></i>
+                <input type="text" name="search" class="form-control" style="padding-right:2.5rem"
+                    placeholder="اسم الدكتور..." value="{{ request('search') }}">
+            </div>
         </div>
-        
-        <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">القسم</label>
-            <select name="department_id" class="input-field">
-                <option value="">اختر قسماً</option>
+        <div style="min-width:180px">
+            <label class="form-label">القسم</label>
+            <select name="department_id" class="form-control">
+                <option value="">جميع الأقسام</option>
                 @foreach($departments as $dept)
-                    <option value="{{ $dept->id }}" @selected(request('department_id') == $dept->id)>
-                        {{ $dept->name }}
-                    </option>
+                    <option value="{{ $dept->id }}" {{ request('department_id')==$dept->id?'selected':'' }}>{{ $dept->name }}</option>
                 @endforeach
             </select>
         </div>
-        
-        <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">التخصص</label>
-            <select name="specialization_id" class="input-field">
-                <option value="">اختر تخصصاً</option>
+        <div style="min-width:180px">
+            <label class="form-label">التخصص</label>
+            <select name="specialization_id" class="form-control">
+                <option value="">جميع التخصصات</option>
                 @foreach($specializations as $spec)
-                    <option value="{{ $spec->id }}" @selected(request('specialization_id') == $spec->id)>
-                        {{ $spec->name }}
-                    </option>
+                    <option value="{{ $spec->id }}" {{ request('specialization_id')==$spec->id?'selected':'' }}>{{ $spec->name }}</option>
                 @endforeach
             </select>
         </div>
-        
-        <div class="flex items-end">
-            <button type="submit" class="btn-primary w-full">
-                <i class="fas fa-search ml-2"></i>بحث
-            </button>
-        </div>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-filter"></i> تصفية</button>
+        @if(request()->hasAny(['search','department_id','specialization_id']))
+        <a href="{{ route('doctors.index') }}" class="btn btn-outline">مسح</a>
+        @endif
     </form>
+    </div>
 </div>
 
-<!-- Doctors Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-    @forelse($doctors as $doctor)
-    <div class="card hover:shadow-2xl transition overflow-hidden">
-        <div class="h-48 bg-gradient-to-br from-blue-100 to-teal-100 flex items-center justify-center relative">
-            <i class="fas fa-user-md text-6xl text-blue-600"></i>
-            <div class="absolute top-4 left-4 green-dot">
-                <i class="fas fa-star text-white"></i>
+@if($doctors->count())
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem">
+    @foreach($doctors as $doctor)
+    <div class="doc-card">
+        <div class="doc-card-img">
+            @if($doctor->user->avatar ?? false)
+                <img src="{{ asset('storage/'.$doctor->user->avatar) }}" alt="{{ $doctor->user->name }}">
+            @else
+                <i class="fa-solid fa-user-doctor"></i>
+            @endif
+        </div>
+        <div class="doc-card-body">
+            <div class="doc-card-name">{{ $doctor->user->name }}</div>
+            <div class="doc-card-spec">{{ $doctor->specialization->name ?? '' }}</div>
+            <div class="doc-card-dept"><i class="fa-solid fa-hospital" style="margin-left:.3rem;color:var(--muted)"></i>{{ $doctor->department->name ?? '' }}</div>
+            <div style="margin-top:.6rem;display:flex;gap:.5rem;flex-wrap:wrap">
+                @if($doctor->specialization)
+                <span class="badge badge-blue">{{ $doctor->specialization->name }}</span>
+                @endif
             </div>
         </div>
-        
-        <div class="pt-4">
-            <h3 class="text-xl font-bold text-gray-800 mb-1">د. {{ $doctor->user->name }}</h3>
-            <p class="text-teal-600 font-semibold mb-1">{{ $doctor->specialization->name }}</p>
-            <p class="text-gray-600 text-sm mb-2">{{ $doctor->department->name }}</p>
-            
-            <div class="flex items-center justify-between mb-4 pb-4 border-b border-blue-100">
-                <div class="flex items-center">
-                    @for($i = 0; $i < 5; $i++)
-                        <i class="fas fa-star text-yellow-400 text-sm"></i>
-                    @endfor
-                    <span class="ml-2 text-gray-700 text-sm">4.8</span>
-                </div>
-                <span class="text-blue-600 font-bold">{{ $doctor->consultation_fee }} ر.س</span>
-            </div>
-            
-            <p class="text-sm text-gray-600 mb-4">
-                <i class="fas fa-briefcase ml-1"></i>{{ $doctor->experience_years }} سنة خبرة
-            </p>
-            
-            <div class="flex gap-2">
-                <a href="{{ route('doctors.show', $doctor->id) }}" class="btn-outline flex-1 text-center text-sm py-2">
-                    <i class="fas fa-info-circle ml-1"></i>التفاصيل
-                </a>
-                <a href="{{ route('appointments.create', $doctor->id) }}" class="btn-primary flex-1 text-center text-sm py-2">
-                    <i class="fas fa-calendar-check ml-1"></i>احجز
-                </a>
-            </div>
+        <div class="doc-card-footer">
+            <span class="stars">★★★★<span style="color:#e2e8f0">★</span></span>
+            <a href="{{ route('doctors.show', $doctor) }}" class="btn btn-primary btn-sm">احجز موعد</a>
         </div>
     </div>
-    @empty
-    <div class="col-span-full text-center py-12">
-        <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
-        <p class="text-gray-600 text-lg">لم يتم العثور على أطباء</p>
-    </div>
-    @endforelse
+    @endforeach
 </div>
+<div>{{ $doctors->withQueryString()->links() }}</div>
+@else
+<div style="text-align:center;padding:5rem;color:var(--muted)">
+    <i class="fa-solid fa-user-doctor" style="font-size:3.5rem;margin-bottom:1rem;display:block;opacity:.2"></i>
+    لا يوجد دكاترة يطابقون بحثك.
+</div>
+@endif
 
-<!-- Pagination -->
-<div class="flex justify-center">
-    {{ $doctors->links() }}
 </div>
+</section>
 @endsection

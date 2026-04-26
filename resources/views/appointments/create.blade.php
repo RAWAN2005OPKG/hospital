@@ -18,14 +18,12 @@
         <form action="{{ route('appointments.store') }}" method="POST" id="bookingForm">
             @csrf
             <input type="hidden" name="doctor_id" value="{{ $doctor->id }}">
-            <input type="hidden" name="appointment_time" value="">
-            
             <!-- Date -->
             <div class="mb-6">
                 <label class="block text-lg font-bold text-gray-800 mb-3">
                     <i class="fas fa-calendar-alt ml-2 text-blue-600"></i>اختر التاريخ
                 </label>
-                <input type="date" name="appointment_date" class="input-field" required min="{{ date('Y-m-d', strtotime('+1 day')) }}">
+                <input type="date" name="appointment_date" id="appointmentDate" class="input-field" required min="{{ date('Y-m-d', strtotime('+1 day')) }}">
             </div>
             
             <!-- Time -->
@@ -33,9 +31,7 @@
                 <label class="block text-lg font-bold text-gray-800 mb-3">
                     <i class="fas fa-clock ml-2 text-blue-600"></i>اختر الوقت
                 </label>
-                <div id="timeSlots" class="grid grid-cols-3 md:grid-cols-4 gap-3">
-                    <p class="text-gray-600">اختر تاريخاً أولاً</p>
-                </div>
+                <input type="time" name="appointment_time" id="appointmentTime" class="input-field" required min="08:00" max="20:00" step="1800">
             </div>
             
             <!-- Reason -->

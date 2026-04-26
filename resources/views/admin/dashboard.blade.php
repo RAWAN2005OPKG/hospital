@@ -1,109 +1,153 @@
 @extends('layouts.app')
 
-@section('title', 'لوحة تحكم الطبيب')
+@section('title', 'لوحة تحكم المدير')
 
 @section('content')
-<div class="mb-8">
-    <h1 class="section-title">مرحباً د. {{ auth()->user()->name }}</h1>
-    <p class="section-subtitle">لوحة تحكم الطبيب</p>
-</div>
+<div class="container section">
+    <div class="mb-8">
+        <h1 style="font-size: 2rem; font-weight: 900; color: var(--text);">لوحة التحكم الرئيسية</h1>
+        <p style="color: var(--muted);">نظرة عامة على أداء المستشفى والنشاط الحالي</p>
+    </div>
 
-<!-- Statistics -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-    <div class="card">
-        <div class="flex items-center justify-between">
+    <!-- Stats Grid -->
+    <div class="grid-4 mb-8">
+        <div class="stat-card">
+            <div class="stat-icon si-blue"><i class="fa-solid fa-user-doctor"></i></div>
             <div>
-                <p class="text-gray-600 text-sm mb-1">إجمالي المواعيد</p>
-                <p class="text-4xl font-bold text-blue-600">{{ $stats['total_appointments'] }}</p>
+                <div class="stat-num">{{ $totalDoctors }}</div>
+                <div class="stat-lbl">إجمالي الأطباء</div>
             </div>
-            <i class="fas fa-calendar-check text-5xl text-blue-100"></i>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon si-cyan"><i class="fa-solid fa-calendar-check"></i></div>
+            <div>
+                <div class="stat-num">{{ $totalAppointments }}</div>
+                <div class="stat-lbl">إجمالي المواعيد</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon si-green"><i class="fa-solid fa-building-user"></i></div>
+            <div>
+                <div class="stat-num">{{ $totalDepartments }}</div>
+                <div class="stat-lbl">الأقسام</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon si-purple"><i class="fa-solid fa-users"></i></div>
+            <div>
+                <div class="stat-num">{{ $totalUsers }}</div>
+                <div class="stat-lbl">المستخدمين</div>
+            </div>
         </div>
     </div>
-    
-    <div class="card">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-600 text-sm mb-1">مواعيد اليوم</p>
-                <p class="text-4xl font-bold text-teal-600">{{ $stats['today_appointments'] }}</p>
-            </div>
-            <i class="fas fa-clock text-5xl text-teal-100"></i>
-        </div>
-    </div>
-    
-    <div class="card">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-600 text-sm mb-1">مكتملة</p>
-                <p class="text-4xl font-bold text-green-600">{{ $stats['completed'] }}</p>
-            </div>
-            <i class="fas fa-check-circle text-5xl text-green-100"></i>
-        </div>
-    </div>
-    
-    <div class="card">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-600 text-sm mb-1">قيد الانتظار</p>
-                <p class="text-4xl font-bold text-yellow-600">{{ $stats['pending'] }}</p>
-            </div>
-            <i class="fas fa-hourglass-half text-5xl text-yellow-100"></i>
-        </div>
-    </div>
-</div>
 
-<!-- Today's Appointments -->
-<div class="card">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">مواعيد اليوم</h2>
-    
-    @if($todayAppointments->count() > 0)
-    <div class="space-y-4">
-        @foreach($todayAppointments as $appointment)
-        <div class="border border-blue-200 rounded-lg p-4 hover:bg-blue-50 transition">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
-                <div>
-                    <p class="text-sm text-gray-600 mb-1">المريض</p>
-                    <h3 class="font-bold text-gray-800">{{ $appointment->patient->name }}</h3>
-                </div>
-                
-                <div>
-                    <p class="text-sm text-gray-600 mb-1">الوقت</p>
-                    <p class="font-bold text-gray-800">{{ $appointment->appointment_time }}</p>
-                </div>
-                
-                <div>
-                    <p class="text-sm text-gray-600 mb-1">السبب</p>
-                    <p class="text-gray-800">{{ $appointment->reason ?? 'لم يتم تحديد السبب' }}</p>
-                </div>
-                
-                <div class="flex gap-2">
-                    <a href="{{ route('doctor.appointment-detail', $appointment->id) }}" class="btn-primary text-sm py-2">
-                        <i class="fas fa-eye ml-1"></i>التفاصيل
-                    </a>
+    <div class="grid-2">
+        <!-- Recent Appointments -->
+        <div class="card">
+            <div class="card-header">
+                <span>آخر المواعيد المحجوزة</span>
+                <a href="{{ route('admin.appointments') }}" class="btn btn-sm btn-outline">الكل</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>المريض</th>
+                                <th>الطبيب</th>
+                                <th>التاريخ</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($recentAppointments as $app)
+                            <tr>
+                                <td style="font-weight: 700;">{{ $app->patient->name }}</td>
+                                <td>{{ $app->doctor->user->name }}</td>
+                                <td style="font-size: .8rem;">{{ $app->appointment_date }}</td>
+                                <td>
+                                    @php
+                                        $badges = [
+                                            'pending' => 'badge-yellow',
+                                            'confirmed' => 'badge-blue',
+                                            'completed' => 'badge-green',
+                                            'cancelled' => 'badge-red'
+                                        ];
+                                        $labels = [
+                                            'pending' => 'انتظار',
+                                            'confirmed' => 'مؤكد',
+                                            'completed' => 'مكتمل',
+                                            'cancelled' => 'ملغي'
+                                        ];
+                                    @endphp
+                                    <span class="badge {{ $badges[$app->status] ?? 'badge-gray' }}">
+                                        {{ $labels[$app->status] ?? $app->status }}
+                                    </span>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr><td colspan="4" style="text-align: center; color: var(--muted);">لا توجد مواعيد حالياً</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        @endforeach
-    </div>
-    @else
-    <div class="text-center py-8">
-        <i class="fas fa-calendar-times text-4xl text-gray-300 mb-4"></i>
-        <p class="text-gray-600">لا توجد مواعيد اليوم</p>
-    </div>
-    @endif
-</div>
 
-<!-- Quick Actions -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-    <a href="{{ route('doctor.appointments') }}" class="card text-center hover:shadow-lg transition">
-        <i class="fas fa-list text-4xl text-blue-600 mb-4"></i>
-        <h3 class="font-bold text-gray-800 mb-2">جميع المواعيد</h3>
-        <p class="text-gray-600">عرض جميع المواعيد</p>
-    </a>
-    
-    <a href="{{ route('doctor.patient-records', auth()->user()->id) }}" class="card text-center hover:shadow-lg transition">
-        <i class="fas fa-file-medical text-4xl text-teal-600 mb-4"></i>
-        <h3 class="font-bold text-gray-800 mb-2">السجلات الطبية</h3>
-        <p class="text-gray-600">عرض السجلات الطبية</p>
-    </a>
+        <!-- Appointment Status Stats -->
+        <div class="card">
+            <div class="card-header">توزيع المواعيد حسب الحالة</div>
+            <div class="card-body">
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    @foreach($appointmentStats as $status => $count)
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: .75rem; background: var(--bg); border-radius: 10px;">
+                        <div style="display: flex; align-items: center; gap: .75rem;">
+                             @php
+                                $statusIcons = [
+                                    'pending' => 'fa-clock text-warning',
+                                    'confirmed' => 'fa-circle-check text-primary',
+                                    'completed' => 'fa-circle-check text-success',
+                                    'cancelled' => 'fa-circle-xmark text-danger'
+                                ];
+                                $statusNames = [
+                                    'pending' => 'قيد الانتظار',
+                                    'confirmed' => 'مؤكدة',
+                                    'completed' => 'مكتملة',
+                                    'cancelled' => 'ملغاة'
+                                ];
+                            @endphp
+                            <i class="fa-solid {{ $statusIcons[$status] ?? 'fa-circle' }}" style="font-size: 1.2rem;"></i>
+                            <span style="font-weight: 700;">{{ $statusNames[$status] ?? $status }}</span>
+                        </div>
+                        <span style="font-size: 1.2rem; font-weight: 900;">{{ $count }}</span>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mt-8">
+        <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 1.5rem;">إجراءات سريعة</h3>
+        <div class="grid-4">
+            <a href="{{ route('admin.doctors') }}" class="card-body card" style="text-align: center; transition: all .3s;">
+                <i class="fa-solid fa-user-doctor" style="font-size: 2rem; color: var(--blue); margin-bottom: 1rem;"></i>
+                <div style="font-weight: 700;">إدارة الأطباء</div>
+            </a>
+            <a href="{{ route('admin.departments') }}" class="card-body card" style="text-align: center; transition: all .3s;">
+                <i class="fa-solid fa-hospital" style="font-size: 2rem; color: var(--cyan); margin-bottom: 1rem;"></i>
+                <div style="font-weight: 700;">إدارة الأقسام</div>
+            </a>
+            <a href="{{ route('admin.users') }}" class="card-body card" style="text-align: center; transition: all .3s;">
+                <i class="fa-solid fa-users-gear" style="font-size: 2rem; color: var(--purple); margin-bottom: 1rem;"></i>
+                <div style="font-weight: 700;">إدارة المستخدمين</div>
+            </a>
+            <a href="{{ route('home') }}" class="card-body card" style="text-align: center; transition: all .3s;">
+                <i class="fa-solid fa-house" style="font-size: 2rem; color: var(--muted); margin-bottom: 1rem;"></i>
+                <div style="font-weight: 700;">الموقع الرئيسي</div>
+            </a>
+        </div>
+    </div>
 </div>
 @endsection

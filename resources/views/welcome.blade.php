@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'الرئيسية - ProHealth')
+@section('title', 'الرئيسية - صحتي')
 
 @section('content')
 <!-- Hero Section -->
@@ -48,7 +48,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16 items-center">
     <div>
         <p class="text-blue-600 font-bold text-lg mb-2">من نحن</p>
-        <h2 class="section-title">ProHealth فريق من المتخصصين الطبيين</h2>
+        <h2 class="section-title">صحتي - فريق من المتخصصين الطبيين</h2>
         <p class="text-gray-600 text-lg mb-6">نحن مكرسون لتقديم خدمات طبية عالية الجودة مع التركيز على راحة المريض والرعاية الشخصية. فريقنا يتكون من أطباء ذوي خبرة عالية في مختلف التخصصات الطبية.</p>
         <ul class="space-y-4">
             <li class="flex items-center">

@@ -50,7 +50,7 @@ class DepartmentController extends Controller
 
         Department::create($validated);
 
-        return redirect()->route('admin.departments.index')
+        return redirect()->route('admin.departments')
             ->with('success', 'تم إضافة القسم بنجاح');
     }
 
@@ -69,6 +69,15 @@ class DepartmentController extends Controller
             'manager_name' => 'required|string|max:255',
             'phone' => 'required|string|unique:departments,phone,' . $department->id . '|regex:/^[0-9\+\-\s]{9,}$/',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'اسم القسم مطلوب',
+            'name.unique' => 'هذا الاسم موجود بالفعل',
+            'manager_name.required' => 'اسم المسؤول مطلوب',
+            'phone.required' => 'رقم الجوال مطلوب',
+            'phone.unique' => 'هذا الرقم موجود بالفعل',
+            'image.image' => 'يجب أن تكون الصورة صحيحة',
+            'image.mimes' => 'صيغ الصور المقبولة: jpeg, png, jpg, gif',
+            'image.max' => 'حجم الصورة يجب أن لا يتجاوز 2MB',
         ]);
 
         // معالجة الصورة
@@ -86,7 +95,7 @@ class DepartmentController extends Controller
 
         $department->update($validated);
 
-        return redirect()->route('admin.departments.index')
+        return redirect()->route('admin.departments')
             ->with('success', 'تم تحديث القسم بنجاح');
     }
 
@@ -100,7 +109,7 @@ class DepartmentController extends Controller
 
         $department->delete();
 
-        return redirect()->route('admin.departments.index')
+        return redirect()->route('admin.departments')
             ->with('success', 'تم حذف القسم بنجاح');
     }
 }

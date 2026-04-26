@@ -10,20 +10,10 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\SpecializationController;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
-
-// Services Pages
-Route::get('/services/emergency', function() { return view('services.emergency'); })->name('services.emergency');
-Route::get('/services/lab', function() { return view('services.lab'); })->name('services.lab');
-Route::get('/services/radiology', function() { return view('services.radiology'); })->name('services.radiology');
-Route::get('/services/pharmacy', function() { return view('services.pharmacy'); })->name('services.pharmacy');
-
-// الصفحة الرئيسية
-Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // مسارات المصادقة
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
@@ -34,49 +24,30 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-// إنشاء Admin (خاص للمطور)
-Route::get('/create-admin', function () {
-    $user = \App\Models\User::where('email', 'rawanalltayyan3@gmail.com')->first();
+// إنشاء Admin
+Route::get('/create-admin', [AuthController::class, 'createAdmin'])->name('create-admin');
+Route::post('/create-admin', [AuthController::class, 'createAdmin']);
 
-    if (!$user) {
-        $user = \App\Models\User::create([
-            'name' => 'rawan',
-            'email' => 'rawanalltayyan3@gmail.com',
-            'phone' => '0599954996', 
-            'password' => \Illuminate\Support\Facades\Hash::make('rawan&&2026'),
-            'role' => 'admin',
-        ]);
-    }
-
-    auth()->login($user);
-    return redirect()->route('admin.dashboard')->with('success', 'تم الدخول كأدمن بنجاح!');
-});
-
-// مسارات الأقسام والتخصصات (للـ Admin فقط)
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::resource('admin/departments', DepartmentController::class)->names([
-        'index' => 'admin.departments.index',
-        'create' => 'admin.departments.create',
-        'store' => 'admin.departments.store',
-        'edit' => 'admin.departments.edit',
-        'update' => 'admin.departments.update',
-        'destroy' => 'admin.departments.destroy',
-    ]);
-    
-    Route::resource('admin/specializations', SpecializationController::class)->names([
-        'index' => 'admin.specializations.index',
-        'create' => 'admin.specializations.create',
-        'store' => 'admin.specializations.store',
-        'edit' => 'admin.specializations.edit',
-        'update' => 'admin.specializations.update',
-        'destroy' => 'admin.specializations.destroy',
+// مسارات الأقسام (للـ Admin فقط)
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::resource('admin/departments', DepartmentController::class, [
+        'names' => [
+            'index' => 'admin.departments.index',
+            'create' => 'admin.departments.create',
+            'store' => 'admin.departments.store',
+            'edit' => 'admin.departments.edit',
+            'update' => 'admin.departments.update',
+            'destroy' => 'admin.departments.destroy',
+        ]
     ]);
 });
+
+// Public departments (fixed!)
+Route::get('/departments', [DepartmentController::class, 'index'])->name('departments');
+Route::get('/departments/{department}', [DoctorController::class, 'departmentShow'])->name('departments.show');
 
 Route::get('/doctors', [DoctorController::class, 'index'])->name('doctors.index');
 Route::get('/doctors/{doctor}', [DoctorController::class, 'show'])->name('doctors.show');
-Route::get('/departments', [DepartmentController::class, 'index'])->name('departments');
-Route::get('/departments/{department}', [DoctorController::class, 'departmentShow'])->name('departments.show');
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
@@ -89,7 +60,6 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
     Route::get('/patient/medical-records/{record}', [PatientController::class, 'medicalRecordDetail'])->name('patient.medical-record-detail');
     Route::get('/appointments/create/{doctor}', [AppointmentController::class, 'create'])->name('appointments.create');
     Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
-    Route::get('/appointments/search', [AppointmentController::class, 'search'])->name('appointments.search');
 });
 
 // Protected Routes - Doctor
@@ -108,8 +78,6 @@ Route::middleware(['auth', 'role:doctor'])->group(function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/doctors', [AdminController::class, 'doctors'])->name('admin.doctors');
-    Route::get('/admin/doctors/create', [AdminController::class, 'createDoctor'])->name('admin.doctors.create');
-    Route::post('/admin/doctors', [AdminController::class, 'storeDoctor'])->name('admin.doctors.store');
     Route::get('/admin/appointments', [AdminController::class, 'appointments'])->name('admin.appointments');
     Route::get('/admin/departments', [AdminController::class, 'departments'])->name('admin.departments');
     Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
@@ -122,6 +90,3 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
 });
-
-// Authentication Routes
-require __DIR__.'/auth.php';
