@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Appointment extends Model
 {
@@ -16,49 +14,22 @@ class Appointment extends Model
         'doctor_id',
         'appointment_date',
         'appointment_time',
-        'reason',
         'status',
         'notes',
     ];
 
     protected $casts = [
         'appointment_date' => 'date',
+        'appointment_time' => 'datetime',
     ];
 
-    // العلاقات
-    public function patient(): BelongsTo
+    public function patient()
     {
-        return $this->belongsTo(User::class, 'patient_id');
+        return $this->belongsTo(Patient::class);
     }
 
-    public function doctor(): BelongsTo
+    public function doctor()
     {
         return $this->belongsTo(Doctor::class);
-    }
-
-    public function medicalRecord(): HasOne
-    {
-        return $this->hasOne(MedicalRecord::class);
-    }
-
-    // الدوال المساعدة
-    public function isPending(): bool
-    {
-        return $this->status === 'pending';
-    }
-
-    public function isConfirmed(): bool
-    {
-        return $this->status === 'confirmed';
-    }
-
-    public function isCompleted(): bool
-    {
-        return $this->status === 'completed';
-    }
-
-    public function isCancelled(): bool
-    {
-        return $this->status === 'cancelled';
     }
 }

@@ -2,186 +2,114 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Doctor;
-use App\Models\Department;
-use App\Models\Specialization;
-use App\Models\Schedule;
-use App\Models\Appointment;
-use App\Models\MedicalRecord;
 use Illuminate\Http\Request;
+use App\Models\Doctor;
+use App\Models\Specialty;
+use App\Models\Department;
 
 class DoctorController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = Doctor::with('user', 'specialization', 'department');
-        
-        if ($request->search) {
-            $query->whereHas('user', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%');
-            });
-        }
-        
-        if ($request->department_id) {
-            $query->where('department_id', $request->department_id);
-        }
-        
-        if ($request->specialization_id) {
-            $query->where('specialization_id', $request->specialization_id);
-        }
-        
-        $doctors = $query->paginate(12);
-        $departments = Department::all();
-        $specializations = Specialization::all();
-        
-        return view('doctors.index', compact('doctors', 'departments', 'specializations'));
+        $doctors = Doctor::with("user", "specialty", "department")->paginate(12);
+        return view("doctors.index", compact("doctors"));
     }
-    
+
     public function show(Doctor $doctor)
     {
-        $doctor->load('user', 'specialization', 'department');
-        $schedules = Schedule::where('doctor_id', $doctor->id)->get();
-        
-        return view('doctors.show', compact('doctor', 'schedules'));
+        $doctor->load("user", "specialty", "department", "schedules");
+        return view("doctors.show", compact("doctor"));
     }
-    
-    public function departments()
+
+    // Admin methods for managing doctors
+    public function create()
     {
-        $departments = Department::withCount('doctors')->get();
-        
-        return view('departments.index', compact('departments'));
+        $specialties = Specialty::all();
+        $departments = Department::all();
+        return view("admin.doctors.create", compact("specialties", "departments"));
     }
-    
-    public function departmentShow(Department $department)
+
+    public function store(Request $request)
     {
-        $doctors = $department->doctors()->with('user', 'specialization')->paginate(12);
-        
-        return view('departments.show', compact('department', 'doctors'));
-    }
-    
-    // Doctor Dashboard
-    public function dashboard()
-    {
-        $doctor = auth()->user()->doctor;
-        
-        $totalAppointments = Appointment::where('doctor_id', $doctor->id)->count();
-        $todayAppointments = Appointment::where('doctor_id', $doctor->id)
-            ->whereDate('appointment_date', today())
-            ->count();
-        $completedAppointments = Appointment::where('doctor_id', $doctor->id)
-            ->where('status', 'completed')
-            ->count();
-        $pendingAppointments = Appointment::where('doctor_id', $doctor->id)
-            ->where('status', 'pending')
-            ->count();
-        
-        $schedules = Schedule::where('doctor_id', $doctor->id)->get();
-        
-        $todayAppointmentsList = Appointment::where('doctor_id', $doctor->id)
-            ->whereDate('appointment_date', today())
-            ->with('patient')
-            ->orderBy('appointment_time')
-            ->get();
-        
-        return view('doctor.dashboard', compact(
-            'doctor',
-            'totalAppointments',
-            'todayAppointments',
-            'completedAppointments',
-            'pendingAppointments',
-            'schedules',
-            'todayAppointmentsList'
-        ));
-    }
-    
-    public function appointments()
-    {
-        $doctor = auth()->user()->doctor;
-        $appointments = Appointment::where('doctor_id', $doctor->id)
-            ->with('patient')
-            ->orderBy('appointment_date', 'desc')
-            ->paginate(15);
-        
-        return view('doctor.appointments', compact('appointments'));
-    }
-    
-    public function appointmentDetail(Appointment $appointment)
-    {
-        if ($appointment->doctor_id !== auth()->user()->doctor->id) {
-            abort(403);
-        }
-        
-        $appointment->load('patient', 'doctor', 'medicalRecord');
-        
-        return view('doctor.appointment-detail', compact('appointment'));
-    }
-    
-    public function confirmAppointment(Appointment $appointment)
-    {
-        if ($appointment->doctor_id !== auth()->user()->doctor->id) {
-            abort(403);
-        }
-        
-        $appointment->update(['status' => 'confirmed']);
-        
-        return redirect()->back()->with('success', 'تم تأكيد الموعد بنجاح');
-    }
-    
-    public function cancelAppointment(Appointment $appointment)
-    {
-        if ($appointment->doctor_id !== auth()->user()->doctor->id) {
-            abort(403);
-        }
-        
-        $appointment->update(['status' => 'cancelled']);
-        
-        return redirect()->back()->with('success', 'تم إلغاء الموعد');
-    }
-    
-    public function addMedicalRecord(Request $request, Appointment $appointment)
-    {
-        if ($appointment->doctor_id !== auth()->user()->doctor->id) {
-            abort(403);
-        }
-        
-        $validated = $request->validate([
-            'diagnosis' => 'required|string',
-            'treatment' => 'required|string',
-            'notes' => 'nullable|string',
+        $request->validate([
+            "name" => "required|string|max:255",
+            "email" => "required|string|email|max:255|unique:users",
+            "phone" => "required|string|max:20|unique:users",
+            "password" => "required|string|min:8|confirmed",
+            "specialty_id" => "required|exists:specialties,id",
+            "department_id" => "required|exists:departments,id",
+            "license_number" => "required|string|max:255|unique:doctors",
+            "experience_years" => "required|integer|min:0",
+            "bio" => "nullable|string",
+            "consultation_fee" => "required|numeric|min:0",
         ]);
-        
-        MedicalRecord::create([
-            'appointment_id' => $appointment->id,
-            'doctor_id' => auth()->user()->doctor->id,
-            'patient_id' => $appointment->patient_id,
-            'diagnosis' => $validated['diagnosis'],
-            'treatment' => $validated['treatment'],
-            'notes' => $validated['notes'] ?? null,
+
+        $user = User::create([
+            "name" => $request->name,
+            "email" => $request->email,
+            "phone" => $request->phone,
+            "password" => Hash::make($request->password),
+            "role" => UserRoleEnum::Doctor,
         ]);
-        
-        $appointment->update(['status' => 'completed']);
-        
-        return redirect()->back()->with('success', 'تم إضافة السجل الطبي بنجاح');
+
+        Doctor::create([
+            "user_id" => $user->id,
+            "specialty_id" => $request->specialty_id,
+            "department_id" => $request->department_id,
+            "license_number" => $request->license_number,
+            "experience_years" => $request->experience_years,
+            "bio" => $request->bio,
+            "consultation_fee" => $request->consultation_fee,
+            "availability_status" => true,
+        ]);
+
+        return redirect()->route("admin.doctors")->with("success", "تم إضافة الطبيب بنجاح.");
     }
-    
-    public function schedule()
+
+    public function edit(Doctor $doctor)
     {
-        $doctor = auth()->user()->doctor;
-        $schedules = Schedule::where('doctor_id', $doctor->id)->get();
-        
-        return view('doctor.schedule', compact('schedules'));
+        $specialties = Specialty::all();
+        $departments = Department::all();
+        return view("admin.doctors.edit", compact("doctor", "specialties", "departments"));
     }
-    
-    public function patientRecords(Doctor $doctor)
+
+    public function update(Request $request, Doctor $doctor)
     {
-        if ($doctor->id !== auth()->user()->doctor->id) {
-            abort(403);
-        }
-        
-        $records = MedicalRecord::where('doctor_id', $doctor->id)
-            ->with('patient')
-            ->paginate(15);
-        
-        return view('doctor.patient-records', compact('records'));
+        $request->validate([
+            "name" => "required|string|max:255",
+            "email" => "required|string|email|max:255|unique:users,email," . $doctor->user->id,
+            "phone" => "required|string|max:20|unique:users,phone," . $doctor->user->id,
+            "specialty_id" => "required|exists:specialties,id",
+            "department_id" => "required|exists:departments,id",
+            "license_number" => "required|string|max:255|unique:doctors,license_number," . $doctor->id,
+            "experience_years" => "required|integer|min:0",
+            "bio" => "nullable|string",
+            "consultation_fee" => "required|numeric|min:0",
+            "availability_status" => "boolean",
+        ]);
+
+        $doctor->user->update([
+            "name" => $request->name,
+            "email" => $request->email,
+            "phone" => $request->phone,
+        ]);
+
+        $doctor->update([
+            "specialty_id" => $request->specialty_id,
+            "department_id" => $request->department_id,
+            "license_number" => $request->license_number,
+            "experience_years" => $request->experience_years,
+            "bio" => $request->bio,
+            "consultation_fee" => $request->consultation_fee,
+            "availability_status" => $request->availability_status ?? false,
+        ]);
+
+        return redirect()->route("admin.doctors")->with("success", "تم تحديث بيانات الطبيب بنجاح.");
+    }
+
+    public function destroy(Doctor $doctor)
+    {
+        $doctor->user->delete(); // This will also delete the doctor record due to cascade on user_id
+        return redirect()->route("admin.doctors")->with("success", "تم حذف الطبيب بنجاح.");
     }
 }

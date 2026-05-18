@@ -4,25 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Schedule extends Model
+class Prescription extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'patient_id',
         'doctor_id',
-        'day_of_week',
-        'start_time',
-        'end_time',
-        'is_available',
+        'medications',
+        'dosage',
+        'notes',
     ];
 
     protected $casts = [
-        'is_available' => 'boolean',
+        'medications' => 'array',
     ];
 
-    public function doctor(): BelongsTo
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class);
+    }
+
+    public function doctor()
     {
         return $this->belongsTo(Doctor::class);
     }

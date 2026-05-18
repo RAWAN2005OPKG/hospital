@@ -1,66 +1,96 @@
-{{-- ════ patient/dashboard.blade.php ════ --}}
 @extends('layouts.app')
-@section('title','لوحة المريض')
-@section('content')
-<div class="page-header">
-    <div class="container">
-        <h1>مرحباً، {{ auth()->user()->name }} 👋</h1>
-        <p>لوحة تحكم المريض</p>
-    </div>
-</div>
-<section class="section-sm"><div class="container">
-<div class="grid-4" style="margin-bottom:2rem">
-    @foreach([['si-blue','fa-calendar-check','مواعيد قادمة',$upcomingAppointments],['si-green','fa-check-circle','إجمالي المواعيد',$totalAppointments],['si-cyan','fa-file-medical','السجلات الطبية',$medicalRecords],['si-purple','fa-star','تقييمي','5.0']] as [$cls,$icon,$lbl,$val])
-    <div class="stat-card">
-        <div class="stat-icon {{ $cls }}"><i class="fa-solid {{ $icon }}"></i></div>
-        <div><div class="stat-num">{{ $val }}</div><div class="stat-lbl">{{ $lbl }}</div></div>
-    </div>
-    @endforeach
-</div>
 
-<div style="display:grid;grid-template-columns:1fr 300px;gap:1.5rem;align-items:start">
-    <div class="card">
-        <div class="card-header">
-            <span><i class="fa-solid fa-calendar" style="color:var(--blue);margin-left:.4rem"></i>المواعيد القادمة</span>
-            <a href="{{ route('patient.appointments') }}" class="btn btn-outline btn-sm">عرض الكل</a>
-        </div>
-        <div class="card-body">
-        @forelse($appointments as $apt)
-        <div style="display:flex;align-items:center;gap:1rem;padding:.9rem 0;border-bottom:1px solid var(--border)">
-            <div style="width:46px;height:46px;border-radius:12px;background:var(--blue-lt);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">
-                <i class="fa-solid fa-user-doctor"></i>
+@section('title', 'لوحة المريض - صحتي')
+
+@section('content')
+<div style="background: linear-gradient(135deg, rgba(0, 102, 204, 0.05), rgba(0, 188, 212, 0.05)); padding: 2rem 0;">
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div>
+                <h1 style="font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem;">مرحباً، {{ Auth::user()->name }}</h1>
+                <p style="color: var(--muted);">هنا يمكنك إدارة مواعيدك وسجلاتك الطبية</p>
             </div>
-            <div style="flex:1">
-                <div style="font-weight:700;font-size:.9rem">{{ $apt->doctor->user->name ?? 'دكتور' }}</div>
-                <div style="font-size:.8rem;color:var(--muted)">{{ $apt->appointment_date->format('d/m/Y') }} — {{ $apt->appointment_time }}</div>
-            </div>
-            <span class="badge {{ $apt->status==='confirmed'?'badge-green':($apt->status==='pending'?'badge-yellow':'badge-red') }}">
-                {{ ['pending'=>'قيد الانتظار','confirmed'=>'مؤكد','cancelled'=>'ملغي','completed'=>'مكتمل'][$apt->status] ?? $apt->status }}
-            </span>
+            <a href="{{ route('appointments.create') }}" class="btn btn-primary">
+                <i class="fa-solid fa-calendar-plus"></i> احجز موعداً جديداً
+            </a>
         </div>
-        @empty
-        <div style="text-align:center;padding:2rem;color:var(--muted)">لا توجد مواعيد قادمة</div>
-        @endforelse
-        </div>
-    </div>
-    <div>
-        <div class="card" style="margin-bottom:1rem">
-            <div class="card-body" style="text-align:center;padding:1.5rem">
-                <i class="fa-solid fa-calendar-plus" style="font-size:2rem;color:var(--blue);margin-bottom:.75rem;display:block"></i>
-                <div style="font-weight:700;margin-bottom:.4rem">حجز موعد جديد</div>
-                <div style="font-size:.83rem;color:var(--muted);margin-bottom:1rem">تصفح الدكاترة واحجز موعدك</div>
-                <a href="{{ route('doctors.index') }}" class="btn btn-primary btn-sm" style="width:100%;justify-content:center">احجز الآن</a>
+        
+        <!-- Stats Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div style="background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <div>
+                        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem;">المواعيد القادمة</p>
+                        <h3 style="font-size: 2rem; font-weight: 900; color: var(--blue);">{{ $upcomingAppointments }}</h3>
+                    </div>
+                    <div style="width: 50px; height: 50px; border-radius: 10px; background: linear-gradient(135deg, rgba(0, 102, 204, 0.1), rgba(0, 188, 212, 0.1)); display: flex; align-items: center; justify-content: center; color: var(--blue); font-size: 1.5rem;">
+                        <i class="fa-solid fa-calendar"></i>
+                    </div>
+                </div>
+                <a href="{{ route('patient.appointments') }}" style="color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 600;">عرض جميع المواعيد →</a>
+            </div>
+            
+            <div style="background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <div>
+                        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem;">السجلات الطبية</p>
+                        <h3 style="font-size: 2rem; font-weight: 900; color: var(--green);">{{ $medicalRecordsCount }}</h3>
+                    </div>
+                    <div style="width: 50px; height: 50px; border-radius: 10px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.1)); display: flex; align-items: center; justify-content: center; color: var(--green); font-size: 1.5rem;">
+                        <i class="fa-solid fa-file-medical"></i>
+                    </div>
+                </div>
+                <a href="{{ route('patient.medical-records') }}" style="color: var(--green); text-decoration: none; font-size: 0.9rem; font-weight: 600;">عرض السجلات →</a>
+            </div>
+            
+            <div style="background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <div>
+                        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem;">إجمالي المواعيد</p>
+                        <h3 style="font-size: 2rem; font-weight: 900; color: var(--purple);">{{ $totalAppointments }}</h3>
+                    </div>
+                    <div style="width: 50px; height: 50px; border-radius: 10px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.1)); display: flex; align-items: center; justify-content: center; color: var(--purple); font-size: 1.5rem;">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                </div>
+                <a href="{{ route('patient.appointments') }}" style="color: var(--purple); text-decoration: none; font-size: 0.9rem; font-weight: 600;">عرض التفاصيل →</a>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body" style="text-align:center;padding:1.5rem">
-                <i class="fa-solid fa-file-medical" style="font-size:2rem;color:var(--cyan);margin-bottom:.75rem;display:block"></i>
-                <div style="font-weight:700;margin-bottom:.4rem">سجلاتي الطبية</div>
-                <div style="font-size:.83rem;color:var(--muted);margin-bottom:1rem">{{ $medicalRecords }} سجل طبي</div>
-                <a href="{{ route('patient.medical-records') }}" class="btn btn-outline btn-sm" style="width:100%;justify-content:center">عرض السجلات</a>
-            </div>
+        
+        <!-- Upcoming Appointments -->
+        <div style="background: #fff; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+            <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem;">المواعيد القادمة</h2>
+            
+            @if($appointments->count() > 0)
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    @foreach($appointments as $appointment)
+                        <div style="display: flex; gap: 1rem; padding: 1rem; border: 1px solid var(--gray-200); border-radius: 10px; transition: all 0.3s ease;">
+                            <div style="width: 60px; height: 60px; border-radius: 10px; background: linear-gradient(135deg, var(--blue), var(--cyan)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.5rem; flex-shrink: 0;">
+                                <i class="fa-solid fa-user-doctor"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <h4 style="font-weight: 700; margin-bottom: 0.25rem;">د. {{ $appointment->doctor->user->name }}</h4>
+                                <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem;">{{ $appointment->doctor->specialization->name ?? 'تخصص' }}</p>
+                                <div style="display: flex; gap: 1rem; font-size: 0.9rem; color: var(--muted);">
+                                    <span><i class="fa-solid fa-calendar"></i> {{ $appointment->appointment_date->format('d/m/Y') }}</span>
+                                    <span><i class="fa-solid fa-clock"></i> {{ $appointment->appointment_time }}</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem; flex-direction: column; justify-content: center;">
+                                <span style="background: rgba(16, 185, 129, 0.1); color: var(--green); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600;">{{ $appointment->status }}</span>
+                                <a href="#" class="btn btn-sm btn-outline" style="font-size: 0.8rem;">التفاصيل</a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div style="text-align: center; padding: 2rem;">
+                    <i class="fa-solid fa-calendar-xmark" style="font-size: 3rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
+                    <p style="color: var(--muted); margin-bottom: 1rem;">لا توجد مواعيد قادمة</p>
+                    <a href="{{ route('appointments.create') }}" class="btn btn-primary">احجز موعداً الآن</a>
+                </div>
+            @endif
         </div>
     </div>
 </div>
-</div></section>
 @endsection

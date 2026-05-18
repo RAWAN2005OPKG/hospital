@@ -1,148 +1,94 @@
 @extends('layouts.app')
 
-@section('title', 'لوحة تحكم الطبيب')
+@section('title', 'لوحة الطبيب - صحتي')
 
 @section('content')
-<div class="mb-8">
-    <h1 class="section-title">مرحباً د. {{ auth()->user()->name }}</h1>
-    <p class="text-gray-600 text-lg">لوحة تحكم الطبيب</p>
-</div>
-
-<!-- Statistics -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-    <div class="card">
-        <div class="flex items-center justify-between">
+<div style="background: linear-gradient(135deg, rgba(0, 102, 204, 0.05), rgba(0, 188, 212, 0.05)); padding: 2rem 0;">
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <div>
-                <p class="text-gray-600 text-sm mb-1">إجمالي المواعيد</p>
-                <p class="text-4xl font-bold text-blue-600">{{ $totalAppointments }}</p>
+                <h1 style="font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem;">مرحباً، د. {{ Auth::user()->name }}</h1>
+                <p style="color: var(--muted);">إدارة مواعيدك والسجلات الطبية للمرضى</p>
             </div>
-            <i class="fas fa-calendar-check text-5xl text-blue-100"></i>
+            <a href="{{ route('doctor.schedule') }}" class="btn btn-primary">
+                <i class="fa-solid fa-calendar-days"></i> إدارة الجدول
+            </a>
         </div>
-    </div>
-    
-    <div class="card">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-600 text-sm mb-1">مواعيد اليوم</p>
-                <p class="text-4xl font-bold text-teal-600">{{ $todayAppointments }}</p>
-            </div>
-            <i class="fas fa-clock text-5xl text-teal-100"></i>
-        </div>
-    </div>
-    
-    <div class="card">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-600 text-sm mb-1">مكتملة</p>
-                <p class="text-4xl font-bold text-green-600">{{ $completedAppointments }}</p>
-            </div>
-            <i class="fas fa-check-circle text-5xl text-green-100"></i>
-        </div>
-    </div>
-    
-    <div class="card">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-600 text-sm mb-1">قيد الانتظار</p>
-                <p class="text-4xl font-bold text-yellow-600">{{ $pendingAppointments }}</p>
-            </div>
-            <i class="fas fa-hourglass-half text-5xl text-yellow-100"></i>
-        </div>
-    </div>
-</div>
-
-<!-- Doctor Schedule -->
-<div class="card mb-8">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">جدول العمل الأسبوعي</h2>
-    
-    <div class="overflow-x-auto">
-        <table class="w-full">
-            <thead class="bg-gradient-to-r from-blue-50 to-teal-50">
-                <tr>
-                    <th class="px-4 py-3 text-right font-bold text-gray-800">اليوم</th>
-                    <th class="px-4 py-3 text-right font-bold text-gray-800">البداية</th>
-                    <th class="px-4 py-3 text-right font-bold text-gray-800">النهاية</th>
-                    <th class="px-4 py-3 text-right font-bold text-gray-800">الراحة</th>
-                    <th class="px-4 py-3 text-right font-bold text-gray-800">المواعيد</th>
-                    <th class="px-4 py-3 text-right font-bold text-gray-800">الحالة</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                    $days = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
-                @endphp
-                
-                @forelse($schedules as $schedule)
-                <tr class="border-b border-blue-100 hover:bg-blue-50">
-                    <td class="px-4 py-3 font-semibold text-gray-800">{{ $days[$schedule->day_of_week] }}</td>
-                    <td class="px-4 py-3 text-gray-700">{{ $schedule->start_time }}</td>
-                    <td class="px-4 py-3 text-gray-700">{{ $schedule->end_time }}</td>
-                    <td class="px-4 py-3 text-gray-700">
-                        @if($schedule->break_start)
-                            {{ $schedule->break_start }} - {{ $schedule->break_end }}
-                        @else
-                            -
-                        @endif
-                    </td>
-                    <td class="px-4 py-3 text-center">
-                        <span class="px-3 py-1 rounded-full text-sm font-bold bg-blue-100 text-blue-800">
-                            {{ $schedule->appointments_count ?? 0 }}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3">
-                        <span class="px-3 py-1 rounded-full text-sm font-bold bg-green-100 text-green-800">
-                            متاح
-                        </span>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="6" class="px-4 py-3 text-center text-gray-600">لا توجد أوقات عمل</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Today's Appointments -->
-<div class="card">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">مواعيد اليوم</h2>
-    
-    @if($todayAppointmentsList->count() > 0)
-    <div class="space-y-4">
-        @foreach($todayAppointmentsList as $appointment)
-        <div class="border border-blue-200 rounded-2xl p-4 hover:bg-blue-50 transition">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
-                <div>
-                    <p class="text-sm text-gray-600 mb-1">المريض</p>
-                    <h3 class="font-bold text-gray-800">{{ $appointment->patient->name }}</h3>
+        
+        <!-- Stats Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div style="background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <div>
+                        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem;">مواعيد اليوم</p>
+                        <h3 style="font-size: 2rem; font-weight: 900; color: var(--blue);">{{ $todayAppointments }}</h3>
+                    </div>
+                    <div style="width: 50px; height: 50px; border-radius: 10px; background: linear-gradient(135deg, rgba(0, 102, 204, 0.1), rgba(0, 188, 212, 0.1)); display: flex; align-items: center; justify-content: center; color: var(--blue); font-size: 1.5rem;">
+                        <i class="fa-solid fa-calendar"></i>
+                    </div>
                 </div>
-                
-                <div>
-                    <p class="text-sm text-gray-600 mb-1">الوقت</p>
-                    <p class="font-bold text-gray-800">{{ $appointment->appointment_time }}</p>
+                <a href="{{ route('doctor.appointments') }}" style="color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 600;">عرض جميع المواعيد →</a>
+            </div>
+            
+            <div style="background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <div>
+                        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem;">عدد المرضى</p>
+                        <h3 style="font-size: 2rem; font-weight: 900; color: var(--green);">{{ $totalPatients }}</h3>
+                    </div>
+                    <div style="width: 50px; height: 50px; border-radius: 10px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.1)); display: flex; align-items: center; justify-content: center; color: var(--green); font-size: 1.5rem;">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
                 </div>
-                
-                <div>
-                    <p class="text-sm text-gray-600 mb-1">السبب</p>
-                    <p class="text-gray-800">{{ $appointment->reason ?? 'لم يتم تحديد السبب' }}</p>
+                <a href="{{ route('doctor.patient-records') }}" style="color: var(--green); text-decoration: none; font-size: 0.9rem; font-weight: 600;">عرض السجلات →</a>
+            </div>
+            
+            <div style="background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <div>
+                        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem;">الوصفات الطبية</p>
+                        <h3 style="font-size: 2rem; font-weight: 900; color: var(--purple);">0</h3>
+                    </div>
+                    <div style="width: 50px; height: 50px; border-radius: 10px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.1)); display: flex; align-items: center; justify-content: center; color: var(--purple); font-size: 1.5rem;">
+                        <i class="fa-solid fa-prescription-bottle"></i>
+                    </div>
                 </div>
-                
-                <div class="flex gap-2">
-                    <a href="{{ route('doctor.appointment-detail', $appointment->id) }}" class="btn-primary text-sm py-2">
-                        <i class="fas fa-eye ml-1"></i>التفاصيل
-                    </a>
-                </div>
+                <a href="{{ route('doctor.prescriptions') }}" style="color: var(--purple); text-decoration: none; font-size: 0.9rem; font-weight: 600;">عرض الوصفات →</a>
             </div>
         </div>
-        @endforeach
+        
+        <!-- Upcoming Appointments -->
+        <div style="background: #fff; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+            <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem;">المواعيد القادمة</h2>
+            
+            @if($upcomingAppointments->count() > 0)
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    @foreach($upcomingAppointments as $appointment)
+                        <div style="display: flex; gap: 1rem; padding: 1rem; border: 1px solid var(--gray-200); border-radius: 10px; transition: all 0.3s ease;">
+                            <div style="width: 60px; height: 60px; border-radius: 10px; background: linear-gradient(135deg, var(--green), var(--cyan)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.5rem; flex-shrink: 0;">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <h4 style="font-weight: 700; margin-bottom: 0.25rem;">{{ $appointment->patient->user->name }}</h4>
+                                <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem;">{{ $appointment->patient->user->phone }}</p>
+                                <div style="display: flex; gap: 1rem; font-size: 0.9rem; color: var(--muted);">
+                                    <span><i class="fa-solid fa-calendar"></i> {{ $appointment->appointment_date->format('d/m/Y') }}</span>
+                                    <span><i class="fa-solid fa-clock"></i> {{ $appointment->appointment_time }}</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem; flex-direction: column; justify-content: center;">
+                                <a href="{{ route('doctor.appointment-detail', $appointment) }}" class="btn btn-sm btn-primary" style="font-size: 0.8rem;">التفاصيل</a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div style="text-align: center; padding: 2rem;">
+                    <i class="fa-solid fa-calendar-xmark" style="font-size: 3rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
+                    <p style="color: var(--muted);">لا توجد مواعيد قادمة</p>
+                </div>
+            @endif
+        </div>
     </div>
-    @else
-    <div class="text-center py-8">
-        <i class="fas fa-calendar-times text-4xl text-gray-300 mb-4"></i>
-        <p class="text-gray-600">لا توجد مواعيد اليوم</p>
-    </div>
-    @endif
 </div>
 @endsection

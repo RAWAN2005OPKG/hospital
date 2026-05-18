@@ -1,129 +1,77 @@
 @extends('layouts.app')
 
-@section('title', 'احجز موعد - د. ' . $doctor->user->name)
+@section('title', 'حجز موعد - صحتي')
 
 @section('content')
-<div class="max-w-2xl mx-auto">
-    <div class="card mb-8">
-        <div class="flex items-center mb-8 pb-8 border-b border-blue-100">
-            <div class="w-20 h-20 bg-gradient-to-br from-blue-100 to-teal-100 rounded-full flex items-center justify-center ml-4 shadow-lg">
-                <i class="fas fa-user-md text-4xl text-blue-600"></i>
+<div class="section">
+    <div class="container">
+        <div style="max-width: 700px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 style="font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem;">حجز موعد طبي</h1>
+                <p style="color: var(--muted);">اختر الطبيب والتاريخ والوقت المناسب لك</p>
             </div>
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">د. {{ $doctor->user->name }}</h1>
-                <p class="text-teal-600 font-semibold">{{ $doctor->specialization->name }}</p>
+            
+            <div style="background: #fff; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+                <form method="POST" action="{{ route('appointments.store') }}" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    @csrf
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 0.75rem; font-weight: 600; color: var(--gray-700);">اختر التخصص</label>
+                        <select id="specialization" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 1rem;" class="@error('specialization_id') border-red-500 @enderror">
+                            <option value="">-- اختر التخصص --</option>
+                            @foreach($specializations as $spec)
+                                <option value="{{ $spec->id }}">{{ $spec->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 0.75rem; font-weight: 600; color: var(--gray-700);">اختر الطبيب</label>
+                        <select name="doctor_id" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 1rem;" class="@error('doctor_id') border-red-500 @enderror">
+                            <option value="">-- اختر الطبيب --</option>
+                            @foreach($doctors as $doc)
+                                <option value="{{ $doc->id }}" {{ old('doctor_id') == $doc->id ? 'selected' : '' }}>
+                                    د. {{ $doc->user->name }} - {{ $doc->specialization->name ?? 'تخصص' }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('doctor_id')
+                            <p style="color: var(--red); font-size: 0.85rem; margin-top: 0.25rem;">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 0.75rem; font-weight: 600; color: var(--gray-700);">تاريخ الموعد</label>
+                        <input type="date" name="appointment_date" value="{{ old('appointment_date') }}" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 1rem;" class="@error('appointment_date') border-red-500 @enderror">
+                        @error('appointment_date')
+                            <p style="color: var(--red); font-size: 0.85rem; margin-top: 0.25rem;">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 0.75rem; font-weight: 600; color: var(--gray-700);">وقت الموعد</label>
+                        <input type="time" name="appointment_time" value="{{ old('appointment_time') }}" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 1rem;" class="@error('appointment_time') border-red-500 @enderror">
+                        @error('appointment_time')
+                            <p style="color: var(--red); font-size: 0.85rem; margin-top: 0.25rem;">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 0.75rem; font-weight: 600; color: var(--gray-700);">ملاحظات (اختياري)</label>
+                        <textarea name="notes" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 1rem; min-height: 120px; resize: vertical;" placeholder="أضف أي ملاحظات أو أعراض تود إخبار الطبيب بها">{{ old('notes') }}</textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1; padding: 0.85rem;">
+                            <i class="fa-solid fa-check"></i> تأكيد الحجز
+                        </button>
+                        <a href="{{ route('patient.dashboard') }}" class="btn btn-outline" style="flex: 1; padding: 0.85rem; text-align: center;">
+                            <i class="fa-solid fa-times"></i> إلغاء
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
-        
-        <form action="{{ route('appointments.store') }}" method="POST" id="bookingForm">
-            @csrf
-            <input type="hidden" name="doctor_id" value="{{ $doctor->id }}">
-            <!-- Date -->
-            <div class="mb-6">
-                <label class="block text-lg font-bold text-gray-800 mb-3">
-                    <i class="fas fa-calendar-alt ml-2 text-blue-600"></i>اختر التاريخ
-                </label>
-                <input type="date" name="appointment_date" id="appointmentDate" class="input-field" required min="{{ date('Y-m-d', strtotime('+1 day')) }}">
-            </div>
-            
-            <!-- Time -->
-            <div class="mb-6">
-                <label class="block text-lg font-bold text-gray-800 mb-3">
-                    <i class="fas fa-clock ml-2 text-blue-600"></i>اختر الوقت
-                </label>
-                <input type="time" name="appointment_time" id="appointmentTime" class="input-field" required min="08:00" max="20:00" step="1800">
-            </div>
-            
-            <!-- Reason -->
-            <div class="mb-6">
-                <label class="block text-lg font-bold text-gray-800 mb-3">
-                    <i class="fas fa-notes-medical ml-2 text-blue-600"></i>سبب الزيارة
-                </label>
-                <textarea name="reason" class="input-field" rows="4" placeholder="اشرح السبب..."></textarea>
-            </div>
-            
-            <!-- Summary -->
-            <div class="bg-gradient-to-r from-blue-50 to-teal-50 rounded-2xl p-6 mb-6 border border-blue-200">
-                <h3 class="font-bold text-gray-800 mb-4">ملخص الحجز</h3>
-                <div class="space-y-3 text-gray-700">
-                    <div class="flex justify-between">
-                        <span>الطبيب:</span>
-                        <span class="font-semibold">د. {{ $doctor->user->name }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span>التخصص:</span>
-                        <span class="font-semibold">{{ $doctor->specialization->name }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span>التاريخ:</span>
-                        <span class="font-semibold" id="summaryDate">-</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span>الوقت:</span>
-                        <span class="font-semibold" id="summaryTime">-</span>
-                    </div>
-                    <div class="border-t border-blue-200 pt-3 mt-3 flex justify-between">
-                        <span>الرسم:</span>
-                        <span class="font-bold text-blue-600 text-lg">{{ $doctor->consultation_fee }} ر.س</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Buttons -->
-            <div class="flex gap-4">
-                <button type="submit" class="btn-primary flex-1">
-                    <i class="fas fa-check-circle ml-2"></i>تأكيد الحجز
-                </button>
-                <a href="{{ route('doctors.show', $doctor->id) }}" class="btn-outline flex-1 text-center">
-                    <i class="fas fa-times-circle ml-2"></i>إلغاء
-                </a>
-            </div>
-        </form>
     </div>
 </div>
-
-@push('scripts')
-<script>
-document.querySelector('input[name="appointment_date"]').addEventListener('change', function() {
-    const date = this.value;
-    const doctorId = {{ $doctor->id }};
-    
-    fetch(`/api/doctors/${doctorId}/available-slots?date=${date}`)
-        .then(response => response.json())
-        .then(data => {
-            const timeSlotsDiv = document.getElementById('timeSlots');
-            timeSlotsDiv.innerHTML = '';
-            
-            if (data.slots.length === 0) {
-                timeSlotsDiv.innerHTML = '<p class="text-gray-600">لا توجد فترات متاحة</p>';
-                return;
-            }
-            
-            data.slots.forEach(slot => {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'p-3 border-2 border-blue-200 rounded-xl hover:bg-blue-100 hover:border-blue-600 transition font-semibold text-gray-800';
-                button.textContent = slot;
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelector('input[name="appointment_time"]').value = slot;
-                    document.querySelectorAll('#timeSlots button').forEach(b => b.classList.remove('bg-blue-600', 'text-white', 'border-blue-600'));
-                    this.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
-                    document.getElementById('summaryTime').textContent = slot;
-                });
-                timeSlotsDiv.appendChild(button);
-            });
-        });
-    
-    document.getElementById('summaryDate').textContent = new Date(date).toLocaleDateString('ar-SA');
-});
-
-document.getElementById('bookingForm').addEventListener('submit', function(e) {
-    if (!document.querySelector('input[name="appointment_time"]').value) {
-        e.preventDefault();
-        alert('يرجى اختيار وقت');
-    }
-});
-</script>
-@endpush
 @endsection

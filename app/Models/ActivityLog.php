@@ -5,17 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Department extends Model
+class ActivityLog extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'description',
+        'user_id',
+        'action',
+        'ip_address',
+        'user_agent',
     ];
 
-    public function doctors()
+    public function user()
     {
-        return $this->hasMany(Doctor::class);
+        return $this->belongsTo(User::class);
     }
 }

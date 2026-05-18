@@ -2,56 +2,93 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use App\Enums\UserRoleEnum;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'email',
-        'phone',
         'password',
+        'phone',
         'role',
+        'avatar',
+        'address',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'role' => UserRoleEnum::class, // Cast to Enum
+    ];
 
-    // التحقق من أنه admin
-    public function isAdmin()
+    // Relationships
+    public function patient()
     {
-        return $this->role === 'admin';
-    }
-
-    // التحقق من أنه طبيب
-    public function isDoctor()
-    {
-        return $this->role === 'doctor';
-    }
-
-    // التحقق من أنه مريض
-    public function isPatient()
-    {
-        return $this->role === 'patient';
+        return $this->hasOne(Patient::class);
     }
 
     public function doctor()
     {
         return $this->hasOne(Doctor::class);
     }
-}
 
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
+    // Accessors
+    public function getAvatarUrlAttribute()
+    {
+        return $this->avatar ? asset('storage/' . $this->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($this->name ) . '&color=0066cc&background=e0f2f7';
+    }
+
+    // Role Checks
+    public function isAdmin()
+    {
+        return $this->role === UserRoleEnum::Admin;
+    }
+
+    public function isDoctor()
+    {
+        return $this->role === UserRoleEnum::Doctor;
+    }
+
+    public function isPatient()
+    {
+        return $this->role === UserRoleEnum::Patient;
+    }
+}

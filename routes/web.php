@@ -1,15 +1,23 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\DoctorController;
+
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\SpecialtyController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Patient\PatientDashboardController;
+use App\Http\Controllers\Doctor\DoctorDashboardController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\chatController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MedicalRecordController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SpecializationController;
 
 // Public Routes
@@ -26,10 +34,10 @@ Route::get('/services/pharmacy', function() { return view('services.pharmacy'); 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // مسارات المصادقة
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
@@ -55,20 +63,20 @@ Route::get('/create-admin', function () {
 // مسارات الأقسام والتخصصات (للـ Admin فقط)
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('admin/departments', DepartmentController::class)->names([
-        'index' => 'admin.departments.index',
-        'create' => 'admin.departments.create',
-        'store' => 'admin.departments.store',
-        'edit' => 'admin.departments.edit',
-        'update' => 'admin.departments.update',
+        'index'   => 'admin.departments.index',
+        'create'  => 'admin.departments.create',
+        'store'   => 'admin.departments.store',
+        'edit'    => 'admin.departments.edit',
+        'update'  => 'admin.departments.update',
         'destroy' => 'admin.departments.destroy',
     ]);
     
     Route::resource('admin/specializations', SpecializationController::class)->names([
-        'index' => 'admin.specializations.index',
-        'create' => 'admin.specializations.create',
-        'store' => 'admin.specializations.store',
-        'edit' => 'admin.specializations.edit',
-        'update' => 'admin.specializations.update',
+        'index'   => 'admin.specializations.index',
+        'create'  => 'admin.specializations.create',
+        'store'   => 'admin.specializations.store',
+        'edit'    => 'admin.specializations.edit',
+        'update'  => 'admin.specializations.update',
         'destroy' => 'admin.specializations.destroy',
     ]);
 });
@@ -76,7 +84,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::get('/doctors', [DoctorController::class, 'index'])->name('doctors.index');
 Route::get('/doctors/{doctor}', [DoctorController::class, 'show'])->name('doctors.show');
 Route::get('/departments', [DepartmentController::class, 'index'])->name('departments');
-Route::get('/departments/{department}', [DoctorController::class, 'departmentShow'])->name('departments.show');
+Route::get('/departments/{department}', [DepartmentController::class, 'show'])->name('departments.show');
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 

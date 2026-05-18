@@ -2,66 +2,90 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Appointment;
 use App\Models\Doctor;
-use App\Models\Schedule;
-use Illuminate\Http\Request;
+use App\Models\Specialty;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class AppointmentController extends Controller
 {
-    public function create(Doctor $doctor)
+    public function create(Request $request)
     {
-        $doctor->load('user', 'specialization', 'department');
-        $schedules = Schedule::where('doctor_id', $doctor->id)->get();
-        
-        return view('appointments.create', compact('doctor', 'schedules'));
+        $specializations = Specialty::all();
+        $doctors = Doctor::with("user", "specialty")->get();
+
+        // Pre-select doctor if passed in query string
+        $selectedDoctor = null;
+        if ($request->has("doctor")) {
+            $selectedDoctor = Doctor::with("user", "specialty")->find($request->doctor);
+        }
+
+        return view("appointments.create", compact("specializations", "doctors", "selectedDoctor"));
     }
-    
+
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'doctor_id' => 'required|exists:doctors,id',
-            'appointment_date' => 'required|date|after:today',
-            'appointment_time' => 'required',
-            'reason' => 'nullable|string',
+        $request->validate([
+            "doctor_id" => "required|exists:doctors,id",
+            "appointment_date" => "required|date|after_or_equal:today",
+            "appointment_time" => "required|date_format:H:i",
+            "notes" => "nullable|string|max:500",
         ]);
-        
+
+        $patient = Auth::user()->patient;
+
+        // Check for doctor availability (more complex logic might be needed here)
+        $isAvailable = Appointment::where("doctor_id", $request->doctor_id)
+                                ->where("appointment_date", $request->appointment_date)
+                                ->where("appointment_time", $request->appointment_time)
+                                ->doesntExist();
+
+        if (!$isAvailable) {
+            throw ValidationException::withMessages([
+                "appointment_time" => "هذا الموعد غير متاح، يرجى اختيار وقت آخر.",
+            ]);
+        }
+
         Appointment::create([
-            'patient_id' => auth()->id(),
-            'doctor_id' => $validated['doctor_id'],
-            'appointment_date' => $validated['appointment_date'],
-            'appointment_time' => $validated['appointment_time'],
-            'reason' => $validated['reason'] ?? null,
-            'status' => 'pending',
+            "patient_id" => $patient->id,
+            "doctor_id" => $request->doctor_id,
+            "appointment_date" => $request->appointment_date,
+            "appointment_time" => $request->appointment_time,
+            "status" => "pending", // Or 'confirmed' based on business logic
+            "notes" => $request->notes,
         ]);
-        
-        return redirect()->route('patient.appointments')
-            ->with('success', 'تم حجز الموعد بنجاح');
+
+        return redirect()->route("patient.dashboard")->with("success", "تم حجز موعدك بنجاح!");
     }
 
-    public function search(Request $request)
+    public function show(Appointment $appointment)
     {
-        $query = \App\Models\Doctor::with(['user', 'specialization', 'department']);
-
-        if ($request->filled('search')) {
-            $query->whereHas('user', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%');
-            });
+        // Ensure the authenticated user can view this appointment
+        if (Auth::user()->isPatient() && Auth::user()->patient->id !== $appointment->patient_id) {
+            abort(403);
+        }
+        if (Auth::user()->isDoctor() && Auth::user()->doctor->id !== $appointment->doctor_id) {
+            abort(403);
         }
 
-        if ($request->filled('department_id')) {
-            $query->where('department_id', $request->department_id);
+        return view("appointments.show", compact("appointment"));
+    }
+
+    public function updateStatus(Request $request, Appointment $appointment)
+    {
+        $request->validate([
+            "status" => "required|in:pending,confirmed,cancelled,completed",
+        ]);
+
+        // Only doctor or admin can update status
+        if (!Auth::user()->isDoctor() && !Auth::user()->isAdmin()) {
+            abort(403);
         }
 
-        if ($request->filled('specialization_id')) {
-            $query->where('specialization_id', $request->specialization_id);
-        }
+        $appointment->update(["status" => $request->status]);
 
-        $doctors = $query->paginate(9);
-
-        $departments = \App\Models\Department::all();
-        $specializations = \App\Models\Specialization::all();
-
-        return view('appointments.search', compact('doctors', 'departments', 'specializations'));
+        return back()->with("success", "تم تحديث حالة الموعد بنجاح.");
     }
 }

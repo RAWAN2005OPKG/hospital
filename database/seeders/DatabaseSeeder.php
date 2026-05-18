@@ -13,13 +13,13 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // الأقسام
+// الأقسام
         $departments = [
-            ['name' => 'طب عام', 'description' => 'قسم الطب العام'],
-            ['name' => 'أسنان', 'description' => 'قسم طب الأسنان'],
-            ['name' => 'جراحة', 'description' => 'قسم الجراحة'],
-            ['name' => 'نساء وتوليد', 'description' => 'قسم النساء والتوليد'],
-            ['name' => 'أطفال', 'description' => 'قسم طب الأطفال'],
+            ['name' => 'طب عام', 'description' => 'قسم الطب العام', 'manager_name' => 'د. أحمد', 'phone' => '0112345678'],
+            ['name' => 'أسنان', 'description' => 'قسم طب الأسنان', 'manager_name' => 'د. محمد', 'phone' => '0112345679'],
+            ['name' => 'جراحة', 'description' => 'قسم الجراحة', 'manager_name' => 'د. خالد', 'phone' => '0112345680'],
+            ['name' => 'نساء وتوليد', 'description' => 'قسم النساء والتوليد', 'manager_name' => 'د. سارة', 'phone' => '0112345681'],
+            ['name' => 'أطفال', 'description' => 'قسم طب الأطفال', 'manager_name' => 'د. علي', 'phone' => '0112345682'],
         ];
 
         foreach ($departments as $dept) {

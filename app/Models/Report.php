@@ -5,20 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MedicalRecord extends Model
+class Report extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'patient_id',
         'doctor_id',
-        'diagnosis',
-        'prescription',
-        'attachments',
-    ];
-
-    protected $casts = [
-        'attachments' => 'array',
+        'report_file',
+        'report_type',
     ];
 
     public function patient()
@@ -29,5 +24,10 @@ class MedicalRecord extends Model
     public function doctor()
     {
         return $this->belongsTo(Doctor::class);
+    }
+
+    public function getReportFileUrlAttribute()
+    {
+        return $this->report_file ? asset('storage/' . $this->report_file) : null;
     }
 }

@@ -2,28 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactFormMail;
 
 class ContactController extends Controller
 {
     public function show()
     {
-        return view('contact');
+        return view("contact");
     }
-    
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string',
+            "name" => "required|string|max:255",
+            "email" => "required|email",
+            "subject" => "required|string|max:255",
+            "message" => "required|string",
         ]);
-        
-        Contact::create($validated);
-        
-        return redirect()->back()
-            ->with('success', 'تم إرسال رسالتك بنجاح. سنتواصل معك قريباً');
+
+        // Send email (you need to configure mail in .env and create ContactFormMail Mailable)
+         Mail::to(config('mail.from.address'))->send(new ContactFormMail($validated));
+
+        return redirect()
+            ->back()
+            ->with("success", "تم إرسال رسالتك بنجاح. سنتواصل معك قريباً.");
     }
 }
