@@ -1,12 +1,13 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-gray-800 dark:text-white leading-tight flex items-center">
-            <i class="fas fa-calendar-alt mr-3 text-orange-500"></i>
+@extends('layouts.app')
+
+@section('title', 'مواعيدي — MediFlow Gaza')
+
+@section('content')
+<div class="container" style="padding: 2rem 0;">
+        <h2 class="font-semibold text-2xl text-gray-800 leading-tight flex items-center mb-6">
+            <i class="fas fa-calendar-alt ms-3 text-orange-500"></i>
             مواعيدي
         </h2>
-    </x-slot>
-
-    <div class="space-y-8">
         {{-- Filters --}}
         <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 p-8">
             <div class="flex flex-wrap gap-4 items-center justify-between">
@@ -45,11 +46,11 @@
                                 <td class="px-8 py-6">
                                     <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                         <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center text-white font-bold shadow-lg">
-                                            {{ Str::upper(substr($appointment->patient->name ?? '', 0, 1)) }}
+                                            {{ Str::upper(substr(optional($appointment->patient->user)->name ?? $appointment->patient->name ?? '', 0, 1)) }}
                                         </div>
                                         <div class="text-right">
-                                            <div class="font-bold text-lg text-gray-900 dark:text-white">{{ $appointment->patient->name ?? 'غير محدد' }}</div>
-                                            <div class="text-sm text-gray-600 dark:text-gray-400">{{ $appointment->patient->phone ?? '' }}</div>
+                                            <div class="font-bold text-lg text-gray-900 dark:text-white">{{ optional($appointment->patient->user)->name ?? $appointment->patient->name ?? 'غير محدد' }}</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">{{ optional($appointment->patient->user)->phone ?? $appointment->patient->phone ?? '' }}</div>
                                         </div>
                                     </div>
                                 </td>
@@ -77,7 +78,7 @@
                                 </td>
                                 <td class="px-8 py-6">
                                     <div class="flex items-center space-x-3 rtl:space-x-reverse">
-                                        <a href="#" class="p-4 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-2xl hover:scale-110 transition-all shadow-md group-hover:bg-blue-200">
+                                        <a href="{{ route('doctor.appointment-detail', $appointment) }}" class="p-4 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-2xl hover:scale-110 transition-all shadow-md group-hover:bg-blue-200">
                                             <i class="fas fa-eye text-xl"></i>
                                         </a>
                                         <form method="POST" action="{{ route('doctor.update-appointment-status', $appointment->id) }}" class="inline">
@@ -121,4 +122,5 @@
             el.addEventListener('mouseleave', () => el.style.transform = 'scale(1)');
         });
     </script>
-</x-app-layout>
+</div>
+@endsection

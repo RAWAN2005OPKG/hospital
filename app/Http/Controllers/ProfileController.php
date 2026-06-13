@@ -63,14 +63,14 @@ class ProfileController extends Controller
 
         if ($user->isDoctor()) {
             $request->validate([
-                "specialty_id" => "required|exists:specialties,id",
+                'specialization_id' => 'required|exists:specializations,id',
                 "department_id" => "required|exists:departments,id",
                 "license_number" => ["required", "string", "max:255", Rule::unique("doctors", "license_number")->ignore($user->doctor->id)],
                 "experience_years" => "required|integer|min:0",
                 "bio" => "nullable|string",
                 "consultation_fee" => "required|numeric|min:0",
             ]);
-            $user->doctor->update($request->only(["specialty_id", "department_id", "license_number", "experience_years", "bio", "consultation_fee"]));
+            $user->doctor->update($request->only(['specialization_id', 'department_id', 'license_number', 'experience_years', 'bio', 'consultation_fee']));
         }
 
         return redirect()->route("profile.show")->with("success", "تم تحديث الملف الشخصي بنجاح.");

@@ -31,6 +31,26 @@ class Patient extends Model
         return $this->hasMany(Appointment::class);
     }
 
+    public function getNameAttribute(): ?string
+    {
+        return $this->user?->name;
+    }
+
+    public function getEmailAttribute(): ?string
+    {
+        return $this->user?->email;
+    }
+
+    public function getPhoneAttribute(): ?string
+    {
+        return $this->user?->phone;
+    }
+
+    public function getAddressAttribute(): ?string
+    {
+        return $this->user?->address;
+    }
+
     public function medicalRecords()
     {
         return $this->hasMany(MedicalRecord::class);

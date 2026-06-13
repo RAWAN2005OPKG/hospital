@@ -12,8 +12,11 @@ class MedicalRecord extends Model
     protected $fillable = [
         'patient_id',
         'doctor_id',
+        'appointment_id',
         'diagnosis',
+        'treatment',
         'prescription',
+        'notes',
         'attachments',
     ];
 
@@ -21,9 +24,17 @@ class MedicalRecord extends Model
         'attachments' => 'array',
     ];
 
+    /**
+     * Stored as users.id (see medical_records migration).
+     */
     public function patient()
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(User::class, 'patient_id');
+    }
+
+    public function appointment()
+    {
+        return $this->belongsTo(Appointment::class);
     }
 
     public function doctor()

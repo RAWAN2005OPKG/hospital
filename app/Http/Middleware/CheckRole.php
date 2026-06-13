@@ -13,7 +13,10 @@ class CheckRole
             return redirect()->route('login');
         }
         
-        if (!in_array(auth()->user()->role, $roles)) {
+        $role = auth()->user()->role;
+        $current = $role instanceof \BackedEnum ? $role->value : (string) $role;
+
+        if (! in_array($current, $roles, true)) {
             abort(403, 'غير مصرح لك بالوصول إلى هذه الصفحة');
         }
         

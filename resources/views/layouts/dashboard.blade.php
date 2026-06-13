@@ -366,16 +366,20 @@
                     <li><a href="{{ route('patient.appointments') }}" class="{{ request()->routeIs('patient.appointments') ? 'active' : '' }}"><i class="fa-solid fa-calendar"></i> مواعيدي</a></li>
                     <li><a href="{{ route('appointments.create') }}" class="{{ request()->routeIs('appointments.create') ? 'active' : '' }}"><i class="fa-solid fa-calendar-plus"></i> حجز موعد</a></li>
                     <li><a href="{{ route('patient.medical-records') }}" class="{{ request()->routeIs('patient.medical-records') ? 'active' : '' }}"><i class="fa-solid fa-file-medical"></i> السجلات الطبية</a></li>
-                    <li><a href="{{ route('patient.prescriptions') }}" class="{{ request()->routeIs('patient.prescriptions') ? 'active' : '' }}"><i class="fa-solid fa-prescription-bottle"></i> الوصفات</a></li>
-                    <li><a href="{{ route('chats.index') }}" class="{{ request()->routeIs('chats.index') ? 'active' : '' }}"><i class="fa-solid fa-comments"></i> المحادثات</a></li>
+                    {{-- prescriptions & chats routes may not be implemented yet --}}
+                    {{-- <li><a href="{{ route('patient.prescriptions') }}" class="{{ request()->routeIs('patient.prescriptions') ? 'active' : '' }}"><i class="fa-solid fa-prescription-bottle"></i> الوصفات</a></li> --}}
+                    {{-- <li><a href="{{ route('chats.index') }}" class="{{ request()->routeIs('chats.index') ? 'active' : '' }}"><i class="fa-solid fa-comments"></i> المحادثات</a></li> --}}
+
                     <li><a href="{{ route('profile.show') }}" class="{{ request()->routeIs('profile.show') ? 'active' : '' }}"><i class="fa-solid fa-user"></i> الملف الشخصي</a></li>
                 @elseif(Auth::user()->isDoctor())
                     <li><a href="{{ route('doctor.dashboard') }}" class="{{ request()->routeIs('doctor.dashboard') ? 'active' : '' }}"><i class="fa-solid fa-chart-line"></i> لوحتي</a></li>
                     <li><a href="{{ route('doctor.appointments') }}" class="{{ request()->routeIs('doctor.appointments') ? 'active' : '' }}"><i class="fa-solid fa-calendar"></i> المواعيد</a></li>
                     <li><a href="{{ route('doctor.patient-records') }}" class="{{ request()->routeIs('doctor.patient-records') ? 'active' : '' }}"><i class="fa-solid fa-users"></i> المرضى</a></li>
-                    <li><a href="{{ route('doctor.prescriptions') }}" class="{{ request()->routeIs('doctor.prescriptions') ? 'active' : '' }}"><i class="fa-solid fa-prescription-bottle"></i> الوصفات</a></li>
+                    {{-- prescriptions & chats routes may not be implemented yet --}}
+                    {{-- <li><a href="{{ route('doctor.prescriptions') }}" class="{{ request()->routeIs('doctor.prescriptions') ? 'active' : '' }}"><i class="fa-solid fa-prescription-bottle"></i> الوصفات</a></li> --}}
                     <li><a href="{{ route('doctor.schedule') }}" class="{{ request()->routeIs('doctor.schedule') ? 'active' : '' }}"><i class="fa-solid fa-clock"></i> الجدول الزمني</a></li>
-                    <li><a href="{{ route('chats.index') }}" class="{{ request()->routeIs('chats.index') ? 'active' : '' }}"><i class="fa-solid fa-comments"></i> المحادثات</a></li>
+                    {{-- <li><a href="{{ route('chats.index') }}" class="{{ request()->routeIs('chats.index') ? 'active' : '' }}"><i class="fa-solid fa-comments"></i> المحادثات</a></li> --}}
+
                     <li><a href="{{ route('profile.show') }}" class="{{ request()->routeIs('profile.show') ? 'active' : '' }}"><i class="fa-solid fa-user"></i> الملف الشخصي</a></li>
                 @elseif(Auth::user()->isAdmin())
                     <li><a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><i class="fa-solid fa-chart-line"></i> لوحة التحكم</a></li>

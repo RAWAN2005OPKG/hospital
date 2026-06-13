@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Enums\UserRoleEnum;
+use App\Models\Department;
 use App\Models\Doctor;
 use App\Models\Specialty;
-use App\Models\Department;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class DoctorController extends Controller
 {
@@ -24,9 +27,10 @@ class DoctorController extends Controller
     // Admin methods for managing doctors
     public function create()
     {
-        $specialties = Specialty::all();
+        $specializations = Specialty::all();
         $departments = Department::all();
-        return view("admin.doctors.create", compact("specialties", "departments"));
+
+        return view('admin.doctors.create', compact('specializations', 'departments'));
     }
 
     public function store(Request $request)
@@ -36,7 +40,7 @@ class DoctorController extends Controller
             "email" => "required|string|email|max:255|unique:users",
             "phone" => "required|string|max:20|unique:users",
             "password" => "required|string|min:8|confirmed",
-            "specialty_id" => "required|exists:specialties,id",
+            'specialization_id' => 'required|exists:specializations,id',
             "department_id" => "required|exists:departments,id",
             "license_number" => "required|string|max:255|unique:doctors",
             "experience_years" => "required|integer|min:0",
@@ -53,14 +57,14 @@ class DoctorController extends Controller
         ]);
 
         Doctor::create([
-            "user_id" => $user->id,
-            "specialty_id" => $request->specialty_id,
-            "department_id" => $request->department_id,
-            "license_number" => $request->license_number,
-            "experience_years" => $request->experience_years,
-            "bio" => $request->bio,
-            "consultation_fee" => $request->consultation_fee,
-            "availability_status" => true,
+            'user_id' => $user->id,
+            'specialization_id' => $request->specialization_id,
+            'department_id' => $request->department_id,
+            'license_number' => $request->license_number,
+            'experience_years' => $request->experience_years,
+            'bio' => $request->bio,
+            'consultation_fee' => $request->consultation_fee,
+            'availability_status' => true,
         ]);
 
         return redirect()->route("admin.doctors")->with("success", "تم إضافة الطبيب بنجاح.");
@@ -68,9 +72,10 @@ class DoctorController extends Controller
 
     public function edit(Doctor $doctor)
     {
-        $specialties = Specialty::all();
+        $specializations = Specialty::all();
         $departments = Department::all();
-        return view("admin.doctors.edit", compact("doctor", "specialties", "departments"));
+
+        return view('admin.doctors.edit', compact('doctor', 'specializations', 'departments'));
     }
 
     public function update(Request $request, Doctor $doctor)
@@ -79,7 +84,7 @@ class DoctorController extends Controller
             "name" => "required|string|max:255",
             "email" => "required|string|email|max:255|unique:users,email," . $doctor->user->id,
             "phone" => "required|string|max:20|unique:users,phone," . $doctor->user->id,
-            "specialty_id" => "required|exists:specialties,id",
+            'specialization_id' => 'required|exists:specializations,id',
             "department_id" => "required|exists:departments,id",
             "license_number" => "required|string|max:255|unique:doctors,license_number," . $doctor->id,
             "experience_years" => "required|integer|min:0",
@@ -95,13 +100,13 @@ class DoctorController extends Controller
         ]);
 
         $doctor->update([
-            "specialty_id" => $request->specialty_id,
-            "department_id" => $request->department_id,
-            "license_number" => $request->license_number,
-            "experience_years" => $request->experience_years,
-            "bio" => $request->bio,
-            "consultation_fee" => $request->consultation_fee,
-            "availability_status" => $request->availability_status ?? false,
+            'specialization_id' => $request->specialization_id,
+            'department_id' => $request->department_id,
+            'license_number' => $request->license_number,
+            'experience_years' => $request->experience_years,
+            'bio' => $request->bio,
+            'consultation_fee' => $request->consultation_fee,
+            'availability_status' => $request->availability_status ?? false,
         ]);
 
         return redirect()->route("admin.doctors")->with("success", "تم تحديث بيانات الطبيب بنجاح.");

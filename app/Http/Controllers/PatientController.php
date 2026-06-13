@@ -17,16 +17,23 @@ class PatientController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
-        $upcomingAppointments = Appointment::where("patient_id", $user->id)
-            ->where("appointment_date", ">=", today())
-            ->where("status", "pending")
+        $patient = $user->patient;
+        abort_unless($patient, 403);
+
+        $pid = $patient->id;
+
+        $upcomingAppointments = Appointment::where('patient_id', $pid)
+            ->where('appointment_date', '>=', today())
+            ->whereIn('status', ['pending', 'confirmed'])
             ->count();
-        $medicalRecordsCount = MedicalRecord::where("patient_id", $user->id)->count();
-        $totalAppointments = Appointment::where("patient_id", $user->id)->count();
-        $appointments = Appointment::where("patient_id", $user->id)
-            ->where("appointment_date", ">=", today())
-            ->with("doctor.user", "doctor.specialization")
-            ->orderBy("appointment_date")
+
+        $medicalRecordsCount = MedicalRecord::where('patient_id', $user->id)->count();
+        $totalAppointments = Appointment::where('patient_id', $pid)->count();
+        $appointments = Appointment::where('patient_id', $pid)
+            ->where('appointment_date', '>=', today())
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->with('doctor.user', 'doctor.specialization')
+            ->orderBy('appointment_date')
             ->take(5)
             ->get();
 
@@ -44,32 +51,37 @@ class PatientController extends Controller
     public function appointments()
     {
         $user = Auth::user();
-        $appointments = Appointment::where("patient_id", $user->id)
-            ->with("doctor.user", "doctor.specialization")
-            ->orderBy("appointment_date", "desc")
+        $patient = $user->patient;
+        abort_unless($patient, 403);
+
+        $appointments = Appointment::where('patient_id', $patient->id)
+            ->with('doctor.user', 'doctor.specialization')
+            ->orderBy('appointment_date', 'desc')
             ->paginate(15);
 
-        return view("patient.appointments", compact("appointments"));
+        return view('patient.appointments', compact('appointments'));
     }
 
     public function cancelAppointment(Appointment $appointment)
     {
-        if ($appointment->patient_id !== Auth::id()) {
+        $patient = Auth::user()->patient;
+        abort_unless($patient, 403);
+
+        if ((int) $appointment->patient_id !== (int) $patient->id) {
             abort(403);
         }
 
-        if ($appointment->status === "completed" || $appointment->status === "cancelled") {
+        if ($appointment->status === 'completed' || $appointment->status === 'cancelled') {
             return redirect()
                 ->back()
-                ->with("error", "لا يمكن إلغاء هذا الموعد");
+                ->with('error', 'لا يمكن إلغاء هذا الموعد');
         }
 
-    //    $appointment->update(["status" => "cancelled"]);
-
+        $appointment->update(['status' => 'cancelled']);
 
         return redirect()
             ->back()
-            ->with("success", "تم إلغاء الموعد بنجاح");
+            ->with('success', 'تم إلغاء الموعد بنجاح');
     }
 
     public function medicalRecords()

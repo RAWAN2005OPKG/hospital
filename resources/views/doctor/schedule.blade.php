@@ -1,10 +1,13 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-gray-800 dark:text-white leading-tight flex items-center">
-            <i class="fas fa-calendar-days mr-3 text-purple-500"></i>
+@extends('layouts.app')
+
+@section('title', 'جدول المواعيد — MediFlow Gaza')
+
+@section('content')
+<div class="container" style="padding: 2rem 0;">
+        <h2 class="font-semibold text-2xl text-gray-800 leading-tight flex items-center mb-6">
+            <i class="fas fa-calendar-days ms-3 text-purple-500"></i>
             جدولة المواعيد
         </h2>
-    </x-slot>
 
     <div class="max-w-6xl mx-auto space-y-8">
         {{-- Schedule Controls --}}
@@ -113,4 +116,5 @@
             // Load schedule for selected date
         });
     </script>
-</x-app-layout>
+</div>
+@endsection

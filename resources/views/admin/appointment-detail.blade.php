@@ -1,177 +1,129 @@
 @extends('layouts.app')
-
-@section('title', 'تفاصيل الموعد')
-
+@section('title','تفاصيل الموعد')
 @section('content')
-<div class="max-w-3xl mx-auto">
-    <!-- Appointment Info -->
-    <div class="card mb-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div>
-                <p class="text-sm text-gray-600 mb-1">المريض</p>
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">{{ $appointment->patient->name }}</h2>
-                
-                <div class="space-y-3">
-                    <div>
-                        <p class="text-sm text-gray-600">البريد الإلكتروني</p>
-                        <p class="font-semibold text-gray-800">{{ $appointment->patient->email }}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-600">الهاتف</p>
-                        <p class="font-semibold text-gray-800">{{ $appointment->patient->phone ?? 'لم يتم تحديده' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-600">العنوان</p>
-                        <p class="font-semibold text-gray-800">{{ $appointment->patient->address ?? 'لم يتم تحديده' }}</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div>
-                <p class="text-sm text-gray-600 mb-1">معلومات الموعد</p>
-                <div class="space-y-3">
-                    <div>
-                        <p class="text-sm text-gray-600">التاريخ</p>
-                        <p class="font-semibold text-gray-800">{{ $appointment->appointment_date->format('d/m/Y') }}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-600">الوقت</p>
-                        <p class="font-semibold text-gray-800">{{ $appointment->appointment_time }}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-600">السبب</p>
-                        <p class="font-semibold text-gray-800">{{ $appointment->reason ?? 'لم يتم تحديد السبب' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-600">الحالة</p>
-                        <span class="px-3 py-1 rounded-full text-sm font-bold
-                            @if($appointment->isPending()) bg-yellow-100 text-yellow-800
-                            @elseif($appointment->isConfirmed()) bg-blue-100 text-blue-800
-                            @elseif($appointment->isCompleted()) bg-green-100 text-green-800
-                            @else bg-red-100 text-red-800
-                            @endif
-                        ">
-                            @if($appointment->isPending()) قيد الانتظار
-                            @elseif($appointment->isConfirmed()) مؤكد
-                            @elseif($appointment->isCompleted()) مكتمل
-                            @else ملغى
-                            @endif
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{{ route('doctor.dashboard') }}">لوحتي</a> <i class="fa-solid fa-chevron-left fa-xs"></i> تفاصيل الموعد</div>
+        <h1>تفاصيل الموعد</h1>
     </div>
-    
-    <!-- Medical Record Form -->
-    @if(!$appointment->medicalRecord && !$appointment->isCancelled())
-    <div class="card mb-8">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">إضافة تقرير طبي</h2>
-        
-        <form action="{{ route('doctor.add-medical-record', $appointment->id) }}" method="POST">
-            @csrf
-            
-            <div class="mb-6">
-                <label class="block text-lg font-bold text-gray-800 mb-3">التشخيص</label>
-                <textarea name="diagnosis" class="input-field" rows="4" required placeholder="أدخل التشخيص..."></textarea>
-            </div>
-            
-            <div class="mb-6">
-                <label class="block text-lg font-bold text-gray-800 mb-3">العلاج</label>
-                <textarea name="treatment" class="input-field" rows="4" required placeholder="أدخل العلاج الموصى به..."></textarea>
-            </div>
-            
-            <div class="mb-6">
-                <label class="block text-lg font-bold text-gray-800 mb-3">الأدوية (اختياري)</label>
-                <textarea name="prescription" class="input-field" rows="3" placeholder="أدخل الأدوية الموصى بها..."></textarea>
-            </div>
-            
-            <div class="mb-6">
-                <label class="block text-lg font-bold text-gray-800 mb-3">ملاحظات إضافية (اختياري)</label>
-                <textarea name="notes" class="input-field" rows="3" placeholder="أدخل أي ملاحظات إضافية..."></textarea>
-            </div>
-            
-            <div class="flex gap-4">
-                <button type="submit" class="btn-primary flex-1">
-                    <i class="fas fa-save ml-2"></i>حفظ التقرير
-                </button>
-                <a href="{{ route('doctor.appointments') }}" class="btn-outline flex-1 text-center">
-                    <i class="fas fa-times-circle ml-2"></i>إلغاء
-                </a>
-            </div>
-        </form>
-    </div>
-    @elseif($appointment->medicalRecord)
-    <div class="card mb-8">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">التقرير الطبي</h2>
-        
-        <div class="space-y-6">
-            <div>
-                <p class="text-sm text-gray-600 mb-2">التشخيص</p>
-                <p class="text-gray-800 bg-blue-50 p-4 rounded-lg">{{ $appointment->medicalRecord->diagnosis }}</p>
-            </div>
-            
-            <div>
-                <p class="text-sm text-gray-600 mb-2">العلاج</p>
-                <p class="text-gray-800 bg-blue-50 p-4 rounded-lg">{{ $appointment->medicalRecord->treatment }}</p>
-            </div>
-            
-            @if($appointment->medicalRecord->prescription)
-            <div>
-                <p class="text-sm text-gray-600 mb-2">الأدوية</p>
-                <p class="text-gray-800 bg-blue-50 p-4 rounded-lg">{{ $appointment->medicalRecord->prescription }}</p>
-            </div>
-            @endif
-            
-            @if($appointment->medicalRecord->notes)
-            <div>
-                <p class="text-sm text-gray-600 mb-2">ملاحظات</p>
-                <p class="text-gray-800 bg-blue-50 p-4 rounded-lg">{{ $appointment->medicalRecord->notes }}</p>
-            </div>
-            @endif
-        </div>
-    </div>
-    @endif
-    
-    <!-- Action Buttons -->
-    @if($appointment->isPending())
-    <div class="flex gap-4">
-        <form action="{{ route('doctor.confirm-appointment', $appointment->id) }}" method="POST" class="flex-1">
-            @csrf
-            <button type="submit" class="btn-secondary w-full">
-                <i class="fas fa-check-circle ml-2"></i>تأكيد الموعد
-            </button>
-        </form>
-        
-        <form action="{{ route('doctor.cancel-appointment', $appointment->id) }}" method="POST" class="flex-1" id="cancelForm">
-            @csrf
-            <button type="button" class="btn-outline w-full" onclick="document.getElementById('cancelModal').style.display='block'">
-                <i class="fas fa-times-circle ml-2"></i>إلغاء الموعد
-            </button>
-        </form>
-    </div>
-    @endif
 </div>
 
-<!-- Cancel Modal -->
-<div id="cancelModal" style="display:none" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="card max-w-md">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">إلغاء الموعد</h3>
-        <p class="text-gray-600 mb-6">هل تريد فعلاً إلغاء هذا الموعد؟</p>
-        
-        <form action="{{ route('doctor.cancel-appointment', $appointment->id) }}" method="POST">
-            @csrf
-            
-            <div class="mb-6">
-                <label class="block text-sm font-bold text-gray-800 mb-2">السبب</label>
-                <textarea name="reason" class="input-field" rows="3" required placeholder="اشرح سبب الإلغاء..."></textarea>
+<section class="section-sm"><div class="container">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start">
+
+    {{-- APPOINTMENT INFO --}}
+    <div>
+        <div class="card" style="margin-bottom:1.25rem">
+            <div class="card-header">
+                <span><i class="fa-solid fa-calendar-check" style="color:var(--blue);margin-left:.4rem"></i>معلومات الموعد</span>
+                <span class="badge {{ ['pending'=>'badge-yellow','confirmed'=>'badge-blue','completed'=>'badge-green','cancelled'=>'badge-red'][$appointment->status] ?? 'badge-gray' }}">
+                    {{ ['pending'=>'قيد الانتظار','confirmed'=>'مؤكد','completed'=>'مكتمل','cancelled'=>'ملغي'][$appointment->status] ?? $appointment->status }}
+                </span>
             </div>
-            
-            <div class="flex gap-4">
-                <button type="submit" class="btn-primary flex-1">تأكيد الإلغاء</button>
-                <button type="button" class="btn-outline flex-1" onclick="document.getElementById('cancelModal').style.display='none'">إلغاء</button>
+            <div class="card-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+                    @foreach([['المريض',$appointment->patient->name??'-'],['التاريخ',$appointment->appointment_date->format('d/m/Y')],['الوقت',$appointment->appointment_time],['السبب',$appointment->reason??'—']] as [$lbl,$val])
+                    <div style="background:var(--bg);border-radius:10px;padding:.9rem">
+                        <div style="font-size:.73rem;color:var(--muted);margin-bottom:.2rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em">{{ $lbl }}</div>
+                        <div style="font-weight:700;font-size:.9rem">{{ $val }}</div>
+                    </div>
+                    @endforeach
+                </div>
             </div>
-        </form>
+        </div>
+
+        {{-- ACTIONS --}}
+        @if($appointment->status === 'pending')
+        <div class="card">
+            <div class="card-header" style="font-size:.88rem">إجراءات سريعة</div>
+            <div class="card-body" style="display:flex;gap:.75rem">
+                <form method="POST" action="{{ route('doctor.confirm-appointment',$appointment) }}" style="flex:1">
+                    @csrf @method('PATCH')
+                    <button type="submit" class="btn btn-success" style="width:100%;justify-content:center">
+                        <i class="fa-solid fa-check"></i> تأكيد الموعد
+                    </button>
+                </form>
+                <form method="POST" action="{{ route('doctor.cancel-appointment',$appointment) }}" style="flex:1" onsubmit="return confirm('إلغاء هذا الموعد؟')">
+                    @csrf @method('PATCH')
+                    <button type="submit" class="btn btn-danger" style="width:100%;justify-content:center">
+                        <i class="fa-solid fa-xmark"></i> إلغاء
+                    </button>
+                </form>
+            </div>
+        </div>
+        @endif
+
+        {{-- EXISTING RECORD --}}
+        @if($appointment->medicalRecord)
+        <div class="card" style="margin-top:1.25rem">
+            <div class="card-header">
+                <span><i class="fa-solid fa-file-medical" style="color:#059669;margin-left:.4rem"></i>السجل الطبي</span>
+                <span class="badge badge-green">مُضاف</span>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="form-label">التشخيص</label>
+                    <div style="background:var(--bg);border-radius:9px;padding:.85rem;font-size:.88rem">{{ $appointment->medicalRecord->diagnosis }}</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">العلاج</label>
+                    <div style="background:var(--bg);border-radius:9px;padding:.85rem;font-size:.88rem">{{ $appointment->medicalRecord->treatment }}</div>
+                </div>
+                @if($appointment->medicalRecord->notes)
+                <div class="form-group">
+                    <label class="form-label">ملاحظات</label>
+                    <div style="background:var(--bg);border-radius:9px;padding:.85rem;font-size:.88rem">{{ $appointment->medicalRecord->notes }}</div>
+                </div>
+                @endif
+            </div>
+        </div>
+        @endif
     </div>
+
+    {{-- ADD MEDICAL RECORD --}}
+    @if($appointment->status !== 'cancelled' && !$appointment->medicalRecord)
+    <div class="card">
+        <div class="card-header">
+            <span><i class="fa-solid fa-plus" style="color:var(--blue);margin-left:.4rem"></i>إضافة سجل طبي</span>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ route('doctor.add-medical-record',$appointment) }}">
+            @csrf
+            <div class="form-group">
+                <label class="form-label">التشخيص <span style="color:#ef4444">*</span></label>
+                <textarea name="diagnosis" class="form-control @error('diagnosis') is-invalid @enderror"
+                    rows="3" required placeholder="اكتب التشخيص الطبي...">{{ old('diagnosis') }}</textarea>
+                @error('diagnosis')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="form-group">
+                <label class="form-label">العلاج الموصوف <span style="color:#ef4444">*</span></label>
+                <textarea name="treatment" class="form-control @error('treatment') is-invalid @enderror"
+                    rows="3" required placeholder="اكتب العلاج والأدوية الموصوفة...">{{ old('treatment') }}</textarea>
+                @error('treatment')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="form-group">
+                <label class="form-label">ملاحظات إضافية</label>
+                <textarea name="notes" class="form-control" rows="2"
+                    placeholder="أي ملاحظات إضافية...">{{ old('notes') }}</textarea>
+            </div>
+            <div style="background:#fff3cd;border-radius:10px;padding:.8rem 1rem;margin-bottom:1.25rem;font-size:.83rem;color:#856404;display:flex;gap:.5rem">
+                <i class="fa-solid fa-triangle-exclamation" style="flex-shrink:0;margin-top:.1rem"></i>
+                <span>بإضافة السجل الطبي سيتم تغيير حالة الموعد إلى <strong>مكتمل</strong> تلقائياً.</span>
+            </div>
+            <button type="submit" class="btn btn-success" style="width:100%;justify-content:center;padding:.8rem">
+                <i class="fa-solid fa-floppy-disk"></i> حفظ السجل الطبي
+            </button>
+            </form>
+        </div>
+    </div>
+    @elseif($appointment->status === 'cancelled')
+    <div style="text-align:center;padding:3rem;color:var(--muted)">
+        <i class="fa-solid fa-ban" style="font-size:3rem;margin-bottom:1rem;display:block;opacity:.2"></i>
+        الموعد ملغي — لا يمكن إضافة سجل طبي.
+    </div>
+    @endif
+
 </div>
+</div></section>
 @endsection

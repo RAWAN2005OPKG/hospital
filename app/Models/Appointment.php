@@ -16,11 +16,11 @@ class Appointment extends Model
         'appointment_time',
         'status',
         'notes',
+        'reason',
     ];
 
     protected $casts = [
         'appointment_date' => 'date',
-        'appointment_time' => 'datetime',
     ];
 
     public function patient()
@@ -31,5 +31,30 @@ class Appointment extends Model
     public function doctor()
     {
         return $this->belongsTo(Doctor::class);
+    }
+
+    public function medicalRecord()
+    {
+        return $this->hasOne(MedicalRecord::class);
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
+    }
+
+    public function isConfirmed(): bool
+    {
+        return $this->status === 'confirmed';
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->status === 'completed';
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->status === 'cancelled';
     }
 }

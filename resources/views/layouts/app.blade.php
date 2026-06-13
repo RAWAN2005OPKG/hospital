@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'صحتي | Sehati - منصة صحية متكاملة')</title>
+    <title>@yield('title', config('app.name').' | MediFlow Gaza')</title>
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
@@ -12,10 +12,10 @@
     
     <style>
         :root {
-            --primary: #0066cc;
-            --primary-light: #e0f2f7;
-            --primary-dark: #004a99;
-            --secondary: #00bcd4;
+            --primary: #0077B6;
+            --primary-light: #e0f4ff;
+            --primary-dark: #005f92;
+            --secondary: #00B4D8;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
@@ -45,7 +45,7 @@
 
         html, body {
             font-family: 'Cairo', 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f0f7ff 0%, #f5f7fa 100%);
+            background: linear-gradient(165deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%);
             color: var(--gray-700);
             line-height: 1.6;
             min-height: 100vh;
@@ -117,7 +117,7 @@
             justify-content: center;
             color: #fff;
             font-size: 1.1rem;
-            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 119, 182, 0.28);
         }
 
         .navbar-nav {
@@ -177,7 +177,7 @@
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: #fff;
-            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 119, 182, 0.28);
         }
 
         .btn-primary:hover {
@@ -194,7 +194,7 @@
         .btn-outline:hover {
             background: var(--primary);
             color: #fff;
-            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 119, 182, 0.28);
         }
 
         .btn-sm {
@@ -404,7 +404,7 @@
     <nav class="navbar" id="navbar">
         <a href="{{ route('home') }}" class="navbar-brand">
             <i class="fa-solid fa-heart-pulse"></i>
-            <span>صحتي</span>
+            <span>MediFlow Gaza</span>
         </a>
         
         <ul class="navbar-nav">
@@ -414,7 +414,9 @@
             <li><a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">تواصل معنا</a></li>
         </ul>
         
-        <div class="navbar-actions">
+        <div class="navbar-actions" style="display:flex;align-items:center;gap:.75rem;">
+            <a href="{{ route('locale.switch', 'ar') }}" class="btn btn-outline btn-sm" style="padding:.35rem .75rem;">عربي</a>
+            <a href="{{ route('locale.switch', 'en') }}" class="btn btn-outline btn-sm" style="padding:.35rem .75rem;">EN</a>
             @auth
                 <div class="dropdown">
                     <button class="btn btn-outline btn-sm" type="button" id="userDropdown" data-bs-toggle="dropdown">
@@ -425,11 +427,12 @@
                         @if(Auth::user()->isPatient())
                             <li><a class="dropdown-item" href="{{ route('patient.dashboard') }}">لوحة المريض</a></li>
                             <li><a class="dropdown-item" href="{{ route('patient.appointments') }}">مواعيدي</a></li>
+                            <li><a class="dropdown-item" href="{{ route('patient.ai.symptoms') }}">AI — توجيه الأعراض</a></li>
                         @elseif(Auth::user()->isDoctor())
                             <li><a class="dropdown-item" href="{{ route('doctor.dashboard') }}">لوحة الطبيب</a></li>
                             <li><a class="dropdown-item" href="{{ route('doctor.appointments') }}">المواعيد</a></li>
-                        @elseif(Auth::user()->isAdmin())
-                            <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">لوحة الإدارة</a></li>
+                        @elseif(Auth::user()->isStaff())
+                            <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">{{ app()->getLocale() === 'ar' ? 'لوحة الإدارة' : 'Admin dashboard' }}</a></li>
                         @endif
                         <li><a class="dropdown-item" href="{{ route('profile.show') }}">الملف الشخصي</a></li>
                         <li><hr class="dropdown-divider"></li>
@@ -478,7 +481,7 @@
             <div class="footer-grid">
                 <div>
                     <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
-                        <div style="width:45px;height:45px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;box-shadow:0 8px 20px rgba(0, 102, 204, 0.3)">
+                        <div style="width:45px;height:45px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;box-shadow:0 8px 20px rgba(0, 119, 182, 0.28)">
                             <i class="fa-solid fa-heart-pulse"></i>
                         </div>
                         <span style="color:#fff;font-size:1.2rem;font-family:'Poppins',sans-serif;font-weight:800;background:linear-gradient(135deg,#fff,rgba(255,255,255,0.8));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">صحتي</span>

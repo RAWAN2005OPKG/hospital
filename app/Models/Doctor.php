@@ -11,13 +11,14 @@ class Doctor extends Model
 
     protected $fillable = [
         'user_id',
-        'specialty_id',
+        'specialization_id',
         'license_number',
         'experience_years',
         'bio',
         'availability_status',
         'consultation_fee',
         'department_id',
+        'photo',
     ];
 
     protected $casts = [
@@ -31,13 +32,12 @@ class Doctor extends Model
 
     public function specialty()
     {
-        return $this->belongsTo(Specialty::class);
+        return $this->belongsTo(Specialty::class, 'specialization_id');
     }
 
-    // Alias for legacy/typo usage in some controllers (e.g. with('specialization'))
     public function specialization()
     {
-        return $this->belongsTo(Specialty::class, 'specialty_id');
+        return $this->specialty();
     }
 
 

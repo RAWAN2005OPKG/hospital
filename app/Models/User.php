@@ -82,6 +82,16 @@ class User extends Authenticatable
         return $this->role === UserRoleEnum::Admin;
     }
 
+    public function isReceptionist()
+    {
+        return $this->role === UserRoleEnum::Receptionist;
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->role instanceof UserRoleEnum && $this->role->isStaff();
+    }
+
     public function isDoctor()
     {
         return $this->role === UserRoleEnum::Doctor;

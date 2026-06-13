@@ -14,10 +14,12 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['patient', 'doctor', 'admin'])->default('patient');
+            $table->enum('role', ['patient', 'doctor', 'admin', 'receptionist'])->default('patient');
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
             $table->rememberToken();
+            $table->string('login_otp', 10)->nullable();
+            $table->timestamp('login_otp_expires_at')->nullable();
             $table->timestamps();
         });
     }

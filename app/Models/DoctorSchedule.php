@@ -9,11 +9,15 @@ class DoctorSchedule extends Model
 {
     use HasFactory;
 
+    protected $table = 'schedules';
+
     protected $fillable = [
         'doctor_id',
         'day_of_week',
         'start_time',
         'end_time',
+        'break_start',
+        'break_end',
         'is_available',
     ];
 
