@@ -81,10 +81,13 @@
                     </h3>
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        @if($user->isPatient())
                         <div style="background: #fff5f5; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #fee2e2;">
                             <p style="font-size: 0.85rem; color: #991b1b; font-weight: bold; margin: 0 0 0.25rem 0;">فصيلة الدم</p>
                             <p style="font-size: 1.5rem; font-weight: 900; color: #dc2626; margin: 0;">{{ $user->patient->blood_type ?? 'غير محدد' }}</p>
                         </div>
+                        @endif
+                        @if($user->isPatient())
                         <div style="background: #f0fdf4; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #dcfce7;">
                             <p style="font-size: 0.85rem; color: #166534; font-weight: bold; margin: 0 0 0.25rem 0;">تاريخ الميلاد</p>
                             <p style="font-size: 1.1rem; font-weight: 800; color: #15803d; margin: 0;">{{ $user->patient->birth_date ? \Carbon\Carbon::parse($user->patient->birth_date)->format('Y/m/d') : 'غير مسجل' }}</p>
@@ -93,10 +96,27 @@
                             <p style="font-size: 0.85rem; color: #854d0e; font-weight: bold; margin: 0 0 0.25rem 0;">الجنس</p>
                             <p style="font-size: 1.1rem; font-weight: 800; color: #a16207; margin: 0;">{{ $user->patient->gender === 'male' ? 'ذكر' : ($user->patient->gender === 'female' ? 'أنثى' : 'غير محدد') }}</p>
                         </div>
+                        @else
+                        <div style="background: #f0fdf4; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #dcfce7;">
+                            <p style="font-size: 0.85rem; color: #166534; font-weight: bold; margin: 0 0 0.25rem 0;">القسم</p>
+                            <p style="font-size: 1.1rem; font-weight: 800; color: #15803d; margin: 0;">{{ $user->doctor->department->name ?? 'عام' }}</p>
+                        </div>
+                        <div style="background: #fefce8; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #fef08a;">
+                            <p style="font-size: 0.85rem; color: #854d0e; font-weight: bold; margin: 0 0 0.25rem 0;">التخصص</p>
+                            <p style="font-size: 1.1rem; font-weight: 800; color: #a16207; margin: 0;">{{ $user->doctor->specialization->name ?? 'عام' }}</p>
+                        </div>
+                        @endif
+                        @if($user->isPatient())
                         <div style="background: #f5f3ff; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #ddd6fe;">
                             <p style="font-size: 0.85rem; color: #5b21b6; font-weight: bold; margin: 0 0 0.25rem 0;">جهة الطوارئ</p>
                             <p style="font-size: 1rem; font-weight: 800; color: #7c3aed; margin: 0;">{{ $user->patient->emergency_contact ?? 'غير مسجل' }}</p>
                         </div>
+                        @else
+                        <div style="background: #f5f3ff; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #ddd6fe;">
+                            <p style="font-size: 0.85rem; color: #5b21b6; font-weight: bold; margin: 0 0 0.25rem 0;">سنوات الخبرة</p>
+                            <p style="font-size: 1rem; font-weight: 800; color: #7c3aed; margin: 0;">{{ $user->doctor->experience_years ?? 0 }} سنوات</p>
+                        </div>
+                        @endif
                     </div>
                 </div>
 

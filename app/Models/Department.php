@@ -14,6 +14,7 @@ class Department extends Model
         'description',
         'image',
         'manager_name',
+        'phone',
     ];
 
     public function doctors()

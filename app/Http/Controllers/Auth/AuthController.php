@@ -83,7 +83,8 @@ class AuthController extends Controller
                 $department = Department::create([
                     'name' => 'قسم عام',
                     'description' => 'قسم افتراضي للأطباء الجدد',
-                    'manager_name' => 'مدير النظام'
+                    'manager_name' => 'مدير النظام',
+                    'phone' => '0590000000' // إضافة رقم هاتف افتراضي مطلوب
                 ]);
             }
             
