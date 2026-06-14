@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Enums\UserRoleEnum;
 use App\Http\Controllers\Controller;
+use App\Models\Department;
 use App\Models\Doctor;
 use App\Models\Patient;
+use App\Models\Specialization;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -72,15 +74,36 @@ class AuthController extends Controller
                 'user_id' => $user->id,
             ]);
         } elseif ($request->role === UserRoleEnum::Doctor->value) {
+            // الحصول على أول قسم وتخصص متاح، أو إنشاء قيم افتراضية
+            $department = Department::first();
+            $specialization = Specialization::first();
+            
+            // إذا لم توجد أقسام، سيتم إنشاء قسم افتراضي
+            if (!$department) {
+                $department = Department::create([
+                    'name' => 'قسم عام',
+                    'description' => 'قسم افتراضي للأطباء الجدد',
+                    'manager_name' => 'مدير النظام'
+                ]);
+            }
+            
+            // إذا لم توجد تخصصات، سيتم إنشاء تخصص افتراضي
+            if (!$specialization) {
+                $specialization = Specialization::create([
+                    'name' => 'تخصص عام',
+                    'description' => 'تخصص افتراضي للأطباء الجدد'
+                ]);
+            }
+            
             Doctor::create([
                 'user_id' => $user->id,
-                'specialization_id' => 1,
-                'license_number' => 'TEMP-'.$user->id,
+                'specialization_id' => $specialization->id,
+                'license_number' => 'TEMP-' . $user->id,
                 'experience_years' => 0,
                 'bio' => '',
                 'availability_status' => true,
                 'consultation_fee' => 0,
-                'department_id' => 1,
+                'department_id' => $department->id,
             ]);
         }
 

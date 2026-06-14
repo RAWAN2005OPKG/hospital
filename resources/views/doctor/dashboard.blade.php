@@ -1,89 +1,130 @@
 @extends('layouts.app')
-@section('title','لوحة الدكتور')
+@section('title', 'لوحة تحكم الطبيب')
+
 @section('content')
-
-<div class="page-header">
-    <div class="container">
-        <h1>مرحباً، {{ auth()->user()->name }} 👨‍⚕️</h1>
-        <p>لوحة تحكم الدكتور — {{ $doctor->specialization->name ?? '' }}</p>
-    </div>
-</div>
-
-<section class="section-sm"><div class="container">
-
-{{-- STATS --}}
-<div class="grid-4" style="margin-bottom:2rem">
-    <div class="stat-card"><div class="stat-icon si-blue"><i class="fa-solid fa-calendar-check"></i></div><div><div class="stat-num">{{ $totalAppointments }}</div><div class="stat-lbl">إجمالي المواعيد</div></div></div>
-    <div class="stat-card"><div class="stat-icon si-orange"><i class="fa-solid fa-clock"></i></div><div><div class="stat-num">{{ $todayAppointments }}</div><div class="stat-lbl">مواعيد اليوم</div></div></div>
-    <div class="stat-card"><div class="stat-icon si-green"><i class="fa-solid fa-circle-check"></i></div><div><div class="stat-num">{{ $completedAppointments }}</div><div class="stat-lbl">مواعيد مكتملة</div></div></div>
-    <div class="stat-card"><div class="stat-icon si-purple"><i class="fa-solid fa-hourglass-half"></i></div><div><div class="stat-num">{{ $pendingAppointments }}</div><div class="stat-lbl">قيد الانتظار</div></div></div>
-</div>
-
-<div style="display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start">
-
-    {{-- TODAY APPOINTMENTS --}}
-    <div class="card">
-        <div class="card-header">
-            <span><i class="fa-solid fa-calendar-day" style="color:var(--blue);margin-left:.4rem"></i>مواعيد اليوم</span>
-            <a href="{{ route('doctor.appointments') }}" class="btn btn-outline btn-sm">عرض الكل</a>
+<div style="padding-top: 80px; min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); padding: 3rem 1.5rem;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        
+        <!-- Welcome Header -->
+        <div style="margin-bottom: 3rem;">
+            <h1 style="font-size: 2.5rem; font-weight: 900; color: #111827; margin: 0 0 0.5rem 0;">مرحباً بك، {{ auth()->user()->name }}</h1>
+            <p style="font-size: 1.1rem; color: #6b7280; margin: 0;">لوحة تحكم الطبيب - إدارة المواعيد والمرضى</p>
         </div>
-        <div class="card-body" style="padding:0">
-        @forelse($todayAppointmentsList as $apt)
-        <div style="display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;border-bottom:1px solid var(--border)">
-            <div style="width:44px;height:44px;border-radius:50%;background:var(--blue-lt);color:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;flex-shrink:0">
-                {{ mb_substr($apt->patient->name ?? 'م',0,1) }}
-            </div>
-            <div style="flex:1">
-                <div style="font-weight:700;font-size:.9rem">{{ $apt->patient->name ?? '-' }}</div>
-                <div style="font-size:.78rem;color:var(--muted)">{{ $apt->appointment_time }}</div>
-                @if($apt->reason)<div style="font-size:.78rem;color:var(--muted);margin-top:.15rem">{{ Str::limit($apt->reason,40) }}</div>@endif
-            </div>
-            <div style="display:flex;flex-direction:column;gap:.35rem">
-                <span class="badge {{ ['pending'=>'badge-yellow','confirmed'=>'badge-blue','completed'=>'badge-green','cancelled'=>'badge-red'][$apt->status] ?? 'badge-gray' }}">
-                    {{ ['pending'=>'انتظار','confirmed'=>'مؤكد','completed'=>'مكتمل','cancelled'=>'ملغي'][$apt->status] ?? $apt->status }}
-                </span>
-                <a href="{{ route('doctor.appointment-detail',$apt) }}" class="btn btn-outline btn-sm" style="font-size:.75rem;padding:.28rem .6rem">تفاصيل</a>
-            </div>
-        </div>
-        @empty
-        <div style="text-align:center;padding:3rem;color:var(--muted)">
-            <i class="fa-solid fa-calendar-xmark" style="font-size:2.5rem;margin-bottom:.75rem;display:block;opacity:.2"></i>
-            لا توجد مواعيد اليوم
-        </div>
-        @endforelse
-        </div>
-    </div>
 
-    {{-- SCHEDULE SIDEBAR --}}
-    <div>
-        <div class="card" style="margin-bottom:1.25rem">
-            <div class="card-header" style="font-size:.88rem">
-                <span><i class="fa-solid fa-clock" style="color:var(--blue);margin-left:.4rem"></i>جدول الدوام</span>
-                <a href="{{ route('doctor.schedule') }}" class="btn btn-outline btn-sm">تعديل</a>
-            </div>
-            <div class="card-body" style="padding:.75rem 1rem">
-                @php $dayAr=['saturday'=>'السبت','sunday'=>'الأحد','monday'=>'الاثنين','tuesday'=>'الثلاثاء','wednesday'=>'الأربعاء','thursday'=>'الخميس','friday'=>'الجمعة']; @endphp
-                @forelse($schedules as $s)
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--border);font-size:.84rem">
-                    <span style="font-weight:700">{{ $dayAr[$s->day_of_week] ?? $s->day_of_week }}</span>
-                    <span style="color:var(--muted)">{{ $s->start_time }}—{{ $s->end_time }}</span>
+        <!-- Stats Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+            
+            <!-- Total Appointments -->
+            <div style="background: white; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 2rem; border: 1px solid #e5e7eb; transition: all 0.3s ease;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <p style="font-size: 0.9rem; color: #6b7280; font-weight: 600; margin: 0 0 0.5rem 0;">إجمالي المواعيد</p>
+                        <p style="font-size: 2.5rem; font-weight: 900; color: #3b82f6; margin: 0;">{{ $totalAppointments ?? 0 }}</p>
+                    </div>
+                    <div style="width: 60px; height: 60px; background: #dbeafe; border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: #3b82f6; font-size: 1.8rem;">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Today Appointments -->
+            <div style="background: white; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 2rem; border: 1px solid #e5e7eb; transition: all 0.3s ease;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <p style="font-size: 0.9rem; color: #6b7280; font-weight: 600; margin: 0 0 0.5rem 0;">مواعيد اليوم</p>
+                        <p style="font-size: 2.5rem; font-weight: 900; color: #f59e0b; margin: 0;">{{ $todayAppointments ?? 0 }}</p>
+                    </div>
+                    <div style="width: 60px; height: 60px; background: #fef3c7; border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: #f59e0b; font-size: 1.8rem;">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Appointments -->
+            <div style="background: white; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 2rem; border: 1px solid #e5e7eb; transition: all 0.3s ease;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <p style="font-size: 0.9rem; color: #6b7280; font-weight: 600; margin: 0 0 0.5rem 0;">المواعيد المكتملة</p>
+                        <p style="font-size: 2.5rem; font-weight: 900; color: #10b981; margin: 0;">{{ $completedAppointments ?? 0 }}</p>
+                    </div>
+                    <div style="width: 60px; height: 60px; background: #d1fae5; border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: #10b981; font-size: 1.8rem;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Appointments -->
+            <div style="background: white; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 2rem; border: 1px solid #e5e7eb; transition: all 0.3s ease;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <p style="font-size: 0.9rem; color: #6b7280; font-weight: 600; margin: 0 0 0.5rem 0;">المواعيد المعلقة</p>
+                        <p style="font-size: 2.5rem; font-weight: 900; color: #8b5cf6; margin: 0;">{{ $pendingAppointments ?? 0 }}</p>
+                    </div>
+                    <div style="width: 60px; height: 60px; background: #ede9fe; border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: #8b5cf6; font-size: 1.8rem;">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 3rem;">
+            <a href="{{ route('doctor.appointments') }}" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 1.5rem; border-radius: 1.25rem; text-decoration: none; text-align: center; font-weight: bold; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+                <i class="fas fa-calendar-alt"></i>
+                <span>عرض المواعيد</span>
+            </a>
+            <a href="{{ route('doctor.patient-records') }}" style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1.5rem; border-radius: 1.25rem; text-decoration: none; text-align: center; font-weight: bold; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+                <i class="fas fa-file-medical"></i>
+                <span>سجلات المرضى</span>
+            </a>
+            <a href="{{ route('doctor.schedule') }}" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 1.5rem; border-radius: 1.25rem; text-decoration: none; text-align: center; font-weight: bold; box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+                <i class="fas fa-clock"></i>
+                <span>جدول المواعيد</span>
+            </a>
+            <a href="{{ route('profile.show') }}" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 1.5rem; border-radius: 1.25rem; text-decoration: none; text-align: center; font-weight: bold; box-shadow: 0 10px 25px rgba(245, 158, 11, 0.2); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+                <i class="fas fa-user-circle"></i>
+                <span>ملفي الشخصي</span>
+            </a>
+        </div>
+
+        <!-- Recent Appointments -->
+        <div style="background: white; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 2rem; border: 1px solid #e5e7eb;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-list" style="color: #3b82f6;"></i>
+                    مواعيد اليوم
+                </h2>
+                <a href="{{ route('doctor.appointments') }}" style="color: #3b82f6; font-weight: bold; text-decoration: none; font-size: 0.9rem;">عرض الكل <i class="fas fa-chevron-left" style="margin-left: 0.25rem;"></i></a>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                @forelse($todayAppointmentsList ?? [] as $appointment)
+                    <div style="padding: 1.25rem; background: #f9fafb; border-radius: 1rem; display: flex; justify-content: space-between; align-items: center; border: 1px solid #f3f4f6; transition: all 0.3s ease;">
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <div style="width: 45px; height: 45px; background: white; border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: #3b82f6; border: 1px solid #e5e7eb; font-weight: bold;">
+                                {{ mb_substr($appointment->patient->user->name ?? 'م', 0, 1) }}
+                            </div>
+                            <div>
+                                <p style="font-weight: bold; color: #111827; margin: 0;">{{ $appointment->patient->user->name ?? 'مريض' }}</p>
+                                <p style="font-size: 0.8rem; color: #6b7280; margin: 0;">{{ $appointment->appointment_date->format('H:i') }}</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.75rem; align-items: center;">
+                            <span style="padding: 0.4rem 0.8rem; background: {{ $appointment->status === 'confirmed' ? '#d1fae5' : ($appointment->status === 'pending' ? '#fef3c7' : '#fee2e2') }}; color: {{ $appointment->status === 'confirmed' ? '#10b981' : ($appointment->status === 'pending' ? '#f59e0b' : '#ef4444') }}; border-radius: 0.75rem; font-size: 0.8rem; font-weight: 600;">
+                                {{ $appointment->status === 'confirmed' ? 'مؤكد' : ($appointment->status === 'pending' ? 'معلق' : 'ملغي') }}
+                            </span>
+                            <a href="{{ route('doctor.appointment-detail', $appointment) }}" style="padding: 0.4rem 0.8rem; background: white; color: #3b82f6; border: 1px solid #e5e7eb; border-radius: 0.75rem; font-size: 0.8rem; font-weight: 600; text-decoration: none; cursor: pointer;">تفاصيل</a>
+                        </div>
+                    </div>
                 @empty
-                <div style="text-align:center;color:var(--muted);padding:1rem;font-size:.85rem">لا يوجد جدول</div>
+                    <div style="text-align: center; padding: 3rem; color: #9ca3af; background: #f9fafb; border-radius: 1rem; border: 2px dashed #e5e7eb;">
+                        <i class="fas fa-inbox" style="font-size: 2.5rem; margin-bottom: 1rem; display: block; opacity: 0.5;"></i>
+                        <p style="margin: 0; font-weight: 600;">لا توجد مواعيد اليوم</p>
+                    </div>
                 @endforelse
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-body" style="text-align:center;padding:1.5rem">
-                <i class="fa-solid fa-file-medical" style="font-size:2rem;color:var(--cyan);margin-bottom:.75rem;display:block"></i>
-                <div style="font-weight:800;margin-bottom:.3rem;font-size:.95rem">سجلات المرضى</div>
-                <div style="font-size:.82rem;color:var(--muted);margin-bottom:1rem">عرض وإضافة السجلات الطبية</div>
-                <a href="{{ route('doctor.patient-records', $doctor) }}" class="btn btn-primary btn-sm" style="width:100%;justify-content:center">عرض السجلات</a>
-            </div>
-        </div>
     </div>
-
 </div>
-</div></section>
 @endsection
