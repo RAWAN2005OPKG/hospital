@@ -2,168 +2,170 @@
 @section('title', 'تعديل الملف الشخصي')
 
 @section('content')
-<div style="padding-top: 80px; min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); padding: 3rem 1.5rem;">
-    <div class="max-w-2xl mx-auto">
-        <!-- Header with Edit Button -->
-        <div class="flex justify-between items-center mb-8">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
-                    <i class="fas fa-user-edit text-xl"></i>
+<div style="padding-top: 100px; min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); padding-bottom: 3rem;">
+    <div style="max-width: 900px; margin: 0 auto; padding: 0 1.5rem;">
+        
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="width: 55px; height: 55px; background: linear-gradient(135deg, #3b82f6, #2563eb); border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; box-shadow: 0 10px 15px rgba(59, 130, 246, 0.2);">
+                    <i class="fas fa-user-edit"></i>
                 </div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">تعديل الملف الشخصي</h1>
+                <h1 style="font-size: 2.25rem; font-weight: 900; color: #111827; margin: 0;">تعديل الملف الشخصي</h1>
             </div>
-            <a href="{{ route('profile.show') }}" class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-bold rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center gap-2">
-                <i class="fas fa-arrow-left"></i>
+            <a href="{{ route('profile.show') }}" style="padding: 0.75rem 1.5rem; background: #e5e7eb; color: #374151; font-weight: bold; border-radius: 1rem; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;">
+                <i class="fas fa-arrow-right"></i>
                 <span>رجوع</span>
             </a>
         </div>
 
-        <!-- Avatar & Basic Info Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-4xl shadow-2xl p-12 border border-gray-200 dark:border-gray-700 mb-8">
-            <!-- Avatar Section -->
-            <div class="text-center mb-8 pb-8 border-b-2 border-gray-200 dark:border-gray-700">
-                <div class="w-32 h-32 mx-auto mb-6 relative">
-                    @if($user->avatar)
-                        <img src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->name }}" class="w-full h-full rounded-3xl object-cover shadow-2xl border-4 border-white dark:border-gray-900">
-                    @else
-                        <div class="w-full h-full rounded-3xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white shadow-2xl border-4 border-white dark:border-gray-900">
-                            <i class="fas fa-user text-5xl"></i>
-                        </div>
-                    @endif
-                    <label for="avatar" class="absolute -bottom-4 -right-4 w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl flex items-center justify-center text-white shadow-2xl cursor-pointer hover:shadow-3xl hover:scale-110 transition-all border-4 border-white dark:border-gray-900">
-                        <i class="fas fa-camera text-xl"></i>
-                        <input type="file" id="avatar" name="avatar" class="hidden" accept="image/*">
-                    </label>
-                </div>
-                <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{{ $user->name }}</h2>
-                <div class="flex justify-center gap-2">
-                    @if($user->isPatient())
-                        <span class="inline-block px-4 py-2 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-bold rounded-full text-sm">
-                            <i class="fas fa-user-injured mr-2"></i>مريض
-                        </span>
-                    @elseif($user->isDoctor())
-                        <span class="inline-block px-4 py-2 bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 font-bold rounded-full text-sm">
-                            <i class="fas fa-user-md mr-2"></i>طبيب
-                        </span>
-                    @endif
-                </div>
-            </div>
-
-            <!-- Main Form -->
-            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="space-y-8">
+        <div style="background: white; border-radius: 2.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); border: 1px solid #f1f5f9; overflow: hidden;">
+            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                 @csrf
-
-                <!-- Personal Info -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        <label class="block text-sm font-bold text-gray-900 dark:text-white mb-3">الاسم الكامل</label>
-                        <input type="text" name="name" value="{{ old('name', $user->name) }}" 
-                               class="w-full px-6 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-3xl bg-white dark:bg-gray-800 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-xl @error('name') border-red-500 @enderror"
-                               placeholder="الاسم الكامل">
-                        @error('name')
-                            <p class="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center">
-                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
-                            </p>
-                        @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-gray-900 dark:text-white mb-3">رقم الهاتف</label>
-                        <input type="tel" name="phone" value="{{ old('phone', $user->phone) }}" 
-                               class="w-full px-6 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-3xl bg-white dark:bg-gray-800 focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-xl @error('phone') border-red-500 @enderror"
-                               placeholder="+966 50 123 4567">
-                        @error('phone')
-                            <p class="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center">
-                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
-                            </p>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        <label class="block text-sm font-bold text-gray-900 dark:text-white mb-3">البريد الإلكتروني</label>
-                        <input type="email" name="email" value="{{ old('email', $user->email) }}" 
-                               class="w-full px-6 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-3xl bg-white dark:bg-gray-800 focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all shadow-xl @error('email') border-red-500 @enderror"
-                               placeholder="your@email.com">
-                        @error('email')
-                            <p class="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center">
-                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
-                            </p>
-                        @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-gray-900 dark:text-white mb-3">العمر</label>
-                        <input type="number" name="age" value="{{ old('age', $user->age) }}" min="1" max="120"
-                               class="w-full px-6 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-3xl bg-white dark:bg-gray-800 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all shadow-xl @error('age') border-red-500 @enderror"
-                               placeholder="العمر">
-                        @error('age')
-                            <p class="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center">
-                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
-                            </p>
-                        @enderror
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-gray-900 dark:text-white mb-3">العنوان</label>
-                    <textarea name="address" rows="4" placeholder="العنوان الكامل..." 
-                              class="w-full px-6 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-3xl bg-white dark:bg-gray-800 focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-xl @error('address') border-red-500 @enderror">{{ old('address', $user->address) }}</textarea>
-                    @error('address')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center">
-                            <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
-                        </p>
-                    @enderror
-                </div>
-
-                <!-- Gender & Other Options -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <label class="block text-sm font-bold text-gray-900 dark:text-white mb-3">الجنس</label>
-                        <select name="gender" class="w-full px-6 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-3xl bg-white dark:bg-gray-800 focus:ring-4 focus:ring-pink-500/20 focus:border-pink-500 transition-all shadow-xl">
-                            <option value="">اختر</option>
-                            <option value="male" {{ old('gender', $user->patient->gender ?? '') == 'male' ? 'selected' : '' }}>ذكر</option>
-                            <option value="female" {{ old('gender', $user->patient->gender ?? '') == 'female' ? 'selected' : '' }}>أنثى</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-gray-900 dark:text-white mb-3">تاريخ الميلاد</label>
-                        <input type="date" name="birth_date" value="{{ old('birth_date', $user->patient->birth_date ? $user->patient->birth_date->format('Y-m-d') : '') }}" 
-                               class="w-full px-6 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-3xl bg-white dark:bg-gray-800 focus:ring-4 focus:ring-yellow-500/20 focus:border-yellow-500 transition-all shadow-xl">
-                    </div>
-                    <div class="flex items-end">
-                        <label class="flex items-center">
-                            <input type="checkbox" name="newsletter" {{ old('newsletter', $user->newsletter ?? true) ? 'checked' : '' }} class="w-5 h-5 text-emerald-600 rounded border-gray-300 dark:border-gray-700 focus:ring-emerald-500">
-                            <span class="ml-3 text-sm font-bold text-gray-900 dark:text-white cursor-pointer">تلقي النشرات الإخبارية</span>
+                
+                <!-- Profile Header/Avatar Section -->
+                <div style="padding: 3rem; text-align: center; background: #f8fafc; border-bottom: 1px solid #f1f5f9;">
+                    <div style="width: 140px; height: 140px; margin: 0 auto 1.5rem; position: relative;">
+                        @if($user->avatar)
+                            <img src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->name }}" id="avatar-preview" style="width: 100%; height: 100%; border-radius: 2.5rem; object-fit: cover; border: 5px solid white; box-shadow: 0 15px 25px rgba(0,0,0,0.1);">
+                        @else
+                            <div id="avatar-placeholder" style="width: 100%; height: 100%; border-radius: 2.5rem; background: linear-gradient(135deg, #3b82f6, #60a5fa); display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem; border: 5px solid white; box-shadow: 0 15px 25px rgba(59, 130, 246, 0.2);">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        @endif
+                        <label for="avatar" style="position: absolute; bottom: -10px; right: -10px; width: 45px; height: 45px; background: #10b981; border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; border: 4px solid white; box-shadow: 0 10px 15px rgba(16, 185, 129, 0.3); transition: transform 0.2s ease;">
+                            <i class="fas fa-camera"></i>
+                            <input type="file" id="avatar" name="avatar" style="display: none;" accept="image/*">
                         </label>
                     </div>
+                    <h2 style="font-size: 1.75rem; font-weight: 800; color: #111827; margin-bottom: 0.5rem;">{{ $user->name }}</h2>
+                    <span style="display: inline-block; padding: 0.5rem 1.25rem; background: #dbeafe; color: #1e40af; font-weight: bold; border-radius: 2rem; font-size: 0.9rem;">
+                        <i class="fas {{ $user->isPatient() ? 'fa-user-injured' : 'fa-user-md' }}" style="margin-left: 0.5rem;"></i>
+                        {{ $user->isPatient() ? 'ملف المريض' : 'ملف الطبيب' }}
+                    </span>
                 </div>
 
-                <!-- Password Section -->
-                <div class="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900/20 p-8 rounded-3xl border border-gray-200 dark:border-gray-700">
-                    <h4 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-                        <i class="fas fa-lock mr-3 text-blue-500"></i>
-                        تغيير كلمة المرور
-                    </h4>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <input type="password" name="current_password" placeholder="كلمة المرور الحالية" 
-                               class="px-6 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-3xl bg-white dark:bg-gray-800 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all shadow-xl">
-                        <input type="password" name="password" placeholder="كلمة مرور جديدة" 
-                               class="px-6 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-3xl bg-white dark:bg-gray-800 focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-xl">
-                        <input type="password" name="password_confirmation" placeholder="تأكيد كلمة المرور" 
-                               class="px-6 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-3xl bg-white dark:bg-gray-800 focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-xl">
+                <div style="padding: 3rem;">
+                    <!-- Basic Information Grid -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2.5rem;">
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <label style="font-weight: 700; color: #374151; font-size: 0.95rem;">الاسم الكامل</label>
+                            <input type="text" name="name" value="{{ old('name', $user->name) }}" style="width: 100%; padding: 1rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1.25rem; font-size: 1rem; transition: all 0.3s ease; outline: none;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 4px rgba(59, 130, 246, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            @error('name') <span style="color: #ef4444; font-size: 0.85rem; font-weight: 600;">{{ $message }}</span> @enderror
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <label style="font-weight: 700; color: #374151; font-size: 0.95rem;">رقم الهاتف</label>
+                            <input type="tel" name="phone" value="{{ old('phone', $user->phone) }}" style="width: 100%; padding: 1rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1.25rem; font-size: 1rem; transition: all 0.3s ease; outline: none;" onfocus="this.style.borderColor='#10b981'; this.style.boxShadow='0 0 0 4px rgba(16, 185, 129, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            @error('phone') <span style="color: #ef4444; font-size: 0.85rem; font-weight: 600;">{{ $message }}</span> @enderror
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <label style="font-weight: 700; color: #374151; font-size: 0.95rem;">البريد الإلكتروني</label>
+                            <input type="email" name="email" value="{{ old('email', $user->email) }}" style="width: 100%; padding: 1rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1.25rem; font-size: 1rem; transition: all 0.3s ease; outline: none;" onfocus="this.style.borderColor='#8b5cf6'; this.style.boxShadow='0 0 0 4px rgba(139, 92, 246, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            @error('email') <span style="color: #ef4444; font-size: 0.85rem; font-weight: 600;">{{ $message }}</span> @enderror
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <label style="font-weight: 700; color: #374151; font-size: 0.95rem;">العنوان</label>
+                            <input type="text" name="address" value="{{ old('address', $user->address) }}" style="width: 100%; padding: 1rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1.25rem; font-size: 1rem; transition: all 0.3s ease; outline: none;" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 4px rgba(99, 102, 241, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        </div>
                     </div>
-                </div>
 
-                <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row gap-6 pt-8 border-t-4 border-gray-200 dark:border-gray-700">
-                    <button type="submit" class="flex-1 bg-gradient-to-r from-emerald-600 to-blue-600 text-white font-bold py-5 px-12 rounded-3xl shadow-2xl hover:shadow-3xl hover:-translate-y-1 transition-all text-xl">
-                        <i class="fas fa-save mr-3"></i>
-                        حفظ التغييرات
-                    </button>
-                    <a href="{{ route('profile.show') }}" class="flex-1 flex items-center justify-center space-x-3 rtl:space-x-reverse px-12 py-5 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-bold rounded-3xl shadow-2xl hover:shadow-3xl border-2 border-gray-200 dark:border-gray-700 transition-all">
-                        <i class="fas fa-times"></i>
-                        <span>إلغاء</span>
-                    </a>
+                    <!-- Role Specific Section -->
+                    @if($user->isPatient())
+                        <div style="background: #f0f9ff; padding: 2.5rem; border-radius: 2rem; border: 1px solid #e0f2fe; margin-bottom: 2.5rem;">
+                            <h3 style="font-size: 1.25rem; font-weight: 800; color: #0369a1; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                                <i class="fas fa-notes-medical"></i> المعلومات الطبية
+                            </h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <label style="font-weight: 700; color: #374151; font-size: 0.9rem;">فصيلة الدم</label>
+                                    <select name="blood_type" style="width: 100%; padding: 0.85rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1rem; background: white; outline: none;">
+                                        <option value="">اختر</option>
+                                        @foreach(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as $type)
+                                            <option value="{{ $type }}" {{ old('blood_type', $user->patient->blood_type ?? '') == $type ? 'selected' : '' }}>{{ $type }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <label style="font-weight: 700; color: #374151; font-size: 0.9rem;">تاريخ الميلاد</label>
+                                    <input type="date" name="birth_date" value="{{ old('birth_date', (isset($user->patient) && $user->patient->birth_date) ? \Carbon\Carbon::parse($user->patient->birth_date)->format('Y-m-d') : '') }}" style="width: 100%; padding: 0.85rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1rem; outline: none;">
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <label style="font-weight: 700; color: #374151; font-size: 0.9rem;">الجنس</label>
+                                    <select name="gender" style="width: 100%; padding: 0.85rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1rem; background: white; outline: none;">
+                                        <option value="">اختر</option>
+                                        <option value="male" {{ old('gender', $user->patient->gender ?? '') == 'male' ? 'selected' : '' }}>ذكر</option>
+                                        <option value="female" {{ old('gender', $user->patient->gender ?? '') == 'female' ? 'selected' : '' }}>أنثى</option>
+                                    </select>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <label style="font-weight: 700; color: #374151; font-size: 0.9rem;">جهة اتصال الطوارئ</label>
+                                    <input type="text" name="emergency_contact" value="{{ old('emergency_contact', $user->patient->emergency_contact ?? '') }}" placeholder="الاسم والرقم" style="width: 100%; padding: 0.85rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1rem; outline: none;">
+                                </div>
+                            </div>
+                        </div>
+                    @elseif($user->isDoctor())
+                        <div style="background: #f0fdf4; padding: 2.5rem; border-radius: 2rem; border: 1px solid #dcfce7; margin-bottom: 2.5rem;">
+                            <h3 style="font-size: 1.25rem; font-weight: 800; color: #166534; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                                <i class="fas fa-briefcase-medical"></i> المعلومات المهنية
+                            </h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <label style="font-weight: 700; color: #374151; font-size: 0.9rem;">القسم</label>
+                                    <select name="department_id" style="width: 100%; padding: 0.85rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1rem; background: white; outline: none;">
+                                        @foreach($departments as $dept)
+                                            <option value="{{ $dept->id }}" {{ old('department_id', $user->doctor->department_id ?? '') == $dept->id ? 'selected' : '' }}>{{ $dept->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <label style="font-weight: 700; color: #374151; font-size: 0.9rem;">التخصص</label>
+                                    <select name="specialization_id" style="width: 100%; padding: 0.85rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1rem; background: white; outline: none;">
+                                        @foreach($specializations as $spec)
+                                            <option value="{{ $spec->id }}" {{ old('specialization_id', $user->doctor->specialization_id ?? '') == $spec->id ? 'selected' : '' }}>{{ $spec->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <label style="font-weight: 700; color: #374151; font-size: 0.9rem;">رقم الترخيص</label>
+                                    <input type="text" name="license_number" value="{{ old('license_number', $user->doctor->license_number ?? '') }}" style="width: 100%; padding: 0.85rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1rem; outline: none;">
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <label style="font-weight: 700; color: #374151; font-size: 0.9rem;">سنوات الخبرة</label>
+                                    <input type="number" name="experience_years" value="{{ old('experience_years', $user->doctor->experience_years ?? 0) }}" style="width: 100%; padding: 0.85rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1rem; outline: none;">
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <label style="font-weight: 700; color: #374151; font-size: 0.9rem;">رسوم الاستشارة (ريال)</label>
+                                    <input type="number" step="0.01" name="consultation_fee" value="{{ old('consultation_fee', $user->doctor->consultation_fee ?? 0) }}" style="width: 100%; padding: 0.85rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1rem; outline: none;">
+                                </div>
+                            </div>
+                            <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                                <label style="font-weight: 700; color: #374151; font-size: 0.9rem;">السيرة الذاتية</label>
+                                <textarea name="bio" rows="3" style="width: 100%; padding: 1rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1.25rem; outline: none; resize: vertical;">{{ old('bio', $user->doctor->bio ?? '') }}</textarea>
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Password Section -->
+                    <div style="background: #f8fafc; padding: 2.5rem; border-radius: 2rem; border: 1px solid #e2e8f0; margin-bottom: 3rem;">
+                        <h3 style="font-size: 1.25rem; font-weight: 800; color: #475569; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                            <i class="fas fa-lock"></i> تغيير كلمة المرور (اختياري)
+                        </h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                            <input type="password" name="current_password" placeholder="كلمة المرور الحالية" style="width: 100%; padding: 0.85rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1rem; outline: none;">
+                            <input type="password" name="password" placeholder="كلمة مرور جديدة" style="width: 100%; padding: 0.85rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1rem; outline: none;">
+                            <input type="password" name="password_confirmation" placeholder="تأكيد كلمة المرور" style="width: 100%; padding: 0.85rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 1rem; outline: none;">
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <button type="submit" style="flex: 2; min-width: 200px; padding: 1.25rem; background: linear-gradient(135deg, #10b981, #059669); color: white; font-size: 1.25rem; font-weight: 800; border: none; border-radius: 1.5rem; cursor: pointer; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2); transition: all 0.3s ease;">
+                            <i class="fas fa-save" style="margin-left: 0.5rem;"></i> حفظ التغييرات
+                        </button>
+                        <a href="{{ route('profile.show') }}" style="flex: 1; min-width: 150px; padding: 1.25rem; background: white; color: #374151; font-size: 1.25rem; font-weight: 800; border: 2px solid #e2e8f0; border-radius: 1.5rem; text-decoration: none; text-align: center; transition: all 0.3s ease;">
+                            إلغاء
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>
@@ -171,32 +173,42 @@
 </div>
 
 <script>
-    // Avatar upload preview
+    // Avatar Preview
     document.getElementById('avatar').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                document.querySelector('.rounded-full.object-cover, .rounded-3xl.object-cover').src = e.target.result;
+                const img = document.getElementById('avatar-preview');
+                const placeholder = document.getElementById('avatar-placeholder');
+                
+                if (img) {
+                    img.src = e.target.result;
+                } else if (placeholder) {
+                    const newImg = document.createElement('img');
+                    newImg.id = 'avatar-preview';
+                    newImg.src = e.target.result;
+                    newImg.style.width = '100%';
+                    newImg.style.height = '100%';
+                    newImg.style.borderRadius = '2.5rem';
+                    newImg.style.objectFit = 'cover';
+                    newImg.style.border = '5px solid white';
+                    newImg.style.boxShadow = '0 15px 25px rgba(0,0,0,0.1)';
+                    placeholder.parentNode.replaceChild(newImg, placeholder);
+                }
             }
             reader.readAsDataURL(file);
         }
     });
 
-    // Form validation enhancement
-    document.querySelector('form').addEventListener('submit', function() {
-        const password = document.querySelector('input[name="password"]').value;
-        const confirmPassword = document.querySelector('input[name="password_confirmation"]').value;
-        if (password && password !== confirmPassword) {
-            alert('كلمات المرور غير متطابقة!');
-            return false;
+    // Simple Form Validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const pass = document.querySelector('input[name="password"]').value;
+        const confirm = document.querySelector('input[name="password_confirmation"]').value;
+        if (pass && pass !== confirm) {
+            e.preventDefault();
+            alert('كلمات المرور الجديدة غير متطابقة!');
         }
-    });
-
-    // Smooth animations
-    document.querySelectorAll('input, select, textarea').forEach(input => {
-        input.addEventListener('focus', () => input.parentElement.style.transform = 'scale(1.02)');
-        input.addEventListener('blur', () => input.parentElement.style.transform = 'scale(1)');
     });
 </script>
 @endsection

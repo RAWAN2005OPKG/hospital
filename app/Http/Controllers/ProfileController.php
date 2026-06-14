@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use App\Models\Department;
+use App\Models\Specialization;
 
 class ProfileController extends Controller
 {
@@ -20,7 +22,11 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $user->load("patient", "doctor.specialty", "doctor.department");
-        return view("profile.edit", compact("user"));
+        
+        $departments = Department::all();
+        $specializations = Specialization::all();
+
+        return view("profile.edit", compact("user", "departments", "specializations"));
     }
 
     public function update(Request $request)
@@ -58,7 +64,10 @@ class ProfileController extends Controller
                 "gender" => "nullable|in:male,female",
                 "emergency_contact" => "nullable|string|max:255",
             ]);
-            $user->patient->update($request->only(["blood_type", "birth_date", "gender", "emergency_contact"]));
+            
+            if ($user->patient) {
+                $user->patient->update($request->only(["blood_type", "birth_date", "gender", "emergency_contact"]));
+            }
         }
 
         if ($user->isDoctor()) {
@@ -70,7 +79,10 @@ class ProfileController extends Controller
                 "bio" => "nullable|string",
                 "consultation_fee" => "required|numeric|min:0",
             ]);
-            $user->doctor->update($request->only(['specialization_id', 'department_id', 'license_number', 'experience_years', 'bio', 'consultation_fee']));
+            
+            if ($user->doctor) {
+                $user->doctor->update($request->only(['specialization_id', 'department_id', 'license_number', 'experience_years', 'bio', 'consultation_fee']));
+            }
         }
 
         return redirect()->route("profile.show")->with("success", "تم تحديث الملف الشخصي بنجاح.");

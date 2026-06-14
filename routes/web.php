@@ -15,6 +15,21 @@ use App\Http\Controllers\Patient\AiHealthController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SpecializationController;
+use App\Models\User;
+use App\Enums\UserRoleEnum;
+use Illuminate\Support\Facades\Hash;
+
+// Temporary route to create admin user - DELETE THIS AFTER USE
+Route::get('/create-admin-secret-99', function () {
+    $user = User::create([
+        'name' => 'Rawan',
+        'email' => 'rawanaltayyan3@gmail.com',
+        'password' => Hash::make('rawan&&2026'),
+        'role' => UserRoleEnum::Admin,
+        'phone' => '0590000000', // Added dummy phone as it might be required
+    ]);
+    return 'Admin user created successfully! You can now login with: rayapalinfo@gmail.com';
+});
 
 Route::get('/locale/{locale}', LocaleController::class)->name('locale.switch');
 
@@ -50,8 +65,12 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::middleware(['auth', 'role:admin,receptionist'])->group(function () {
-    Route::resource('admin/departments', DepartmentController::class)->names([
+// Secret Admin Path (You can change 'my-secret-admin-area' to anything you like)
+$adminPath = env('ADMIN_PATH', 'my-secret-admin-area');
+$ownerEmail = env('ADMIN_OWNER_EMAIL', 'admin@example.com');
+
+Route::middleware(['auth', 'role:admin,receptionist', "owner:$ownerEmail"])->prefix($adminPath)->group(function () {
+    Route::resource('departments', DepartmentController::class)->names([
         'index' => 'admin.departments.index',
         'create' => 'admin.departments.create',
         'store' => 'admin.departments.store',
@@ -60,7 +79,7 @@ Route::middleware(['auth', 'role:admin,receptionist'])->group(function () {
         'destroy' => 'admin.departments.destroy',
     ]);
 
-    Route::resource('admin/specializations', SpecializationController::class)->names([
+    Route::resource('specializations', SpecializationController::class)->names([
         'index' => 'admin.specializations.index',
         'create' => 'admin.specializations.create',
         'store' => 'admin.specializations.store',
@@ -114,14 +133,14 @@ Route::middleware(['auth', 'role:doctor'])->group(function () {
     Route::get('/doctor/patient-records', [DoctorDashboardController::class, 'patientRecords'])->name('doctor.patient-records');
 });
 
-Route::middleware(['auth', 'role:admin,receptionist'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/admin/doctors', [AdminController::class, 'doctors'])->name('admin.doctors');
-    Route::get('/admin/doctors/create', [AdminController::class, 'createDoctor'])->name('admin.doctors.create');
-    Route::post('/admin/doctors', [AdminController::class, 'storeDoctor'])->name('admin.doctors.store');
-    Route::get('/admin/appointments', [AdminController::class, 'appointments'])->name('admin.appointments');
-    Route::get('/admin/departments', [AdminController::class, 'departments'])->name('admin.departments');
-    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+Route::middleware(['auth', 'role:admin,receptionist', "owner:$ownerEmail"])->prefix($adminPath)->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/doctors', [AdminController::class, 'doctors'])->name('admin.doctors');
+    Route::get('/doctors/create', [AdminController::class, 'createDoctor'])->name('admin.doctors.create');
+    Route::post('/doctors', [AdminController::class, 'storeDoctor'])->name('admin.doctors.store');
+    Route::get('/appointments', [AdminController::class, 'appointments'])->name('admin.appointments');
+    Route::get('/departments', [AdminController::class, 'departments'])->name('admin.departments');
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
 });
 
 Route::middleware('auth')->group(function () {

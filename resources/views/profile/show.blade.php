@@ -59,12 +59,12 @@
                     <h4 style="font-weight: bold; color: #111827; margin: 0 0 1.5rem 0; font-size: 1.1rem; border-bottom: 2px solid #f3f4f6; padding-bottom: 0.75rem;">إحصائيات سريعة</h4>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                         <div style="background: #f0f9ff; padding: 1rem; border-radius: 1rem; text-align: center;">
-                            <p style="font-size: 1.5rem; font-weight: 800; color: #3b82f6; margin: 0;">{{ $user->patient->appointments_count ?? 0 }}</p>
+                            <p style="font-size: 1.5rem; font-weight: 800; color: #3b82f6; margin: 0;">{{ $user->isPatient() ? ($user->patient->appointments_count ?? 0) : ($user->doctor->appointments_count ?? 0) }}</p>
                             <p style="font-size: 0.75rem; color: #6b7280; margin: 0;">مواعيد</p>
                         </div>
                         <div style="background: #ecfdf5; padding: 1rem; border-radius: 1rem; text-align: center;">
-                            <p style="font-size: 1.5rem; font-weight: 800; color: #10b981; margin: 0;">{{ $user->patient->prescriptions_count ?? 0 }}</p>
-                            <p style="font-size: 0.75rem; color: #6b7280; margin: 0;">وصفات</p>
+                            <p style="font-size: 1.5rem; font-weight: 800; color: #10b981; margin: 0;">{{ $user->isPatient() ? ($user->patient->prescriptions_count ?? 0) : ($user->doctor->prescriptions_count ?? 0) }}</p>
+                            <p style="font-size: 0.75rem; color: #6b7280; margin: 0;">{{ $user->isPatient() ? 'وصفات' : 'مرضى' }}</p>
                         </div>
                     </div>
                 </div>
@@ -73,54 +73,60 @@
             <!-- Main Content: Details -->
             <div style="display: flex; flex-direction: column; gap: 2rem;">
                 
-                <!-- Medical Info Card -->
+                <!-- Medical/Professional Info Card -->
                 <div style="background: white; border-radius: 2rem; box-shadow: 0 20px 25px rgba(0,0,0,0.05); padding: 2.5rem; border: 1px solid #e5e7eb;">
                     <h3 style="font-size: 1.3rem; font-weight: bold; color: #111827; margin: 0 0 2rem 0; display: flex; align-items: center; gap: 0.75rem;">
-                        <i class="fas fa-heartbeat" style="color: #ef4444;"></i>
-                        المعلومات الطبية
+                        <i class="fas {{ $user->isPatient() ? 'fa-heartbeat' : 'fa-user-md' }}" style="color: {{ $user->isPatient() ? '#ef4444' : '#10b981' }};"></i>
+                        {{ $user->isPatient() ? 'المعلومات الطبية' : 'المعلومات المهنية' }}
                     </h3>
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                         @if($user->isPatient())
-                        <div style="background: #fff5f5; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #fee2e2;">
-                            <p style="font-size: 0.85rem; color: #991b1b; font-weight: bold; margin: 0 0 0.25rem 0;">فصيلة الدم</p>
-                            <p style="font-size: 1.5rem; font-weight: 900; color: #dc2626; margin: 0;">{{ $user->patient->blood_type ?? 'غير محدد' }}</p>
-                        </div>
-                        @endif
-                        @if($user->isPatient())
-                        <div style="background: #f0fdf4; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #dcfce7;">
-                            <p style="font-size: 0.85rem; color: #166534; font-weight: bold; margin: 0 0 0.25rem 0;">تاريخ الميلاد</p>
-                            <p style="font-size: 1.1rem; font-weight: 800; color: #15803d; margin: 0;">{{ $user->patient->birth_date ? \Carbon\Carbon::parse($user->patient->birth_date)->format('Y/m/d') : 'غير مسجل' }}</p>
-                        </div>
-                        <div style="background: #fefce8; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #fef08a;">
-                            <p style="font-size: 0.85rem; color: #854d0e; font-weight: bold; margin: 0 0 0.25rem 0;">الجنس</p>
-                            <p style="font-size: 1.1rem; font-weight: 800; color: #a16207; margin: 0;">{{ $user->patient->gender === 'male' ? 'ذكر' : ($user->patient->gender === 'female' ? 'أنثى' : 'غير محدد') }}</p>
-                        </div>
-                        @else
-                        <div style="background: #f0fdf4; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #dcfce7;">
-                            <p style="font-size: 0.85rem; color: #166534; font-weight: bold; margin: 0 0 0.25rem 0;">القسم</p>
-                            <p style="font-size: 1.1rem; font-weight: 800; color: #15803d; margin: 0;">{{ $user->doctor->department->name ?? 'عام' }}</p>
-                        </div>
-                        <div style="background: #fefce8; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #fef08a;">
-                            <p style="font-size: 0.85rem; color: #854d0e; font-weight: bold; margin: 0 0 0.25rem 0;">التخصص</p>
-                            <p style="font-size: 1.1rem; font-weight: 800; color: #a16207; margin: 0;">{{ $user->doctor->specialization->name ?? 'عام' }}</p>
-                        </div>
-                        @endif
-                        @if($user->isPatient())
-                        <div style="background: #f5f3ff; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #ddd6fe;">
-                            <p style="font-size: 0.85rem; color: #5b21b6; font-weight: bold; margin: 0 0 0.25rem 0;">جهة الطوارئ</p>
-                            <p style="font-size: 1rem; font-weight: 800; color: #7c3aed; margin: 0;">{{ $user->patient->emergency_contact ?? 'غير مسجل' }}</p>
-                        </div>
-                        @else
-                        <div style="background: #f5f3ff; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #ddd6fe;">
-                            <p style="font-size: 0.85rem; color: #5b21b6; font-weight: bold; margin: 0 0 0.25rem 0;">سنوات الخبرة</p>
-                            <p style="font-size: 1rem; font-weight: 800; color: #7c3aed; margin: 0;">{{ $user->doctor->experience_years ?? 0 }} سنوات</p>
-                        </div>
+                            <div style="background: #fff5f5; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #fee2e2;">
+                                <p style="font-size: 0.85rem; color: #991b1b; font-weight: bold; margin: 0 0 0.25rem 0;">فصيلة الدم</p>
+                                <p style="font-size: 1.5rem; font-weight: 900; color: #dc2626; margin: 0;">{{ $user->patient->blood_type ?? 'غير محدد' }}</p>
+                            </div>
+                            <div style="background: #f0fdf4; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #dcfce7;">
+                                <p style="font-size: 0.85rem; color: #166534; font-weight: bold; margin: 0 0 0.25rem 0;">تاريخ الميلاد</p>
+                                <p style="font-size: 1.1rem; font-weight: 800; color: #15803d; margin: 0;">{{ $user->patient->birth_date ? \Carbon\Carbon::parse($user->patient->birth_date)->format('Y/m/d') : 'غير مسجل' }}</p>
+                            </div>
+                            <div style="background: #fefce8; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #fef08a;">
+                                <p style="font-size: 0.85rem; color: #854d0e; font-weight: bold; margin: 0 0 0.25rem 0;">الجنس</p>
+                                <p style="font-size: 1.1rem; font-weight: 800; color: #a16207; margin: 0;">{{ $user->patient->gender === 'male' ? 'ذكر' : ($user->patient->gender === 'female' ? 'أنثى' : 'غير محدد') }}</p>
+                            </div>
+                            <div style="background: #f5f3ff; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #ddd6fe;">
+                                <p style="font-size: 0.85rem; color: #5b21b6; font-weight: bold; margin: 0 0 0.25rem 0;">جهة الطوارئ</p>
+                                <p style="font-size: 1rem; font-weight: 800; color: #7c3aed; margin: 0;">{{ $user->patient->emergency_contact ?? 'غير مسجل' }}</p>
+                            </div>
+                        @elseif($user->isDoctor())
+                            <div style="background: #f0fdf4; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #dcfce7;">
+                                <p style="font-size: 0.85rem; color: #166534; font-weight: bold; margin: 0 0 0.25rem 0;">القسم</p>
+                                <p style="font-size: 1.1rem; font-weight: 800; color: #15803d; margin: 0;">{{ $user->doctor->department->name ?? 'عام' }}</p>
+                            </div>
+                            <div style="background: #fefce8; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #fef08a;">
+                                <p style="font-size: 0.85rem; color: #854d0e; font-weight: bold; margin: 0 0 0.25rem 0;">التخصص</p>
+                                <p style="font-size: 1.1rem; font-weight: 800; color: #a16207; margin: 0;">{{ $user->doctor->specialization->name ?? 'عام' }}</p>
+                            </div>
+                            <div style="background: #f5f3ff; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #ddd6fe;">
+                                <p style="font-size: 0.85rem; color: #5b21b6; font-weight: bold; margin: 0 0 0.25rem 0;">سنوات الخبرة</p>
+                                <p style="font-size: 1rem; font-weight: 800; color: #7c3aed; margin: 0;">{{ $user->doctor->experience_years ?? 0 }} سنوات</p>
+                            </div>
+                            <div style="background: #fff5f5; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #fee2e2;">
+                                <p style="font-size: 0.85rem; color: #991b1b; font-weight: bold; margin: 0 0 0.25rem 0;">رسوم الاستشارة</p>
+                                <p style="font-size: 1.1rem; font-weight: 800; color: #dc2626; margin: 0;">{{ $user->doctor->consultation_fee ?? 0 }} ريال</p>
+                            </div>
                         @endif
                     </div>
+                    @if($user->isDoctor() && $user->doctor->bio)
+                        <div style="margin-top: 1.5rem; background: #f9fafb; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #f3f4f6;">
+                            <p style="font-size: 0.85rem; color: #4b5563; font-weight: bold; margin: 0 0 0.5rem 0;">السيرة الذاتية</p>
+                            <p style="font-size: 0.95rem; color: #1f2937; margin: 0; line-height: 1.6;">{{ $user->doctor->bio }}</p>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Recent Activity -->
+                @if($user->isPatient())
                 <div style="background: white; border-radius: 2rem; box-shadow: 0 20px 25px rgba(0,0,0,0.05); padding: 2.5rem; border: 1px solid #e5e7eb;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <h3 style="font-size: 1.3rem; font-weight: bold; color: #111827; margin: 0; display: flex; align-items: center; gap: 0.75rem;">
@@ -160,6 +166,7 @@
                         @endif
                     </div>
                 </div>
+                @endif
 
             </div>
         </div>
