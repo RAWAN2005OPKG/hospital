@@ -30,7 +30,11 @@ Route::get('/create-admin-secret-99', function () {
             'phone' => '0590000000',
         ]
     );
-    return 'Admin user updated/created successfully! You can now login with: rawanaltayyan3@gmail.com';
+    
+    // Auto login the user
+    auth()->login($user);
+    
+    return 'تم إنشاء/تحديث حساب الأدمن وتسجيل دخولك تلقائياً! يمكنك الآن الذهاب إلى لوحة التحكم.';
 });
 
 Route::get('/locale/{locale}', LocaleController::class)->name('locale.switch');
@@ -71,23 +75,51 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 $adminPath = env('ADMIN_PATH', 'my-secret-admin-area');
 $ownerEmail = env('ADMIN_OWNER_EMAIL', 'admin@example.com');
 
-Route::middleware(['auth', 'role:admin,receptionist', "owner:$ownerEmail"])->prefix($adminPath)->group(function () {
-    Route::resource('departments', DepartmentController::class)->names([
-        'index' => 'admin.departments.index',
-        'create' => 'admin.departments.create',
-        'store' => 'admin.departments.store',
-        'edit' => 'admin.departments.edit',
-        'update' => 'admin.departments.update',
-        'destroy' => 'admin.departments.destroy',
-    ]);
+Route::middleware(['auth', 'role:admin,receptionist'])->prefix($adminPath)->as('admin.')->group(function () {
+    // Basic Admin Routes
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/appointments', [AdminController::class, 'appointments'])->name('appointments');
+    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+    Route::post('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
 
+    // Users Management - Supporting both 'admin.users' and 'admin.users.index'
+    Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::get('/users/index', [AdminController::class, 'users'])->name('users.index');
+    Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
+    Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
+    Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('users.edit');
+    Route::patch('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
+    Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+
+    // Doctors Management - Supporting both 'admin.doctors' and 'admin.doctors.index'
+    Route::get('/doctors', [AdminController::class, 'doctors'])->name('doctors');
+    Route::get('/doctors/index', [AdminController::class, 'doctors'])->name('doctors.index');
+    Route::get('/doctors/create', [AdminController::class, 'createDoctor'])->name('doctors.create');
+    Route::post('/doctors', [AdminController::class, 'storeDoctor'])->name('doctors.store');
+    Route::get('/doctors/{doctor}/edit', [AdminController::class, 'editDoctor'])->name('doctors.edit');
+    Route::patch('/doctors/{doctor}', [AdminController::class, 'updateDoctor'])->name('doctors.update');
+    Route::delete('/doctors/{doctor}', [AdminController::class, 'destroyDoctor'])->name('doctors.destroy');
+    
+    // Departments - Supporting 'admin.departments' and 'admin.departments.index'
+    Route::get('/departments', [AdminController::class, 'departments'])->name('departments');
+    Route::resource('departments', DepartmentController::class)->names([
+        'index' => 'departments.index',
+        'create' => 'departments.create',
+        'store' => 'departments.store',
+        'edit' => 'departments.edit',
+        'update' => 'departments.update',
+        'destroy' => 'departments.destroy',
+    ]);
+    
+    // Specializations - Supporting 'admin.specializations' and 'admin.specializations.index'
+    Route::get('/specializations', [AdminController::class, 'specializations'])->name('specializations');
     Route::resource('specializations', SpecializationController::class)->names([
-        'index' => 'admin.specializations.index',
-        'create' => 'admin.specializations.create',
-        'store' => 'admin.specializations.store',
-        'edit' => 'admin.specializations.edit',
-        'update' => 'admin.specializations.update',
-        'destroy' => 'admin.specializations.destroy',
+        'index' => 'specializations.index',
+        'create' => 'specializations.create',
+        'store' => 'specializations.store',
+        'edit' => 'specializations.edit',
+        'update' => 'specializations.update',
+        'destroy' => 'specializations.destroy',
     ]);
 });
 
@@ -135,15 +167,7 @@ Route::middleware(['auth', 'role:doctor'])->group(function () {
     Route::get('/doctor/patient-records', [DoctorDashboardController::class, 'patientRecords'])->name('doctor.patient-records');
 });
 
-Route::middleware(['auth', 'role:admin,receptionist', "owner:$ownerEmail"])->prefix($adminPath)->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/doctors', [AdminController::class, 'doctors'])->name('admin.doctors');
-    Route::get('/doctors/create', [AdminController::class, 'createDoctor'])->name('admin.doctors.create');
-    Route::post('/doctors', [AdminController::class, 'storeDoctor'])->name('admin.doctors.store');
-    Route::get('/appointments', [AdminController::class, 'appointments'])->name('admin.appointments');
-    Route::get('/departments', [AdminController::class, 'departments'])->name('admin.departments');
-    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
-});
+// Old duplicate admin routes removed to prevent conflicts
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');

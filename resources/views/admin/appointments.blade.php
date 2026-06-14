@@ -1,138 +1,93 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('title', 'إدارة المواعيد')
 
 @section('content')
-<div class="container section">
-    <div class="mb-8">
-        <h1 style="font-size: 2rem; font-weight: 900; color: var(--text);">إدارة المواعيد</h1>
-        <p style="color: var(--muted);">مراقبة وإدارة كافة مواعيد المرضى المسجلة</p>
-    </div>
-
-    <!-- Stats Grid -->
-    <div class="grid-4 mb-8">
-        <div class="stat-card">
-            <div class="stat-icon si-blue"><i class="fa-solid fa-calendar-day"></i></div>
-            <div>
-                <div class="stat-num">{{ $todayAppointments }}</div>
-                <div class="stat-lbl">مواعيد اليوم</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon si-cyan"><i class="fa-solid fa-calendar-week"></i></div>
-            <div>
-                <div class="stat-num">{{ $weekAppointments }}</div>
-                <div class="stat-lbl">هذا الأسبوع</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon si-green"><i class="fa-solid fa-calendar-check"></i></div>
-            <div>
-                <div class="stat-num">{{ $monthAppointments }}</div>
-                <div class="stat-lbl">هذا الشهر</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon si-orange" style="background: #fff7ed; color: #ea580c;"><i class="fa-solid fa-hourglass-half"></i></div>
-            <div>
-                <div class="stat-num">{{ $pendingAppointments }}</div>
-                <div class="stat-lbl">قيد الانتظار</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            <span>سجل المواعيد</span>
-            <div style="display: flex; gap: .5rem;">
-                 <input type="text" id="appSearch" class="form-control" placeholder="بحث باسم المريض أو الطبيب..." style="width: 300px; padding: .4rem 1rem; font-size: .85rem;">
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table" id="appsTable">
-                    <thead>
-                        <tr>
-                            <th>المريض</th>
-                            <th>الطبيب</th>
-                            <th>التاريخ والوقت</th>
-                            <th>الحالة</th>
-                            <th>الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($appointments as $app)
-                        <tr>
-                            <td style="font-weight: 700;">{{ $app->patient->name }}</td>
-                            <td>
-                                <div style="display: flex; align-items: center; gap: .5rem;">
-                                    <i class="fa-solid fa-user-doctor" style="color: var(--blue); font-size: .8rem;"></i>
-                                    <span>{{ $app->doctor->user->name ?? '-' }}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div style="font-weight: 700;">{{ $app->appointment_date }}</div>
-                                <div style="font-size: .8rem; color: var(--muted);">{{ $app->appointment_time }}</div>
-                            </td>
-                            <td>
-                                @php
-                                    $badges = [
-                                        'pending' => 'badge-yellow',
-                                        'confirmed' => 'badge-blue',
-                                        'completed' => 'badge-green',
-                                        'cancelled' => 'badge-red'
-                                    ];
-                                    $labels = [
-                                        'pending' => 'انتظار',
-                                        'confirmed' => 'مؤكد',
-                                        'completed' => 'مكتمل',
-                                        'cancelled' => 'ملغي'
-                                    ];
-                                @endphp
-                                <span class="badge {{ $badges[$app->status] ?? 'badge-gray' }}">
-                                    {{ $labels[$app->status] ?? $app->status }}
-                                </span>
-                            </td>
-                            <td>
-                                <div style="display: flex; gap: .5rem;">
-                                    <button class="btn btn-sm btn-outline" title="عرض التفاصيل"><i class="fa-solid fa-eye"></i></button>
-                                    @if($app->status === 'pending')
-                                        <button class="btn btn-sm btn-success" title="تأكيد"><i class="fa-solid fa-check"></i></button>
-                                    @endif
-                                    <button class="btn btn-sm" style="background: #fee2e2; color: #dc2626; border: none;" title="إلغاء"><i class="fa-solid fa-xmark"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" style="text-align: center; padding: 4rem; color: var(--muted);">
-                                <i class="fa-solid fa-calendar-xmark" style="font-size: 3.5rem; margin-bottom: 1rem; display: block; opacity: .2;"></i>
-                                لا توجد مواعيد مسجلة حالياً
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            
-            <div style="margin-top: 1.5rem;">
-                {{ $appointments->links() }}
-            </div>
-        </div>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">إدارة المواعيد</h1>
+        <p class="page-subtitle">مراقبة وإدارة كافة مواعيد المرضى المسجلة في النظام</p>
     </div>
 </div>
 
-@push('scripts')
-<script>
-    document.getElementById('appSearch').addEventListener('input', function(e) {
-        const term = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('#appsTable tbody tr');
-        
-        rows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(term) ? '' : 'none';
-        });
-    });
-</script>
-@endpush
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+    <div class="card" style="border-right: 4px solid var(--primary);">
+        <p style="color: var(--gray-500); font-weight: 700; font-size: 0.85rem;">مواعيد اليوم</p>
+        <h3 style="font-size: 1.8rem; font-weight: 900; margin-top: 0.5rem;">{{ $todayAppointments }}</h3>
+    </div>
+    <div class="card" style="border-right: 4px solid var(--success);">
+        <p style="color: var(--gray-500); font-weight: 700; font-size: 0.85rem;">هذا الأسبوع</p>
+        <h3 style="font-size: 1.8rem; font-weight: 900; margin-top: 0.5rem;">{{ $weekAppointments }}</h3>
+    </div>
+    <div class="card" style="border-right: 4px solid var(--warning);">
+        <p style="color: var(--gray-500); font-weight: 700; font-size: 0.85rem;">قيد الانتظار</p>
+        <h3 style="font-size: 1.8rem; font-weight: 900; margin-top: 0.5rem;">{{ $pendingAppointments }}</h3>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">سجل المواعيد</h3>
+        <input type="text" class="form-control" placeholder="بحث..." style="width: 250px; padding: 0.5rem 1rem;">
+    </div>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>المريض</th>
+                    <th>الطبيب</th>
+                    <th>التاريخ والوقت</th>
+                    <th>الحالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($appointments as $app)
+                <tr>
+                    <td>
+                        <div style="font-weight: 800; color: var(--gray-900);">{{ $app->patient->user->name ?? 'مريض غير معروف' }}</div>
+                        <div style="font-size: 0.8rem; color: var(--gray-500);">{{ $app->patient->user->email ?? '' }}</div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(0, 102, 204, 0.1); display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                <i class="fa-solid fa-user-doctor"></i>
+                            </div>
+                            <span style="font-weight: 700;">{{ $app->doctor->user->name ?? '---' }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 700;">{{ $app->appointment_date }}</div>
+                        <div style="font-size: 0.8rem; color: var(--primary); font-weight: 600;">{{ $app->appointment_time }}</div>
+                    </td>
+                    <td>
+                        @php
+                            $statusStyles = [
+                                'pending' => 'background: rgba(245, 158, 11, 0.1); color: #f59e0b;',
+                                'confirmed' => 'background: rgba(0, 102, 204, 0.1); color: #0066cc;',
+                                'completed' => 'background: rgba(16, 185, 129, 0.1); color: #10b981;',
+                                'cancelled' => 'background: rgba(239, 68, 68, 0.1); color: #ef4444;'
+                            ];
+                            $statusLabels = ['pending' => 'انتظار', 'confirmed' => 'مؤكد', 'completed' => 'مكتمل', 'cancelled' => 'ملغي'];
+                        @endphp
+                        <span class="badge" style="{{ $statusStyles[$app->status] ?? 'background: #f3f4f6; color: #6b7280;' }}">
+                            {{ $statusLabels[$app->status] ?? $app->status }}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="#" class="btn" style="padding: 0.5rem; background: var(--gray-50); color: var(--gray-600);"><i class="fa-solid fa-eye"></i></a>
+                            <a href="#" class="btn" style="padding: 0.5rem; background: rgba(239, 68, 68, 0.1); color: var(--danger);"><i class="fa-solid fa-trash"></i></a>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr><td colspan="5" style="text-align: center; padding: 3rem; color: var(--gray-400);">لا توجد مواعيد مسجلة</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+    <div style="margin-top: 1.5rem;">{{ $appointments->links() }}</div>
+</div>
 @endsection

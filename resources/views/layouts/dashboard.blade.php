@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'لوحة التحكم - صحتي')</title>
     
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -28,423 +26,133 @@
             --gray-800: #1f2937;
             --gray-900: #111827;
             --sidebar-width: 280px;
-            --topbar-height: 70px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html, body {
-            font-family: 'Cairo', 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f0f7ff 0%, #f5f7fa 100% );
-            color: var(--gray-700);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        .dashboard-wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        body { background: #f4f7fe; color: var(--gray-800); min-height: 100vh; overflow-x: hidden; }
 
         /* Sidebar */
         .sidebar {
             width: var(--sidebar-width);
-            background: linear-gradient(135deg, var(--gray-900), var(--gray-800));
-            color: #fff;
-            padding: 2rem 0;
-            position: fixed;
-            left: 0;
-            top: 0;
+            background: #fff;
             height: 100vh;
-            overflow-y: auto;
-            z-index: 999;
-            transition: transform 0.3s ease;
+            position: fixed;
+            right: 0;
+            top: 0;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.05);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
         }
 
         .sidebar-brand {
+            padding: 2.5rem 1.5rem;
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0 1.5rem;
-            margin-bottom: 2rem;
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #fff;
             text-decoration: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 900;
         }
 
         .sidebar-brand i {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 1rem;
+            width: 45px; height: 45px; background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.2rem;
         }
 
-        .sidebar-nav {
-            list-style: none;
-        }
-
-        .sidebar-nav li {
-            margin: 0.5rem 0;
-        }
-
+        .sidebar-nav { list-style: none; padding: 0 1rem; flex: 1; }
+        .sidebar-nav li { margin-bottom: 0.5rem; }
         .sidebar-nav a {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 1.5rem;
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-weight: 500;
+            display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem;
+            color: var(--gray-500); text-decoration: none; border-radius: 12px; font-weight: 600; transition: all 0.3s;
         }
-
-        .sidebar-nav a:hover,
-        .sidebar-nav a.active {
-            background: rgba(0, 102, 204, 0.2);
-            color: #fff;
-            border-right: 3px solid var(--primary);
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background: rgba(0, 102, 204, 0.08); color: var(--primary);
         }
-
-        .sidebar-nav i {
-            width: 24px;
-            text-align: center;
-        }
+        .sidebar-nav a i { font-size: 1.1rem; width: 25px; text-align: center; }
 
         /* Main Content */
-        .main-content {
-            margin-left: var(--sidebar-width);
-            width: calc(100% - var(--sidebar-width));
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+        .main-content { margin-right: var(--sidebar-width); padding: 2rem; min-height: 100vh; }
+
+        /* Page Header */
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; }
+        .page-title { font-size: 1.8rem; font-weight: 900; color: var(--gray-900); }
+        .page-subtitle { color: var(--gray-500); font-size: 0.95rem; margin-top: 0.25rem; }
+
+        /* Cards */
+        .card { background: #fff; border-radius: 20px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.03); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .card-title { font-size: 1.2rem; font-weight: 800; color: var(--gray-900); }
+
+        /* Tables */
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 0.75rem; }
+        th { padding: 1rem; text-align: right; color: var(--gray-500); font-weight: 700; font-size: 0.9rem; }
+        td { padding: 1.25rem 1rem; background: #fff; border-top: 1px solid #f8f9fa; border-bottom: 1px solid #f8f9fa; }
+        tr td:first-child { border-right: 1px solid #f8f9fa; border-radius: 0 12px 12px 0; }
+        tr td:last-child { border-left: 1px solid #f8f9fa; border-radius: 12px 0 0 12px; }
+
+        /* Form Controls */
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; margin-bottom: 0.5rem; font-weight: 700; color: var(--gray-700); font-size: 0.9rem; }
+        .form-control {
+            width: 100%; padding: 0.85rem 1.25rem; border: 2px solid var(--gray-100); border-radius: 12px;
+            outline: none; transition: all 0.3s; font-size: 0.95rem; background: var(--gray-50);
         }
+        .form-control:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1); }
 
-        /* Topbar */
-        .topbar {
-            height: var(--topbar-height);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 700; border: none; cursor: pointer;
+            transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;
         }
+        .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 102, 204, 0.4); }
 
-        .topbar-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--gray-900);
-        }
+        /* Badge */
+        .badge { padding: 0.35rem 0.85rem; border-radius: 30px; font-size: 0.75rem; font-weight: 800; }
 
-        .topbar-actions {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        .topbar-action-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: var(--gray-100);
-            border: none;
-            color: var(--gray-600);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-        }
-
-        .topbar-action-btn:hover {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        /* Content Area */
-        .content {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: auto;
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .page-title {
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: var(--gray-900);
-        }
-
-        .page-subtitle {
-            color: var(--gray-500);
-            font-size: 0.95rem;
-        }
-
-        /* Card */
-        .card {
-            background: #fff;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--gray-900);
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: #fff;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-
-        .stat-card-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .stat-card-icon.primary {
-            background: rgba(0, 102, 204, 0.1);
-            color: var(--primary);
-        }
-
-        .stat-card-icon.success {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .stat-card-icon.warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-
-        .stat-card-icon.danger {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-
-        .stat-card-value {
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--gray-900);
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-card-label {
-            color: var(--gray-500);
-            font-size: 0.9rem;
-        }
-
-        .stat-card-change {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-top: 0.5rem;
-        }
-
-        .stat-card-change.positive {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .stat-card-change.negative {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                transform: translateX(-100%);
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .topbar {
-                padding: 0 1rem;
-            }
-
-            .content {
-                padding: 1rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(100%); }
+            .main-content { margin-right: 0; }
         }
     </style>
-    
     @stack('styles')
 </head>
 <body>
-    <div class="dashboard-wrapper">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <a href="{{ route('home') }}" class="sidebar-brand">
-                <i class="fa-solid fa-heart-pulse"></i>
-                <span>صحتي</span>
-            </a>
-            
-            <ul class="sidebar-nav">
-                @if(Auth::user()->isPatient())
-                    <li><a href="{{ route('patient.dashboard') }}" class="{{ request()->routeIs('patient.dashboard') ? 'active' : '' }}"><i class="fa-solid fa-chart-line"></i> لوحتي</a></li>
-                    <li><a href="{{ route('patient.appointments') }}" class="{{ request()->routeIs('patient.appointments') ? 'active' : '' }}"><i class="fa-solid fa-calendar"></i> مواعيدي</a></li>
-                    <li><a href="{{ route('appointments.create') }}" class="{{ request()->routeIs('appointments.create') ? 'active' : '' }}"><i class="fa-solid fa-calendar-plus"></i> حجز موعد</a></li>
-                    <li><a href="{{ route('patient.medical-records') }}" class="{{ request()->routeIs('patient.medical-records') ? 'active' : '' }}"><i class="fa-solid fa-file-medical"></i> السجلات الطبية</a></li>
-                    {{-- prescriptions & chats routes may not be implemented yet --}}
-                    {{-- <li><a href="{{ route('patient.prescriptions') }}" class="{{ request()->routeIs('patient.prescriptions') ? 'active' : '' }}"><i class="fa-solid fa-prescription-bottle"></i> الوصفات</a></li> --}}
-                    {{-- <li><a href="{{ route('chats.index') }}" class="{{ request()->routeIs('chats.index') ? 'active' : '' }}"><i class="fa-solid fa-comments"></i> المحادثات</a></li> --}}
-
-                    <li><a href="{{ route('profile.show') }}" class="{{ request()->routeIs('profile.show') ? 'active' : '' }}"><i class="fa-solid fa-user"></i> الملف الشخصي</a></li>
-                @elseif(Auth::user()->isDoctor())
-                    <li><a href="{{ route('doctor.dashboard') }}" class="{{ request()->routeIs('doctor.dashboard') ? 'active' : '' }}"><i class="fa-solid fa-chart-line"></i> لوحتي</a></li>
-                    <li><a href="{{ route('doctor.appointments') }}" class="{{ request()->routeIs('doctor.appointments') ? 'active' : '' }}"><i class="fa-solid fa-calendar"></i> المواعيد</a></li>
-                    <li><a href="{{ route('doctor.patient-records') }}" class="{{ request()->routeIs('doctor.patient-records') ? 'active' : '' }}"><i class="fa-solid fa-users"></i> المرضى</a></li>
-                    {{-- prescriptions & chats routes may not be implemented yet --}}
-                    {{-- <li><a href="{{ route('doctor.prescriptions') }}" class="{{ request()->routeIs('doctor.prescriptions') ? 'active' : '' }}"><i class="fa-solid fa-prescription-bottle"></i> الوصفات</a></li> --}}
-                    <li><a href="{{ route('doctor.schedule') }}" class="{{ request()->routeIs('doctor.schedule') ? 'active' : '' }}"><i class="fa-solid fa-clock"></i> الجدول الزمني</a></li>
-                    {{-- <li><a href="{{ route('chats.index') }}" class="{{ request()->routeIs('chats.index') ? 'active' : '' }}"><i class="fa-solid fa-comments"></i> المحادثات</a></li> --}}
-
-                    <li><a href="{{ route('profile.show') }}" class="{{ request()->routeIs('profile.show') ? 'active' : '' }}"><i class="fa-solid fa-user"></i> الملف الشخصي</a></li>
-                @elseif(Auth::user()->isAdmin())
-                    <li><a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><i class="fa-solid fa-chart-line"></i> لوحة التحكم</a></li>
-                    <li><a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users') ? 'active' : '' }}"><i class="fa-solid fa-users"></i> المستخدمون</a></li>
-                    <li><a href="{{ route('admin.doctors') }}" class="{{ request()->routeIs('admin.doctors') ? 'active' : '' }}"><i class="fa-solid fa-user-doctor"></i> الأطباء</a></li>
-                    <li><a href="{{ route('admin.appointments') }}" class="{{ request()->routeIs('admin.appointments') ? 'active' : '' }}"><i class="fa-solid fa-calendar"></i> المواعيد</a></li>
-                    <li><a href="{{ route('admin.departments.index') }}" class="{{ request()->routeIs('admin.departments.index') ? 'active' : '' }}"><i class="fa-solid fa-hospital"></i> الأقسام</a></li>
-                    <li><a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings') ? 'active' : '' }}"><i class="fa-solid fa-gear"></i> الإعدادات</a></li>
-                @endif
-            </ul>
-        </aside>
+    <div class="sidebar">
+        <a href="{{ route('home') }}" class="sidebar-brand">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <span>صحتي</span>
+        </a>
         
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Topbar -->
-            <header class="topbar">
-                <div class="topbar-title">@yield('page-title', 'لوحة التحكم')</div>
-                <div class="topbar-actions">
-                    <button class="topbar-action-btn" id="notificationBtn">
-                        <i class="fa-solid fa-bell"></i>
+        <ul class="sidebar-nav">
+            @php $user = Auth::user(); @endphp
+            @if($user->isAdmin())
+                <li><a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><i class="fa-solid fa-chart-pie"></i> الإحصائيات</a></li>
+                <li><a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users*') ? 'active' : '' }}"><i class="fa-solid fa-users"></i> المستخدمون</a></li>
+                <li><a href="{{ route('admin.doctors') }}" class="{{ request()->routeIs('admin.doctors*') ? 'active' : '' }}"><i class="fa-solid fa-user-doctor"></i> الأطباء</a></li>
+                <li><a href="{{ route('admin.appointments') }}" class="{{ request()->routeIs('admin.appointments*') ? 'active' : '' }}"><i class="fa-solid fa-calendar-check"></i> المواعيد</a></li>
+                <li><a href="{{ route('admin.departments.index') }}" class="{{ request()->routeIs('admin.departments*') ? 'active' : '' }}"><i class="fa-solid fa-hospital"></i> الأقسام</a></li>
+                <li><a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings*') ? 'active' : '' }}"><i class="fa-solid fa-gears"></i> الإعدادات</a></li>
+            @endif
+            <li style="margin-top: auto; padding-bottom: 2rem;">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" style="width: 100%; background: none; border: none; text-align: right;">
+                        <a style="color: var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</a>
                     </button>
-                    <div class="dropdown">
-                        <button class="topbar-action-btn" type="button" id="userDropdown" data-bs-toggle="dropdown">
-                            <i class="fa-solid fa-user"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="{{ route('profile.show') }}">الملف الشخصي</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}" style="display: inline;">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item">تسجيل الخروج</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </header>
-            
-            <!-- Content -->
-            <div class="content">
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span>{{ session('success') }}</span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-                
-                @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                        <span>{{ session('error') }}</span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-                
-                @yield('content')
-            </div>
-        </div>
+                </form>
+            </li>
+        </ul>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.45.0/apexcharts.min.js"></script>
-    
-    @stack('scripts' )
+
+    <main class="main-content">
+        @yield('content')
+    </main>
+
+    @stack('scripts')
 </body>
 </html>

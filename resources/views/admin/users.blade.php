@@ -1,103 +1,78 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('title', 'إدارة المستخدمين')
 
 @section('content')
-<div class="container section">
-    <div class="mb-8" style="display: flex; justify-content: space-between; align-items: center;">
-        <div>
-            <h1 style="font-size: 2rem; font-weight: 900; color: var(--text);">إدارة المستخدمين</h1>
-            <p style="color: var(--muted);">عرض وإدارة كافة الحسابات المسجلة في النظام</p>
-        </div>
-        <div class="stat-card" style="padding: .75rem 1.5rem;">
-            <div style="text-align: center;">
-                <div class="stat-num" style="font-size: 1.5rem;">{{ $users->total() }}</div>
-                <div class="stat-lbl">إجمالي المستخدمين</div>
-            </div>
-        </div>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">إدارة المستخدمين</h1>
+        <p class="page-subtitle">عرض وإدارة كافة الحسابات المسجلة في النظام</p>
     </div>
-
-    <div class="card">
-        <div class="card-header">
-            <span>قائمة المستخدمين</span>
-            <div style="display: flex; gap: .5rem;">
-                <input type="text" id="userSearch" class="form-control" placeholder="بحث باسم المستخدم أو البريد..." style="width: 300px; padding: .4rem 1rem; font-size: .85rem;">
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table" id="usersTable">
-                    <thead>
-                        <tr>
-                            <th>الاسم</th>
-                            <th>البريد الإلكتروني</th>
-                            <th>رقم الهاتف</th>
-                            <th>الدور (Role)</th>
-                            <th>تاريخ التسجيل</th>
-                            <th>الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($users as $user)
-                        <tr>
-                            <td style="font-weight: 700;">{{ $user->name }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>{{ $user->phone ?? '-' }}</td>
-                            <td>
-                                @php
-                                    $roleBadges = [
-                                        'admin' => 'badge-red',
-                                        'doctor' => 'badge-blue',
-                                        'patient' => 'badge-green'
-                                    ];
-                                    $roleNames = [
-                                        'admin' => 'مدير',
-                                        'doctor' => 'طبيب',
-                                        'patient' => 'مريض'
-                                    ];
-                                @endphp
-                                <span class="badge {{ $roleBadges[$user->role] ?? 'badge-gray' }}">
-                                    {{ $roleNames[$user->role] ?? $user->role }}
-                                </span>
-                            </td>
-                            <td style="font-size: .85rem; color: var(--muted);">{{ $user->created_at->format('Y-m-d') }}</td>
-                            <td>
-                                <div style="display: flex; gap: .5rem;">
-                                    <button class="btn btn-sm btn-outline" title="تعديل"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="btn btn-sm" style="background: #fee2e2; color: #dc2626; border: none;" title="حذف"><i class="fa-solid fa-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" style="text-align: center; padding: 3rem; color: var(--muted);">
-                                <i class="fa-solid fa-users-slash" style="font-size: 3rem; margin-bottom: 1rem; display: block; opacity: .3;"></i>
-                                لا يوجد مستخدمين مسجلين حالياً
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            
-            <div style="margin-top: 1.5rem;">
-                {{ $users->links() }}
-            </div>
-        </div>
+    <div style="background: #fff; padding: 0.75rem 1.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center;">
+        <div style="font-size: 1.5rem; font-weight: 900; color: var(--primary);">{{ $users->total() }}</div>
+        <div style="font-size: 0.8rem; color: var(--gray-500); font-weight: 600;">إجمالي المستخدمين</div>
     </div>
 </div>
 
-@push('scripts')
-<script>
-    document.getElementById('userSearch').addEventListener('input', function(e) {
-        const term = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('#usersTable tbody tr');
-        
-        rows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(term) ? '' : 'none';
-        });
-    });
-</script>
-@endpush
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">قائمة المستخدمين</h3>
+        <input type="text" class="form-control" placeholder="بحث باسم المستخدم..." style="width: 300px; padding: 0.5rem 1rem;">
+    </div>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>المستخدم</th>
+                    <th>رقم الهاتف</th>
+                    <th>الدور</th>
+                    <th>تاريخ التسجيل</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($users as $user)
+                <tr>
+                    <td>
+                        <div style="font-weight: 800; color: var(--gray-900);">{{ $user->name }}</div>
+                        <div style="font-size: 0.8rem; color: var(--gray-500);">{{ $user->email }}</div>
+                    </td>
+                    <td style="font-family: monospace; font-weight: 600;">{{ $user->phone ?? '---' }}</td>
+                    <td>
+                        @php
+                            $roleValue = is_object($user->role) ? $user->role->value : (string)$user->role;
+                            $roleStyles = [
+                                'admin' => 'background: rgba(239, 68, 68, 0.1); color: #ef4444;',
+                                'doctor' => 'background: rgba(0, 102, 204, 0.1); color: #0066cc;',
+                                'patient' => 'background: rgba(16, 185, 129, 0.1); color: #10b981;'
+                            ];
+                            $roleNames = ['admin' => 'مدير', 'doctor' => 'طبيب', 'patient' => 'مريض'];
+                        @endphp
+                        <span class="badge" style="{{ $roleStyles[$roleValue] ?? 'background: #f3f4f6; color: #6b7280;' }}">
+                            {{ $roleNames[$roleValue] ?? $roleValue }}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="font-size: 0.9rem; font-weight: 600; color: var(--gray-600);">{{ $user->created_at->format('Y-m-d') }}</div>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.75rem;">
+                            <a href="{{ route('admin.users.edit', $user->id) }}" style="color: var(--primary); font-size: 1.1rem;"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('هل أنت متأكد؟');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1.1rem;"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr><td colspan="5" style="text-align: center; padding: 3rem; color: var(--gray-400);">لا يوجد مستخدمين مسجلين</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+    <div style="margin-top: 1.5rem;">{{ $users->links() }}</div>
+</div>
 @endsection
