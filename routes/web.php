@@ -95,11 +95,11 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
     Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
     
     Route::get('/my-medical-records', function() {
-        return view('medical_records.index');
+        return view('MedicalRecords.index');
     })->name('patient.medical_records_list');
     
     Route::get('/my-prescriptions', function() {
-        return view('prescriptions.index');
+        return view('Prescriptions.index');
     })->name('patient.prescriptions_list');
 });
 
