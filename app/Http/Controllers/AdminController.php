@@ -141,6 +141,7 @@ class AdminController extends Controller
             "experience_years" => "nullable|integer|min:0",
             "bio" => "nullable|string",
             "consultation_fee" => "nullable|numeric|min:0",
+            "photo" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048",
         ]);
 
         $user = User::create([
@@ -151,6 +152,11 @@ class AdminController extends Controller
             "role" => UserRoleEnum::Doctor,
         ]);
 
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('doctors', 'public');
+        }
+
         Doctor::create([
             "user_id" => $user->id,
             "license_number" => $validated["license_number"],
@@ -159,6 +165,7 @@ class AdminController extends Controller
             "experience_years" => $validated["experience_years"] ?? 0,
             "bio" => $validated["bio"],
             "consultation_fee" => $validated["consultation_fee"] ?? 0,
+            "photo" => $photoPath,
         ]);
 
         return redirect()
@@ -186,6 +193,7 @@ class AdminController extends Controller
             "experience_years" => "nullable|integer|min:0",
             "bio" => "nullable|string",
             "consultation_fee" => "nullable|numeric|min:0",
+            "photo" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048",
         ]);
 
         $doctor->user->update([
@@ -194,14 +202,21 @@ class AdminController extends Controller
             "phone" => $validated["phone"],
         ]);
 
-        $doctor->update([
+        $updateData = [
             "license_number" => $validated["license_number"],
             "specialization_id" => $validated["specialization_id"],
             "department_id" => $validated["department_id"],
             "experience_years" => $validated["experience_years"] ?? 0,
             "bio" => $validated["bio"],
             "consultation_fee" => $validated["consultation_fee"] ?? 0,
-        ]);
+        ];
+
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('doctors', 'public');
+            $updateData['photo'] = $photoPath;
+        }
+
+        $doctor->update($updateData);
 
         return redirect()
             ->route("admin.doctors.index")
@@ -240,9 +255,19 @@ class AdminController extends Controller
         $validated = $request->validate([
             "name" => "required|string|max:255|unique:departments,name",
             "description" => "nullable|string",
+            "image" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048",
         ]);
 
-        Department::create($validated);
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('departments', 'public');
+        }
+
+        Department::create([
+            "name" => $validated["name"],
+            "description" => $validated["description"],
+            "image" => $imagePath,
+        ]);
 
         return redirect()
             ->route("admin.departments.index")
@@ -259,9 +284,20 @@ class AdminController extends Controller
         $validated = $request->validate([
             "name" => ["required", "string", "max:255", Rule::unique("departments", "name")->ignore($department->id)],
             "description" => "nullable|string",
+            "image" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048",
         ]);
 
-        $department->update($validated);
+        $updateData = [
+            "name" => $validated["name"],
+            "description" => $validated["description"],
+        ];
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('departments', 'public');
+            $updateData['image'] = $imagePath;
+        }
+
+        $department->update($updateData);
 
         return redirect()
             ->route("admin.departments.index")

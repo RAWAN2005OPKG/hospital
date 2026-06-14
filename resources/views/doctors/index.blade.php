@@ -15,7 +15,9 @@
             @foreach($doctors as $doctor)
                 <div style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 30px rgba(0, 0, 0, 0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.05)'">
                     <div style="height: 200px; background: linear-gradient(135deg, var(--blue), var(--cyan)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 4rem;">
-                        @if($doctor->user->avatar)
+                        @if($doctor->photo)
+                            <img src="{{ asset('storage/' . $doctor->photo) }}" alt="{{ $doctor->user->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        @elseif($doctor->user->avatar)
                             <img src="{{ asset('storage/' . $doctor->user->avatar) }}" alt="{{ $doctor->user->name }}" style="width: 100%; height: 100%; object-fit: cover;">
                         @else
                             <i class="fa-solid fa-user-doctor"></i>

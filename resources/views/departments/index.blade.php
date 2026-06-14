@@ -22,7 +22,7 @@
             <div style="position:absolute;top:-25px;right:-25px;width:90px;height:90px;border-radius:50%;background:rgba(37,99,235,.07)"></div>
             <div style="position:absolute;bottom:-20px;left:-20px;width:70px;height:70px;border-radius:50%;background:rgba(6,182,212,.07)"></div>
             @if($department->image)
-                <img src="{{ asset($department->image) }}" style="width:100%;height:100%;object-fit:cover">
+                <img src="{{ asset('storage/' . $department->image) }}" style="width:100%;height:100%;object-fit:cover">
             @else
                 <div style="width:72px;height:72px;border-radius:18px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:1.9rem;color:#fff;box-shadow:0 8px 24px rgba(37,99,235,.3);position:relative">
                     <i class="fa-solid fa-hospital"></i>

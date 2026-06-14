@@ -24,20 +24,12 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'identifier' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
             'password' => 'required|string',
-            'otp' => 'required|string|size:6',
         ]);
 
-        if ($request->otp !== self::DEMO_OTP) {
-            throw ValidationException::withMessages([
-                'otp' => __('mediflow.invalid_otp'),
-            ]);
-        }
-
         $user = User::query()
-            ->where('email', $request->identifier)
-            ->orWhere('phone', $request->identifier)
+            ->where('email', $request->email)
             ->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
@@ -64,15 +56,8 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|max:20|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:patient,doctor',
-            'otp' => 'required|string|size:6',
+            'role' => 'required|in:patient,doctor,admin',
         ]);
-
-        if ($request->otp !== self::DEMO_OTP) {
-            throw ValidationException::withMessages([
-                'otp' => __('mediflow.invalid_otp'),
-            ]);
-        }
 
         $user = User::create([
             'name' => $request->name,

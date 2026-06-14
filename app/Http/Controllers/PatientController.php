@@ -8,6 +8,7 @@ use App\Models\Prescription;
 use App\Models\Report;
 use App\Models\Chat;
 use App\Models\Payment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -27,7 +28,7 @@ class PatientController extends Controller
             ->whereIn('status', ['pending', 'confirmed'])
             ->count();
 
-        $medicalRecordsCount = MedicalRecord::where('patient_id', $user->id)->count();
+        $medicalRecordsCount = MedicalRecord::where('patient_id', $pid)->count();
         $totalAppointments = Appointment::where('patient_id', $pid)->count();
         $appointments = Appointment::where('patient_id', $pid)
             ->where('appointment_date', '>=', today())
@@ -86,8 +87,10 @@ class PatientController extends Controller
 
     public function medicalRecords()
     {
-        $user = Auth::user();
-        $records = MedicalRecord::where("patient_id", $user->id)
+        $patient = Auth::user()->patient;
+        abort_unless($patient, 403);
+        
+        $records = MedicalRecord::where("patient_id", $patient->id)
             ->with("doctor.user", "appointment")
             ->orderBy("created_at", "desc")
             ->paginate(15);
@@ -97,7 +100,10 @@ class PatientController extends Controller
 
     public function medicalRecordDetail(MedicalRecord $record)
     {
-        if ($record->patient_id !== Auth::id()) {
+        $patient = Auth::user()->patient;
+        abort_unless($patient, 403);
+
+        if ($record->patient_id !== $patient->id) {
             abort(403);
         }
         $record->load("doctor.user", "appointment", "patient.user");
@@ -107,8 +113,10 @@ class PatientController extends Controller
 
     public function prescriptions()
     {
-        $user = Auth::user();
-        $prescriptions = Prescription::where("patient_id", $user->id)
+        $patient = Auth::user()->patient;
+        abort_unless($patient, 403);
+
+        $prescriptions = Prescription::where("patient_id", $patient->id)
             ->with("doctor.user")
             ->orderBy("created_at", "desc")
             ->paginate(15);
@@ -118,8 +126,10 @@ class PatientController extends Controller
 
     public function reports()
     {
-        $user = Auth::user();
-        $reports = Report::where("patient_id", $user->id)
+        $patient = Auth::user()->patient;
+        abort_unless($patient, 403);
+
+        $reports = Report::where("patient_id", $patient->id)
             ->with("doctor.user")
             ->orderBy("created_at", "desc")
             ->paginate(15);
@@ -129,7 +139,10 @@ class PatientController extends Controller
 
     public function downloadReport(Report $report)
     {
-        if ($report->patient_id !== Auth::id()) {
+        $patient = Auth::user()->patient;
+        abort_unless($patient, 403);
+
+        if ($report->patient_id !== $patient->id) {
             abort(403);
         }
 

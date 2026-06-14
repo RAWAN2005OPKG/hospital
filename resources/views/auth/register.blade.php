@@ -10,14 +10,15 @@
 .auth-card{background:#fff;border-radius:20px;padding:2.25rem;box-shadow:0 20px 60px rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.07);width:100%;max-width:480px}
 
 /* role cards */
-.role-pick{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin-bottom:1.75rem}
-.role-pick label{border:2px solid var(--border);border-radius:12px;padding:.9rem .6rem;text-align:center;cursor:pointer;transition:all .25s}
-.role-pick label:has(input:checked){border-color:var(--blue);background:var(--blue-lt)}
+.role-pick{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:2rem}
+.role-pick label{border:2px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .3s;background:#fff}
+.role-pick label:has(input:checked){border-color:var(--blue);background:var(--blue-lt);box-shadow:0 8px 20px rgba(37,99,235,.15)}
 .role-pick input{display:none}
-.role-pick i{font-size:1.5rem;color:var(--muted);margin-bottom:.4rem;display:block;transition:color .2s}
+.role-pick i{font-size:2.5rem;color:var(--muted);margin-bottom:.8rem;display:block;transition:color .2s}
 .role-pick label:has(input:checked) i{color:var(--blue)}
-.role-pick span{font-size:.82rem;font-weight:700;color:var(--muted);transition:color .2s;display:block}
+.role-pick span{font-size:.95rem;font-weight:700;color:var(--muted);transition:color .2s;display:block;margin-bottom:.5rem}
 .role-pick label:has(input:checked) span{color:var(--blue)}
+.role-pick small{font-size:.8rem;color:var(--gray-500);display:block}
 
 .input-wrap{position:relative}
 .input-wrap .ico{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.82rem;pointer-events:none}
@@ -69,20 +70,17 @@
         <div class="form-group">
             <label class="form-label">نوع الحساب <span style="color:#ef4444">*</span></label>
             <div class="role-pick">
-                <label>
-                    <input type="radio" name="role" value="patient" {{ old('role','patient')==='patient'?'checked':'' }}>
+                <label style="cursor:pointer">
+                    <input type="radio" name="role" value="patient" {{ old('role','patient')==='patient'?'checked':'' }} required>
                     <i class="fa-solid fa-user"></i>
                     <span>مريض</span>
+                    <small>احجز مواعيدك وتابع سجلاتك</small>
                 </label>
-                <label>
-                    <input type="radio" name="role" value="doctor" {{ old('role')==='doctor'?'checked':'' }}>
+                <label style="cursor:pointer">
+                    <input type="radio" name="role" value="doctor" {{ old('role')==='doctor'?'checked':'' }} required>
                     <i class="fa-solid fa-user-doctor"></i>
                     <span>دكتور</span>
-                </label>
-                <label>
-                    <input type="radio" name="role" value="admin" {{ old('role')==='admin'?'checked':'' }}>
-                    <i class="fa-solid fa-shield-halved"></i>
-                    <span>مدير</span>
+                    <small>أدر مرضاك ومواعيدك</small>
                 </label>
             </div>
             @error('role')<div class="invalid-feedback" style="display:block;margin-top:-.75rem;margin-bottom:.75rem">{{ $message }}</div>@enderror

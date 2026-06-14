@@ -409,8 +409,15 @@
         
         <ul class="navbar-nav">
             <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">الرئيسية</a></li>
+            <li><a href="{{ route('services.index') }}" class="{{ request()->routeIs('services.index') ? 'active' : '' }}">الخدمات</a></li>
             <li><a href="{{ route('departments') }}" class="{{ request()->routeIs('departments') ? 'active' : '' }}">الأقسام</a></li>
             <li><a href="{{ route('doctors.index') }}" class="{{ request()->routeIs('doctors.index') ? 'active' : '' }}">الأطباء</a></li>
+            @auth
+                @if(Auth::user()->isPatient())
+                    <li><a href="{{ route('appointments.book') }}" class="{{ request()->routeIs('appointments.book') ? 'active' : '' }}">حجز موعد</a></li>
+                    <li><a href="{{ route('consultations.index') }}" class="{{ request()->routeIs('consultations.index') ? 'active' : '' }}">استشارات</a></li>
+                @endif
+            @endauth
             <li><a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">تواصل معنا</a></li>
         </ul>
         
@@ -427,6 +434,8 @@
                         @if(Auth::user()->isPatient())
                             <li><a class="dropdown-item" href="{{ route('patient.dashboard') }}">لوحة المريض</a></li>
                             <li><a class="dropdown-item" href="{{ route('patient.appointments') }}">مواعيدي</a></li>
+                            <li><a class="dropdown-item" href="{{ route('patient.medical_records_list') }}">السجلات الطبية</a></li>
+                            <li><a class="dropdown-item" href="{{ route('patient.prescriptions_list') }}">الوصفات الطبية</a></li>
                             <li><a class="dropdown-item" href="{{ route('patient.ai.symptoms') }}">AI — توجيه الأعراض</a></li>
                         @elseif(Auth::user()->isDoctor())
                             <li><a class="dropdown-item" href="{{ route('doctor.dashboard') }}">لوحة الطبيب</a></li>
@@ -491,16 +500,21 @@
                 <div>
                     <h4>روابط سريعة</h4>
                     <a href="{{ route('home') }}">الرئيسية</a>
+                    <a href="{{ route('services.index') }}">الخدمات</a>
                     <a href="{{ route('departments') }}">الأقسام</a>
                     <a href="{{ route('doctors.index') }}">الأطباء</a>
                     <a href="{{ route('about') }}">عن المنصة</a>
                 </div>
                 <div>
-                    <h4>الخدمات</h4>
-                    <a href="#">حجز المواعيد</a>
-                    <a href="#">استشارات طبية</a>
-                    <a href="#">السجلات الطبية</a>
-                    <a href="#">الوصفات الطبية</a>
+                    <h4>خدمات المرضى</h4>
+                    <a href="{{ route('appointments.book') }}">حجز المواعيد</a>
+                    <a href="{{ route('consultations.index') }}">استشارات طبية</a>
+                    @auth
+                        @if(Auth::user()->isPatient())
+                            <a href="{{ route('patient.medical_records_list') }}">السجلات الطبية</a>
+                            <a href="{{ route('patient.prescriptions_list') }}">الوصفات الطبية</a>
+                        @endif
+                    @endauth
                 </div>
                 <div>
                     <h4>تواصل معنا</h4>

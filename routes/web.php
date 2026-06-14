@@ -34,6 +34,14 @@ Route::get('/services/pharmacy', function () {
     return view('services.pharmacy');
 })->name('services.pharmacy');
 
+Route::get('/services', function () {
+    return view('services.index');
+})->name('services.index');
+
+Route::get('/consultations', function () {
+    return view('consultations.index');
+})->name('consultations.index');
+
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
@@ -81,7 +89,18 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
     Route::get('/patient/ai/slot-suggestions', [AiHealthController::class, 'suggestSlots'])->name('patient.ai.slots');
 
     Route::get('/appointments/create/{doctor?}', [AppointmentController::class, 'create'])->name('appointments.create');
+    Route::get('/appointments/book', function() {
+        return view('appointments.index');
+    })->name('appointments.book');
     Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
+    
+    Route::get('/my-medical-records', function() {
+        return view('medical_records.index');
+    })->name('patient.medical_records_list');
+    
+    Route::get('/my-prescriptions', function() {
+        return view('prescriptions.index');
+    })->name('patient.prescriptions_list');
 });
 
 Route::middleware(['auth', 'role:doctor'])->group(function () {

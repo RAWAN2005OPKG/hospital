@@ -100,7 +100,7 @@
 
             <form method="POST" action="{{ route('login') }}">
             @csrf
-            <input type="hidden" name="role_hint" id="roleHintInput" value="patient">
+            <input type="hidden" name="role" id="roleInput" value="patient">
 
             <div class="form-group">
                 <label class="form-label">البريد الإلكتروني</label>
@@ -112,6 +112,7 @@
                         placeholder="example@email.com">
                 </div>
                 @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                @error('identifier')<div class="invalid-feedback" style="display:block">{{ $message }}</div>@enderror
             </div>
 
             <div class="form-group">
@@ -159,7 +160,7 @@ function setRole(role) {
     const isDoc = role === 'doctor';
     document.getElementById('tabPatient').classList.toggle('active', !isDoc);
     document.getElementById('tabDoctor').classList.toggle('active', isDoc);
-    document.getElementById('roleHintInput').value = role;
+    document.getElementById('roleInput').value = role;
     document.getElementById('roleHintText').textContent = isDoc
         ? 'ادخل ببيانات حسابك كطبيب'
         : 'ادخل ببيانات حساب المريض الخاص بك';
