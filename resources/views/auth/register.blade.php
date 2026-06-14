@@ -1,154 +1,233 @@
 @extends('layouts.app')
-@section('title','إنشاء حساب')
+@section('title','إنشاء حساب جديد')
 
 @push('styles')
 <style>
-.auth-wrap{min-height:calc(100vh - var(--nav-h));display:grid;grid-template-columns:1fr 1.1fr}
-.auth-left{background:linear-gradient(135deg,var(--blue) 0%,var(--cyan) 100%);padding:3rem;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
-.auth-left::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.08)}
-.auth-right{background:var(--bg);display:flex;align-items:center;justify-content:center;padding:2.5rem 2rem;overflow-y:auto}
-.auth-card{background:#fff;border-radius:20px;padding:2.25rem;box-shadow:0 20px 60px rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.07);width:100%;max-width:480px}
+.auth-wrap{
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    padding: 2rem;
+}
+.auth-container {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    width: 100%;
+    max-width: 1100px;
+    background: #fff;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+}
+.auth-left{
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #fff;
+}
+.auth-right{
+    padding: 3.5rem;
+    overflow-y: auto;
+    max-height: 90vh;
+}
+.auth-box{ width: 100%; }
 
-/* role cards */
-.role-pick{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:2rem}
-.role-pick label{border:2px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .3s;background:#fff}
-.role-pick label:has(input:checked){border-color:var(--blue);background:var(--blue-lt);box-shadow:0 8px 20px rgba(37,99,235,.15)}
-.role-pick input{display:none}
-.role-pick i{font-size:2.5rem;color:var(--muted);margin-bottom:.8rem;display:block;transition:color .2s}
-.role-pick label:has(input:checked) i{color:var(--blue)}
-.role-pick span{font-size:.95rem;font-weight:700;color:var(--muted);transition:color .2s;display:block;margin-bottom:.5rem}
-.role-pick label:has(input:checked) span{color:var(--blue)}
-.role-pick small{font-size:.8rem;color:var(--gray-500);display:block}
+/* role pick cards */
+.role-pick{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+}
+.role-card{
+    border: 2px solid #f1f5f9;
+    border-radius: 20px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+    position: relative;
+}
+.role-card input{ display: none; }
+.role-card i{ font-size: 2.5rem; color: #94a3b8; margin-bottom: 1rem; display: block; }
+.role-card span{ display: block; font-weight: 800; font-size: 1.1rem; color: #475569; margin-bottom: .5rem; }
+.role-card small{ display: block; font-size: .8rem; color: #94a3b8; line-height: 1.4; }
 
-.input-wrap{position:relative}
-.input-wrap .ico{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.82rem;pointer-events:none}
-.input-wrap .form-control{padding-right:2.5rem}
+/* active role state */
+.role-card.active[data-role="patient"] { border-color: #3b82f6; background: #eff6ff; }
+.role-card.active[data-role="patient"] i, .role-card.active[data-role="patient"] span { color: #3b82f6; }
 
-@media(max-width:768px){.auth-wrap{grid-template-columns:1fr}.auth-left{display:none}}
+.role-card.active[data-role="doctor"] { border-color: #10b981; background: #f0fdf4; }
+.role-card.active[data-role="doctor"] i, .role-card.active[data-role="doctor"] span { color: #10b981; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.form-group { margin-bottom: 1.5rem; }
+.form-label { display: block; font-weight: 700; color: #334155; margin-bottom: .5rem; font-size: .9rem; }
+.input-wrap{ position: relative; }
+.input-wrap i.ico{ position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; }
+.form-control{ 
+    width: 100%;
+    padding: .85rem 2.8rem .85rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: .95rem;
+    transition: all 0.3s;
+    outline: none;
+}
+.form-control:focus{ border-color: #6366f1; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+
+.btn-register {
+    width: 100%;
+    padding: 1.1rem;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: #fff;
+    border: none;
+    border-radius: 15px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .75rem;
+}
+.btn-register:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3); }
+
+@media(max-width: 900px){
+    .auth-container { grid-template-columns: 1fr; max-width: 550px; }
+    .auth-left { display: none; }
+    .form-grid { grid-template-columns: 1fr; gap: 0; }
+}
 </style>
 @endpush
 
 @section('content')
 <div class="auth-wrap">
-
-    {{-- LEFT --}}
-    <div class="auth-left">
-        <div style="position:relative;z-index:1;color:#fff">
-            <div style="width:60px;height:60px;border-radius:16px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.7rem;margin-bottom:1.75rem">
-                <i class="fa-solid fa-heart-pulse"></i>
+    <div class="auth-container">
+        {{-- LEFT SIDE --}}
+        <div class="auth-left">
+            <div style="width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:2rem;backdrop-filter:blur(10px)">
+                <i class="fa-solid fa-user-plus"></i>
             </div>
-            <h2 style="font-size:1.9rem;font-weight:900;margin-bottom:.75rem;line-height:1.3">انضم إلى<br>مجتمع ProHealth</h2>
-            <p style="opacity:.9;font-size:.95rem;line-height:1.8;margin-bottom:2rem">سجّل حسابك الآن واستمتع بتجربة صحية متكاملة — سواء كنت مريضاً أو طبيباً.</p>
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
-                @foreach([
-                    ['fa-user','مريض','احجز مواعيدك وتابع سجلاتك'],
-                    ['fa-user-doctor','دكتور','أدر مرضاك ومواعيدك بسهولة'],
-                ] as [$ico,$title,$desc])
-                <div style="background:rgba(255,255,255,.12);border-radius:12px;padding:1rem;backdrop-filter:blur(4px)">
-                    <i class="fa-solid {{ $ico }}" style="font-size:1.3rem;margin-bottom:.5rem;display:block"></i>
-                    <div style="font-weight:800;font-size:.9rem;margin-bottom:.2rem">{{ $title }}</div>
-                    <div style="font-size:.78rem;opacity:.85">{{ $desc }}</div>
+            <h2 style="font-size:2.25rem;font-weight:900;margin-bottom:1.5rem;line-height:1.2">انضم إلى<br>ProHealth</h2>
+            <p style="opacity:0.9;font-size:1.1rem;line-height:1.7;margin-bottom:3rem">سجّل حسابك الآن واستمتع بتجربة صحية متكاملة ومطورة خصيصاً لتلبية احتياجاتك.</p>
+            
+            <div style="display:flex;flex-direction:column;gap:1.5rem">
+                <div style="display:flex;gap:1rem;background:rgba(255,255,255,0.1);padding:1.25rem;border-radius:20px;backdrop-filter:blur(5px)">
+                    <i class="fa-solid fa-user-injured" style="font-size:1.5rem"></i>
+                    <div>
+                        <div style="font-weight:800;margin-bottom:.2rem">للمرضى</div>
+                        <div style="font-size:.85rem;opacity:0.8">حجز مواعيد فورية ومتابعة التقارير الطبية.</div>
+                    </div>
                 </div>
-                @endforeach
+                <div style="display:flex;gap:1rem;background:rgba(255,255,255,0.1);padding:1.25rem;border-radius:20px;backdrop-filter:blur(5px)">
+                    <i class="fa-solid fa-user-md" style="font-size:1.5rem"></i>
+                    <div>
+                        <div style="font-weight:800;margin-bottom:.2rem">للأطباء</div>
+                        <div style="font-size:.85rem;opacity:0.8">إدارة جدول المواعيد والمرضى بذكاء.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- RIGHT SIDE --}}
+        <div class="auth-right">
+            <div class="auth-box">
+                <div style="margin-bottom:2.5rem;text-align:center">
+                    <h1 style="font-size:1.8rem;font-weight:900;color:#1e293b;margin-bottom:.5rem">إنشاء حساب جديد</h1>
+                    <p style="color:#64748b;font-size:1rem">اختر نوع الحساب وأكمل بياناتك</p>
+                </div>
+
+                <form method="POST" action="{{ route('register') }}">
+                    @csrf
+                    
+                    <div class="role-pick">
+                        <label class="role-card {{ old('role', 'patient') == 'patient' ? 'active' : '' }}" data-role="patient">
+                            <input type="radio" name="role" value="patient" {{ old('role', 'patient') == 'patient' ? 'checked' : '' }} onchange="updateRoleUI(this)">
+                            <i class="fa-solid fa-user"></i>
+                            <span>مريض</span>
+                            <small>أريد حجز مواعيد ومتابعة حالتي</small>
+                        </label>
+                        <label class="role-card {{ old('role') == 'doctor' ? 'active' : '' }}" data-role="doctor">
+                            <input type="radio" name="role" value="doctor" {{ old('role') == 'doctor' ? 'checked' : '' }} onchange="updateRoleUI(this)">
+                            <i class="fa-solid fa-user-md"></i>
+                            <span>دكتور</span>
+                            <small>أريد إدارة مواعيدي ومرضاي</small>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">الاسم الكامل</label>
+                        <div class="input-wrap">
+                            <i class="ico fa-solid fa-user"></i>
+                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required placeholder="مثال: محمد أحمد">
+                        </div>
+                        @error('name')<div style="color:#ef4444;font-size:.85rem;margin-top:.5rem">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">البريد الإلكتروني</label>
+                            <div class="input-wrap">
+                                <i class="ico fa-solid fa-envelope"></i>
+                                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required placeholder="example@email.com">
+                            </div>
+                            @error('email')<div style="color:#ef4444;font-size:.85rem;margin-top:.5rem">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">رقم الهاتف</label>
+                            <div class="input-wrap">
+                                <i class="ico fa-solid fa-phone"></i>
+                                <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}" required placeholder="05xxxxxxxx">
+                            </div>
+                            @error('phone')<div style="color:#ef4444;font-size:.85rem;margin-top:.5rem">{{ $message }}</div>@enderror
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">كلمة المرور</label>
+                            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" required placeholder="••••••••" style="padding-right:1rem">
+                            @error('password')<div style="color:#ef4444;font-size:.85rem;margin-top:.5rem">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">تأكيد كلمة المرور</label>
+                            <input type="password" name="password_confirmation" class="form-control" required placeholder="••••••••" style="padding-right:1rem">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-register">
+                        <i class="fa-solid fa-user-plus"></i> إنشاء الحساب الآن
+                    </button>
+                </form>
+
+                <div style="text-align:center;margin-top:2rem">
+                    <p style="color:#64748b;font-size:.95rem">
+                        لديك حساب بالفعل؟ <a href="{{ route('login') }}" style="color:#6366f1;font-weight:800;text-decoration:none">سجّل دخولك</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
-
-    {{-- RIGHT --}}
-    <div class="auth-right">
-    <div class="auth-card">
-        <div style="text-align:center;margin-bottom:1.75rem">
-            <h1 style="font-size:1.5rem;font-weight:900;margin-bottom:.25rem">إنشاء حساب جديد</h1>
-            <p style="color:var(--muted);font-size:.87rem">اختر نوع حسابك وأكمل بياناتك</p>
-        </div>
-
-        <form method="POST" action="{{ route('register') }}">
-        @csrf
-
-        {{-- ROLE SELECTION --}}
-        <div class="form-group">
-            <label class="form-label">نوع الحساب <span style="color:#ef4444">*</span></label>
-            <div class="role-pick">
-                <label style="cursor:pointer">
-                    <input type="radio" name="role" value="patient" {{ old('role','patient')==='patient'?'checked':'' }} required>
-                    <i class="fa-solid fa-user"></i>
-                    <span>مريض</span>
-                    <small>احجز مواعيدك وتابع سجلاتك</small>
-                </label>
-                <label style="cursor:pointer">
-                    <input type="radio" name="role" value="doctor" {{ old('role')==='doctor'?'checked':'' }} required>
-                    <i class="fa-solid fa-user-doctor"></i>
-                    <span>دكتور</span>
-                    <small>أدر مرضاك ومواعيدك</small>
-                </label>
-            </div>
-            @error('role')<div class="invalid-feedback" style="display:block;margin-top:-.75rem;margin-bottom:.75rem">{{ $message }}</div>@enderror
-        </div>
-
-        {{-- NAME --}}
-        <div class="form-group">
-            <label class="form-label">الاسم الكامل <span style="color:#ef4444">*</span></label>
-            <div class="input-wrap">
-                <i class="ico fa-solid fa-user"></i>
-                <input type="text" name="name"
-                    class="form-control @error('name') is-invalid @enderror"
-                    value="{{ old('name') }}" required placeholder="محمد أحمد">
-            </div>
-            @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
-        </div>
-
-        {{-- EMAIL + PHONE --}}
-        <div class="grid-2">
-            <div class="form-group">
-                <label class="form-label">البريد الإلكتروني <span style="color:#ef4444">*</span></label>
-                <div class="input-wrap">
-                    <i class="ico fa-solid fa-envelope"></i>
-                    <input type="email" name="email"
-                        class="form-control @error('email') is-invalid @enderror"
-                        value="{{ old('email') }}" required placeholder="example@email.com">
-                </div>
-                @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="form-group">
-                <label class="form-label">رقم الهاتف <span style="color:#ef4444">*</span></label>
-                <div class="input-wrap">
-                    <i class="ico fa-solid fa-phone"></i>
-                    <input type="text" name="phone"
-                        class="form-control @error('phone') is-invalid @enderror"
-                        value="{{ old('phone') }}" required placeholder="05xxxxxxxx">
-                </div>
-                @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-        </div>
-
-        {{-- PASSWORDS --}}
-        <div class="grid-2">
-            <div class="form-group">
-                <label class="form-label">كلمة المرور <span style="color:#ef4444">*</span></label>
-                <input type="password" name="password"
-                    class="form-control @error('password') is-invalid @enderror"
-                    required placeholder="8 أحرف على الأقل">
-                @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="form-group">
-                <label class="form-label">تأكيد كلمة المرور <span style="color:#ef4444">*</span></label>
-                <input type="password" name="password_confirmation"
-                    class="form-control" required placeholder="أعد الكتابة">
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:.85rem;font-size:.95rem;margin-top:.25rem">
-            <i class="fa-solid fa-user-plus"></i> إنشاء الحساب
-        </button>
-        </form>
-
-        <p style="text-align:center;margin-top:1.5rem;font-size:.87rem;color:var(--muted)">
-            لديك حساب بالفعل؟
-            <a href="{{ route('login') }}" style="color:var(--blue);font-weight:800">سجّل دخولك</a>
-        </p>
-    </div>
-    </div>
-
 </div>
+
+@push('scripts')
+<script>
+function updateRoleUI(input) {
+    // Remove active class from all cards
+    document.querySelectorAll('.role-card').forEach(card => card.classList.remove('active'));
+    // Add active class to the parent label of the checked radio
+    if (input.checked) {
+        input.parentElement.classList.add('active');
+    }
+}
+</script>
+@endpush
 @endsection

@@ -110,6 +110,9 @@ class AuthController extends Controller
 
         Auth::login($user);
 
+        // Flash the email to session so it can be used in login form if needed
+        session()->flash('registered_email', $user->email);
+
         return $this->redirectAfterLogin($user);
     }
 

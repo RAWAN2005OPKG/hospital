@@ -21,14 +21,16 @@ use Illuminate\Support\Facades\Hash;
 
 // Temporary route to create admin user - DELETE THIS AFTER USE
 Route::get('/create-admin-secret-99', function () {
-    $user = User::create([
-        'name' => 'Rawan',
-        'email' => 'rawanaltayyan3@gmail.com',
-        'password' => Hash::make('rawan&&2026'),
-        'role' => UserRoleEnum::Admin,
-        'phone' => '0590000000', // Added dummy phone as it might be required
-    ]);
-    return 'Admin user created successfully! You can now login with: rayapalinfo@gmail.com';
+    $user = User::updateOrCreate(
+        ['email' => 'rawanaltayyan3@gmail.com'],
+        [
+            'name' => 'Rawan',
+            'password' => Hash::make('rawan&&2026'),
+            'role' => UserRoleEnum::Admin,
+            'phone' => '0590000000',
+        ]
+    );
+    return 'Admin user updated/created successfully! You can now login with: rawanaltayyan3@gmail.com';
 });
 
 Route::get('/locale/{locale}', LocaleController::class)->name('locale.switch');

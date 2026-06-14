@@ -4,172 +4,244 @@
 @push('styles')
 <style>
 .auth-wrap{
-    min-height:calc(100vh - var(--nav-h));
-    display:grid; grid-template-columns:1fr 1fr;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    padding: 2rem;
+}
+.auth-container {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    width: 100%;
+    max-width: 1000px;
+    background: #fff;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
 }
 .auth-left{
-    background:linear-gradient(135deg,var(--blue) 0%,var(--cyan) 100%);
-    padding:3rem; display:flex; flex-direction:column;
-    justify-content:center; position:relative; overflow:hidden;
-}
-.auth-left::before{
-    content:''; position:absolute; top:-80px; right:-80px;
-    width:300px; height:300px; border-radius:50%;
-    background:rgba(255,255,255,.08);
-}
-.auth-left::after{
-    content:''; position:absolute; bottom:-60px; left:-60px;
-    width:200px; height:200px; border-radius:50%;
-    background:rgba(255,255,255,.06);
+    background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    padding: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #fff;
+    position: relative;
 }
 .auth-right{
-    background:var(--bg); display:flex; align-items:center;
-    justify-content:center; padding:3rem 2rem;
+    padding: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
-.auth-box{width:100%; max-width:420px;}
-.auth-card{background:#fff; border-radius:20px; padding:2.5rem; box-shadow:0 20px 60px rgba(37,99,235,.1); border:1px solid rgba(37,99,235,.07);}
+.auth-box{ width: 100%; }
 
 /* role tabs */
-.role-tabs{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;background:#f1f5f9;border-radius:12px;padding:.35rem;margin-bottom:1.75rem}
-.role-tab{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.7rem;border-radius:9px;font-weight:700;font-size:.88rem;cursor:pointer;transition:all .25s;color:var(--muted);border:none;background:transparent;font-family:'Tajawal',sans-serif}
-.role-tab.active{background:#fff;color:var(--blue);box-shadow:0 2px 10px rgba(37,99,235,.12)}
-.role-tab i{font-size:1rem}
+.role-tabs{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .5rem;
+    background: #f1f5f9;
+    border-radius: 15px;
+    padding: .4rem;
+    margin-bottom: 2rem;
+}
+.role-tab{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+    padding: .8rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: .95rem;
+    cursor: pointer;
+    transition: all .3s ease;
+    color: #64748b;
+    border: none;
+    background: transparent;
+}
+.role-tab.active{
+    background: #fff;
+    color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
 
-.input-wrap{position:relative}
-.input-wrap i.ico{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.82rem;pointer-events:none}
-.input-wrap .form-control{padding-right:2.5rem}
-.eye-btn{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;color:var(--muted);font-size:.85rem}
+.form-group { margin-bottom: 1.5rem; }
+.form-label { display: block; font-weight: 700; color: #334155; margin-bottom: .5rem; font-size: .9rem; }
+.input-wrap{ position: relative; }
+.input-wrap i.ico{ position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; }
+.form-control{ 
+    width: 100%;
+    padding: .85rem 2.8rem .85rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: .95rem;
+    transition: all .3s;
+    outline: none;
+}
+.form-control:focus{ border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+.eye-btn{ position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer; color: #94a3b8; }
 
-@media(max-width:768px){
-    .auth-wrap{grid-template-columns:1fr}
-    .auth-left{display:none}
+.btn-login {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .75rem;
+}
+.btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3); }
+
+@media(max-width: 900px){
+    .auth-container { grid-template-columns: 1fr; max-width: 500px; }
+    .auth-left { display: none; }
 }
 </style>
 @endpush
 
 @section('content')
 <div class="auth-wrap">
-
-    {{-- LEFT SIDE --}}
-    <div class="auth-left">
-        <div style="position:relative;z-index:1;color:#fff">
-            <div style="width:64px;height:64px;border-radius:18px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:2rem;backdrop-filter:blur(8px)">
+    <div class="auth-container">
+        {{-- LEFT SIDE --}}
+        <div class="auth-left">
+            <div style="width:64px;height:64px;border-radius:20px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:2rem;backdrop-filter:blur(10px)">
                 <i class="fa-solid fa-heart-pulse"></i>
             </div>
-            <h2 style="font-size:2rem;font-weight:900;margin-bottom:1rem;line-height:1.3">مرحباً بك في<br>ProHealth</h2>
-            <p style="opacity:.9;font-size:1rem;line-height:1.8;margin-bottom:2.5rem">
-                سجّل دخولك للوصول إلى لوحة التحكم الخاصة بك وإدارة المواعيد والحجوزات.
-            </p>
-            <div style="display:flex;flex-direction:column;gap:1rem">
-                @foreach(['fa-calendar-check'=>'إدارة المواعيد بسهولة','fa-file-medical'=>'الوصول للسجلات الطبية','fa-bell'=>'إشعارات فورية للمواعيد'] as $icon=>$text)
-                <div style="display:flex;align-items:center;gap:.85rem">
-                    <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0">
-                        <i class="fa-solid {{ $icon }}"></i>
-                    </div>
-                    <span style="font-size:.9rem;opacity:.9">{{ $text }}</span>
+            <h2 style="font-size:2.25rem;font-weight:900;margin-bottom:1.5rem;line-height:1.2">مرحباً بك في<br>ProHealth</h2>
+            <p style="opacity:0.9;font-size:1.1rem;line-height:1.7;margin-bottom:2.5rem">سجّل دخولك للوصول إلى لوحة التحكم الخاصة بك وإدارة المواعيد والحجوزات الطبية بسهولة.</p>
+            <div style="display:flex;flex-direction:column;gap:1.25rem">
+                <div style="display:flex;align-items:center;gap:1rem">
+                    <i class="fa-solid fa-check-circle" style="color:#fff"></i>
+                    <span>إدارة المواعيد بذكاء</span>
                 </div>
-                @endforeach
+                <div style="display:flex;align-items:center;gap:1rem">
+                    <i class="fa-solid fa-check-circle" style="color:#fff"></i>
+                    <span>سجلات طبية آمنة</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:1rem">
+                    <i class="fa-solid fa-check-circle" style="color:#fff"></i>
+                    <span>تواصل مباشر مع الأطباء</span>
+                </div>
             </div>
         </div>
-    </div>
 
-    {{-- RIGHT SIDE --}}
-    <div class="auth-right">
-    <div class="auth-box">
-        <div style="margin-bottom:2rem;text-align:center">
-            <h1 style="font-size:1.6rem;font-weight:900;margin-bottom:.3rem">تسجيل الدخول</h1>
-            <p style="color:var(--muted);font-size:.9rem">اختر نوع حسابك وسجّل دخولك</p>
-        </div>
-
-        <div class="auth-card">
-            {{-- ROLE TABS --}}
-            <div class="role-tabs" id="roleTabs">
-                <button class="role-tab active" id="tabPatient" onclick="setRole('patient')">
-                    <i class="fa-solid fa-user"></i> مريض
-                </button>
-                <button class="role-tab" id="tabDoctor" onclick="setRole('doctor')">
-                    <i class="fa-solid fa-user-doctor"></i> دكتور
-                </button>
-            </div>
-
-            {{-- Role hint --}}
-            <div id="roleHint" style="display:flex;align-items:center;gap:.6rem;background:var(--blue-lt);border-radius:10px;padding:.7rem 1rem;margin-bottom:1.5rem;font-size:.83rem;color:var(--blue)">
-                <i class="fa-solid fa-circle-info"></i>
-                <span id="roleHintText">ادخل ببيانات حساب المريض الخاص بك</span>
-            </div>
-
-            <form method="POST" action="{{ route('login') }}">
-            @csrf
-            <input type="hidden" name="role" id="roleInput" value="patient">
-
-            <div class="form-group">
-                <label class="form-label">البريد الإلكتروني</label>
-                <div class="input-wrap">
-                    <i class="ico fa-solid fa-envelope"></i>
-                    <input type="email" name="email"
-                        class="form-control @error('email') is-invalid @enderror"
-                        value="{{ old('email') }}" required autofocus
-                        placeholder="example@email.com">
+        {{-- RIGHT SIDE --}}
+        <div class="auth-right">
+            <div class="auth-box">
+                <div style="margin-bottom:2.5rem;text-align:center">
+                    <h1 style="font-size:1.85rem;font-weight:900;color:#1e293b;margin-bottom:.5rem;cursor:default" onclick="handleSecretClick()">تسجيل الدخول</h1>
+                    <p style="color:#64748b;font-size:1rem">اختر نوع الحساب وادخل بياناتك</p>
                 </div>
-                @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                @error('identifier')<div class="invalid-feedback" style="display:block">{{ $message }}</div>@enderror
-            </div>
 
-            <div class="form-group">
-                <div style="display:flex;justify-content:space-between;margin-bottom:.38rem">
-                    <label class="form-label" style="margin:0">كلمة المرور</label>
-                </div>
-                <div class="input-wrap">
-                    <i class="ico fa-solid fa-lock"></i>
-                    <input type="password" name="password" id="pwdField"
-                        class="form-control @error('password') is-invalid @enderror"
-                        required placeholder="••••••••"
-                        style="padding-left:2.5rem">
-                    <button type="button" class="eye-btn" onclick="togglePwd()">
-                        <i class="fa-solid fa-eye" id="eyeIco"></i>
+                {{-- ROLE TABS --}}
+                <div class="role-tabs">
+                    <button type="button" class="role-tab active" id="tabPatient" onclick="setRole('patient')">
+                        <i class="fa-solid fa-user"></i> مريض
+                    </button>
+                    <button type="button" class="role-tab" id="tabDoctor" onclick="setRole('doctor')">
+                        <i class="fa-solid fa-user-md"></i> دكتور
+                    </button>
+                    <button type="button" class="role-tab" id="tabAdmin" onclick="setRole('admin')" style="display:none">
+                        <i class="fa-solid fa-user-shield"></i> أدمن
                     </button>
                 </div>
-                @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
+
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
+                    <input type="hidden" name="role" id="roleInput" value="patient">
+
+                    <div class="form-group">
+                        <label class="form-label">البريد الإلكتروني</label>
+                        <div class="input-wrap">
+                            <i class="ico fa-solid fa-envelope"></i>
+                            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', session('registered_email')) }}" required autofocus placeholder="example@email.com">
+                        </div>
+                        @error('email')<div style="color:#ef4444;font-size:.85rem;margin-top:.5rem">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">كلمة المرور</label>
+                        <div class="input-wrap">
+                            <i class="ico fa-solid fa-lock"></i>
+                            <input type="password" name="password" id="pwdField" class="form-control" required placeholder="••••••••">
+                            <button type="button" class="eye-btn" onclick="togglePwd()">
+                                <i class="fa-solid fa-eye" id="eyeIco"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem">
+                        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.9rem;color:#64748b">
+                            <input type="checkbox" name="remember" style="width:18px;height:18px;accent-color:#3b82f6"> تذكرني
+                        </label>
+                        <a href="#" style="font-size:.9rem;color:#3b82f6;font-weight:700;text-decoration:none">نسيت كلمة المرور؟</a>
+                    </div>
+
+                    <button type="submit" class="btn-login">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span id="loginBtnText">دخول كمريض</span>
+                    </button>
+                </form>
+
+                <div style="text-align:center;margin-top:2.5rem">
+                    <p style="color:#64748b;font-size:.95rem">
+                        ليس لديك حساب؟ <a href="{{ route('register') }}" style="color:#3b82f6;font-weight:800;text-decoration:none">سجّل الآن</a>
+                    </p>
+                </div>
             </div>
-
-            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem">
-                <input type="checkbox" name="remember" id="remember" style="width:16px;height:16px;accent-color:var(--blue)">
-                <label for="remember" style="font-size:.86rem;cursor:pointer;color:var(--muted)">تذكرني</label>
-            </div>
-
-            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:.85rem;font-size:.95rem">
-                <i class="fa-solid fa-right-to-bracket"></i>
-                <span id="loginBtnText">دخول كمريض</span>
-            </button>
-            </form>
         </div>
-
-        <div style="text-align:center;margin-top:1.5rem">
-            <p style="font-size:.88rem;color:var(--muted)">
-                ليس لديك حساب؟
-                <a href="{{ route('register') }}" style="color:var(--blue);font-weight:800">سجّل الآن</a>
-            </p>
-        </div>
-    </div>
     </div>
 </div>
 
 @push('scripts')
 <script>
+let secretClickCount = 0;
+function handleSecretClick() {
+    secretClickCount++;
+    if (secretClickCount === 5) { // Show admin tab after 5 clicks on "تسجيل الدخول"
+        const adminTab = document.getElementById('tabAdmin');
+        adminTab.style.display = 'flex';
+        const tabsContainer = document.querySelector('.role-tabs');
+        tabsContainer.style.gridTemplateColumns = '1fr 1fr 1fr';
+        alert('تم تفعيل خيار دخول الأدمن');
+    }
+}
+
 function setRole(role) {
     const isDoc = role === 'doctor';
-    document.getElementById('tabPatient').classList.toggle('active', !isDoc);
+    const isAdmin = role === 'admin';
+    
+    document.getElementById('tabPatient').classList.toggle('active', role === 'patient');
     document.getElementById('tabDoctor').classList.toggle('active', isDoc);
+    document.getElementById('tabAdmin').classList.toggle('active', isAdmin);
+    
     document.getElementById('roleInput').value = role;
-    document.getElementById('roleHintText').textContent = isDoc
-        ? 'ادخل ببيانات حسابك كطبيب'
-        : 'ادخل ببيانات حساب المريض الخاص بك';
-    document.getElementById('loginBtnText').textContent = isDoc ? 'دخول كدكتور' : 'دخول كمريض';
-    // change hint color
-    const hint = document.getElementById('roleHint');
-    hint.style.background = isDoc ? '#f0fdf4' : 'var(--blue-lt)';
-    hint.style.color = isDoc ? '#059669' : 'var(--blue)';
-    hint.querySelector('i').className = 'fa-solid fa-' + (isDoc ? 'stethoscope' : 'circle-info');
+    
+    let btnText = 'دخول كمريض';
+    let btnBg = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+    
+    if (isDoc) {
+        btnText = 'دخول كدكتور';
+        btnBg = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    } else if (isAdmin) {
+        btnText = 'دخول كأدمن';
+        btnBg = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)';
+    }
+    
+    const btn = document.querySelector('.btn-login');
+    document.getElementById('loginBtnText').textContent = btnText;
+    btn.style.background = btnBg;
 }
 
 function togglePwd() {
