@@ -78,6 +78,25 @@ return [
     'easy_booking' => 'حجز سهل وسريع',
     'book_online_minutes' => 'احجز موعدك أونلاين بدقائق',
 
+    // Services Page
+    'medical_services' => 'خدماتنا الطبية',
+    'integrated_healthcare' => 'رعاية صحية متكاملة',
+    'services_desc' => 'نقدم مجموعة واسعة من الخدمات الطبية المتميزة بأحدث التقنيات العالمية',
+    'emergency_desc' => 'خدمة طوارئ على مدار الساعة مع طاقم طبي متخصص.',
+    'lab_desc' => 'أحدث أجهزة التحليل الطبي لضمان دقة النتائج.',
+    'radiology_desc' => 'تصوير إشعاعي متقدم (رنين، مقطعية، وسينية).',
+    'pharmacy_desc' => 'توفير كافة الأدوية والمستلزمات الطبية اللازمة.',
+    'outpatient_clinics' => 'العيادات الخارجية',
+    'outpatient_clinics_desc' => 'نخبة من الأطباء في كافة التخصصات الطبية.',
+    'intensive_care' => 'العناية المركزة',
+    'intensive_care_desc' => 'وحدات مجهزة بأحدث أجهزة مراقبة المؤشرات الحيوية.',
+    'view_doctors' => 'عرض الأطباء',
+    'patient_portal' => 'بوابة المرضى',
+    'emergency_service' => 'خدمة الطوارئ',
+    'lab_service' => 'خدمة المختبر',
+    'radiology_service' => 'خدمة الأشعة',
+    'pharmacy_service' => 'خدمة الصيدلية',
+
     // Footer
     'quick_links' => 'روابط سريعة',
     'patient_services' => 'خدمات المرضى',

@@ -78,6 +78,25 @@ return [
     'easy_booking' => 'Easy and Quick Booking',
     'book_online_minutes' => 'Book your appointment online in minutes',
 
+    // Services Page
+    'medical_services' => 'Our Medical Services',
+    'integrated_healthcare' => 'Integrated Healthcare',
+    'services_desc' => 'We provide a wide range of distinguished medical services with the latest global technologies',
+    'emergency_desc' => '24-hour emergency service with specialized medical staff.',
+    'lab_desc' => 'Latest medical analysis equipment to ensure accurate results.',
+    'radiology_desc' => 'Advanced imaging (MRI, CT, and X-ray).',
+    'pharmacy_desc' => 'Providing all necessary medicines and medical supplies.',
+    'outpatient_clinics' => 'Outpatient Clinics',
+    'outpatient_clinics_desc' => 'A group of elite doctors in all medical specialties.',
+    'intensive_care' => 'Intensive Care',
+    'intensive_care_desc' => 'Units equipped with the latest vital signs monitoring devices.',
+    'view_doctors' => 'View Doctors',
+    'patient_portal' => 'Patient Portal',
+    'emergency_service' => 'Emergency Service',
+    'lab_service' => 'Laboratory Service',
+    'radiology_service' => 'Radiology Service',
+    'pharmacy_service' => 'Pharmacy Service',
+
     // Footer
     'quick_links' => 'Quick Links',
     'patient_services' => 'Patient Services',
