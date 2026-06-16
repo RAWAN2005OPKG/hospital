@@ -1,63 +1,59 @@
 @extends('layouts.app')
-
-@section('title', 'الأطباء - صحتي')
+@section('title', __('messages.doctors') . ' - ' . __('messages.sehati'))
 
 @section('content')
-<div class="section">
+<div class="py-5">
     <div class="container">
-        <div class="section-head">
-            <div class="sec-tag">فريقنا الطبي</div>
-            <h2>نخبة من الأطباء المتخصصين</h2>
-            <p>أفضل الكوادر الطبية في مختلف التخصصات</p>
+        <div class="text-center mb-5">
+            <div class="badge bg-soft-primary text-primary rounded-pill px-3 py-2 mb-2">{{ __('messages.our_medical_team') }}</div>
+            <h2 class="fw-bold">{{ __('messages.medical_team_subtitle') }}</h2>
+            <p class="text-muted">{{ __('messages.medical_team_description') }}</p>
         </div>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem;">
+        <div class="row g-4">
             @foreach($doctors as $doctor)
-                <div style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 30px rgba(0, 0, 0, 0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.05)'">
-                    <div style="height: 200px; background: linear-gradient(135deg, var(--blue), var(--cyan)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 4rem;">
-                        @if($doctor->photo)
-                            <img src="{{ asset('storage/' . $doctor->photo) }}" alt="{{ $doctor->user->name }}" style="width: 100%; height: 100%; object-fit: cover;">
-                        @elseif($doctor->user->avatar)
-                            <img src="{{ asset('storage/' . $doctor->user->avatar) }}" alt="{{ $doctor->user->name }}" style="width: 100%; height: 100%; object-fit: cover;">
-                        @else
-                            <i class="fa-solid fa-user-doctor"></i>
-                        @endif
-                    </div>
-                    
-                    <div style="padding: 1.5rem;">
-                        <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">د. {{ $doctor->user->name }}</h3>
-                        <p style="color: var(--blue); font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">{{ $doctor->specialization->name ?? 'تخصص' }}</p>
-                        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem;">{{ $doctor->department->name ?? 'قسم' }}</p>
-                        
-                        @if($doctor->experience_years)
-                            <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem;">
-                                <i class="fa-solid fa-briefcase" style="color: var(--cyan); margin-left: 0.5rem;"></i>
-                                {{ $doctor->experience_years }} سنة خبرة
-                            </p>
-                        @endif
-                        
-                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                            <span style="color: var(--yellow); font-size: 0.9rem;">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star-half"></i>
-                            </span>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm hover-up transition-all">
+                        <div class="position-relative overflow-hidden" style="height: 250px;">
+                            @if($doctor->photo)
+                                <img src="{{ asset('storage/' . $doctor->photo) }}" class="card-img-top h-100 w-100 object-fit-cover" alt="{{ $doctor->user->name }}">
+                            @else
+                                <div class="bg-light d-flex align-items-center justify-content-center h-100">
+                                    <i class="fa-solid fa-user-doctor fa-4x text-secondary opacity-25"></i>
+                                </div>
+                            @endif
                         </div>
                         
-                        <a href="{{ route('doctors.show', $doctor) }}" class="btn btn-primary" style="width: 100%; text-align: center;">
-                            <i class="fa-solid fa-calendar-plus"></i> احجز موعداً
-                        </a>
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-1">د. {{ $doctor->user->name }}</h5>
+                            <p class="text-primary small fw-bold mb-2">{{ $doctor->specialization->name ?? __('messages.specialization') }}</p>
+                            <p class="text-muted small mb-3">{{ $doctor->department->name ?? __('messages.department') }}</p>
+                            
+                            @if($doctor->experience_years)
+                                <div class="d-flex align-items-center mb-3 text-muted small">
+                                    <i class="fa-solid fa-briefcase me-2 ms-2"></i>
+                                    {{ $doctor->experience_years }} {{ __('messages.experience_years_count') }}
+                                </div>
+                            @endif
+                            
+                            <a href="{{ route('doctors.show', $doctor) }}" class="btn btn-primary w-100 rounded-pill">
+                                <i class="fa-solid fa-calendar-plus me-1 ms-1"></i> {{ __('messages.book_appointment_btn') }}
+                            </a>
+                        </div>
                     </div>
                 </div>
             @endforeach
         </div>
         
-        <!-- Pagination -->
-        <div style="display: flex; justify-content: center; margin-top: 2rem;">
+        <div class="d-flex justify-content-center mt-5">
             {{ $doctors->links() }}
         </div>
     </div>
 </div>
+
+<style>
+    .hover-up:hover { transform: translateY(-10px); transition: 0.3s; }
+    .bg-soft-primary { background-color: #e0f4ff; }
+    .object-fit-cover { object-fit: cover; }
+</style>
 @endsection

@@ -15,10 +15,9 @@
     }
 
     .departments-hero {
-        padding: 100px 0 50px;
+        padding: 120px 0 60px;
         text-align: center;
         background: linear-gradient(180deg, rgba(224, 244, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
-        margin-top: 80px;
     }
 
     .sec-tag {
@@ -48,19 +47,16 @@
         font-size: 1.1rem;
     }
 
-    .departments-section {
-        padding: 40px 0 100px;
-    }
-
     .departments-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 2rem;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2.5rem;
+        padding: 40px 0 100px;
     }
 
     .department-card {
         background: var(--white);
-        border-radius: 20px;
+        border-radius: 24px;
         overflow: hidden;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         border: 1px solid var(--border);
@@ -68,30 +64,11 @@
         position: relative;
         display: flex;
         flex-direction: column;
-        height: 100%;
-    }
-
-    .department-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary), var(--secondary));
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: 1;
     }
 
     .department-card:hover {
         transform: translateY(-12px);
         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
-        border-color: var(--primary-light);
-    }
-
-    .department-card:hover::before {
-        opacity: 1;
     }
 
     .department-image {
@@ -100,185 +77,57 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        position: relative;
         overflow: hidden;
-    }
-
-    .department-image::after {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        background: rgba(0, 119, 182, 0.08);
-    }
-
-    .department-image::before {
-        content: '';
-        position: absolute;
-        bottom: -30%;
-        left: -5%;
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        background: rgba(0, 180, 216, 0.08);
     }
 
     .department-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        position: relative;
-        z-index: 1;
-    }
-
-    .department-icon {
-        width: 80px;
-        height: 80px;
-        border-radius: 20px;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.2rem;
-        color: white;
-        box-shadow: 0 8px 24px rgba(0, 119, 182, 0.3);
-        position: relative;
-        z-index: 2;
     }
 
     .department-content {
-        padding: 1.75rem;
+        padding: 2rem;
         flex: 1;
         display: flex;
         flex-direction: column;
     }
 
     .department-name {
-        font-size: 1.35rem;
+        font-size: 1.4rem;
         font-weight: 800;
         margin-bottom: 0.75rem;
         color: #111827;
     }
 
     .department-description {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         color: var(--gray-500);
         line-height: 1.6;
         margin-bottom: 1.5rem;
         flex: 1;
     }
 
-    .department-meta {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        font-size: 0.85rem;
-        color: var(--gray-500);
-        margin-bottom: 1.5rem;
-        padding-bottom: 1.5rem;
-        border-bottom: 1px solid var(--gray-100);
-    }
-
-    .meta-badge {
-        width: 32px;
-        height: 32px;
-        border-radius: 10px;
-        background: var(--primary-light);
-        color: var(--primary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
-
     .department-actions {
         display: flex;
-        gap: 0.75rem;
+        gap: 1rem;
     }
 
     .btn-department {
         flex: 1;
-        padding: 10px 12px;
-        border-radius: 10px;
+        padding: 12px 16px;
+        border-radius: 12px;
         font-weight: 600;
-        font-size: 0.85rem;
         text-decoration: none;
-        transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.4rem;
-        border: none;
-        cursor: pointer;
-        white-space: nowrap;
+        gap: 0.5rem;
+        transition: 0.3s;
     }
 
-    .btn-primary-dept {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        color: white;
-    }
-
-    .btn-primary-dept:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 119, 182, 0.3);
-    }
-
-    .btn-outline-dept {
-        border: 1.5px solid var(--primary-light);
-        color: var(--primary);
-        background: transparent;
-    }
-
-    .btn-outline-dept:hover {
-        background: var(--primary-light);
-        color: var(--primary);
-        transform: translateY(-2px);
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 5rem 2rem;
-        color: var(--gray-500);
-    }
-
-    .empty-state i {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-        display: block;
-        opacity: 0.2;
-    }
-
-    .empty-state p {
-        font-size: 1.1rem;
-    }
-
-    @media (max-width: 768px) {
-        .departments-grid {
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .department-image {
-            height: 160px;
-        }
-
-        .department-content {
-            padding: 1.25rem;
-        }
-
-        .department-actions {
-            gap: 0.5rem;
-        }
-
-        .btn-department {
-            padding: 8px 10px;
-            font-size: 0.8rem;
-        }
-    }
+    .btn-primary-dept { background: var(--primary); color: white; }
+    .btn-outline-dept { border: 2px solid var(--primary-light); color: var(--primary); }
 </style>
 @endpush
 
@@ -291,56 +140,34 @@
     </div>
 </div>
 
-<div class="container departments-section">
+<div class="container">
     @if($departments->count())
         <div class="departments-grid">
             @foreach($departments as $department)
             <div class="department-card">
                 <div class="department-image">
                     @if($department->image)
-                        <img src="{{ asset('storage/' . $department->image) }}" alt="{{ $department->name }}">
+                        <img src="{{ asset($department->image) }}" alt="{{ $department->name }}">
                     @else
-                        <div class="department-icon">
-                            <i class="fa-solid fa-hospital"></i>
-                        </div>
+                        <i class="fa-solid fa-hospital fa-3x text-primary"></i>
                     @endif
                 </div>
 
                 <div class="department-content">
                     <h3 class="department-name">{{ $department->name }}</h3>
-                    
-                    @if($department->description)
-                        <p class="department-description">{{ Str::limit($department->description, 120) }}</p>
-                    @endif
-
-                    <div class="department-meta">
-                        <div class="meta-badge">
-                            <i class="fa-solid fa-user-doctor"></i>
-                        </div>
-                        <span>
-                            <strong style="color: #111827;">{{ $department->doctors_count ?? 0 }}</strong>
-                            {{ __('messages.doctors_count') }}
-                        </span>
-                    </div>
+                    <p class="department-description">{{ Str::limit($department->description, 120) }}</p>
 
                     <div class="department-actions">
-                        <a href="{{ route('departments.show', $department->id) }}" class="btn-department btn-primary-dept" title="{{ __('messages.view_all') }}">
-                            <i class="fa-solid fa-stethoscope"></i>
+                        <a href="{{ route('departments.show', $department->id) }}" class="btn-department btn-primary-dept">
                             {{ __('messages.view_all') }}
                         </a>
-                        <a href="{{ route('doctors.index') }}" class="btn-department btn-outline-dept" title="{{ __('messages.view_doctors') }}">
-                            <i class="fa-solid fa-user-md"></i>
+                        <a href="{{ route('doctors.index') }}?department={{ $department->id }}" class="btn-department btn-outline-dept">
                             {{ __('messages.view_doctors') }}
                         </a>
                     </div>
                 </div>
             </div>
             @endforeach
-        </div>
-    @else
-        <div class="empty-state">
-            <i class="fa-solid fa-folder-open"></i>
-            <p>{{ __('messages.no_departments') }}</p>
         </div>
     @endif
 </div>

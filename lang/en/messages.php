@@ -127,4 +127,14 @@ return [
     'about' => 'About Platform',
     'sehati' => 'Sehati',
     'sehati_full' => 'Sehati | صحتي',
+
+        // Doctors
+    'medical_team_subtitle' => 'Elite Specialist Doctors',
+    'medical_team_description' => 'Best medical staff in various specialties',
+    'experience_years_count' => 'Years of Experience',
+    'book_appointment_btn' => 'Book an Appointment',
+    'no_doctors_found' => 'No doctors found in this department currently',
+    'back_to_all_doctors' => 'Browse all doctors',
+    'specialization' => 'Specialization',
+    'department' => 'Department',
 ];

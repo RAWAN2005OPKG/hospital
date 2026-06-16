@@ -127,4 +127,14 @@ return [
     'about' => 'عن المنصة',
     'sehati' => 'صحتي',
     'sehati_full' => 'صحتي | Sehati',
+
+        // الأطباء
+    'medical_team_subtitle' => 'نخبة من الأطباء المتخصصين',
+    'medical_team_description' => 'أفضل الكوادر الطبية في مختلف التخصصات',
+    'experience_years_count' => 'سنة خبرة',
+    'book_appointment_btn' => 'احجز موعداً',
+    'no_doctors_found' => 'لا يوجد أطباء في هذا القسم حالياً',
+    'back_to_all_doctors' => 'تصفح جميع الأطباء',
+    'specialization' => 'التخصص',
+    'department' => 'القسم',
 ];
