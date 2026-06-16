@@ -177,3 +177,8 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// Contact Messages Routes (Admin Only)
+Route::middleware(['auth', 'role:admin,receptionist'])->prefix($adminPath)->as('admin.')->group(function () {
+    Route::get('/contact-messages', [AdminController::class, 'contactMessages'])->name('contact-messages');
+});

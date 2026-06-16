@@ -149,3 +149,10 @@ class AdminController extends Controller
     public function editDoctor(Doctor $doctor) { return view('admin.doctors.edit', compact('doctor')); }
     public function destroyDoctor(Doctor $doctor) { $doctor->delete(); return back()->with('success', 'تم حذف الطبيب'); }
 }
+
+    public function contactMessages()
+    {
+        $messages = \App\Models\ContactMessage::orderBy('created_at', 'desc')->paginate(20);
+        $unreadCount = \App\Models\ContactMessage::where('status', 'new')->count();
+        return view("admin.contact-messages", compact("messages", "unreadCount"));
+    }
