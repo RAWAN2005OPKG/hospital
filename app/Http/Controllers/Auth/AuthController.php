@@ -106,6 +106,9 @@ class AuthController extends Controller
                 'consultation_fee' => 0,
                 'department_id' => $department->id,
             ]);
+        } elseif ($request->role === UserRoleEnum::Admin->value) {
+            // Admin user created without additional relations
+            // Admin users don't need Patient or Doctor records
         }
 
         Auth::login($user);

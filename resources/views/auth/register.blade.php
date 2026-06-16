@@ -39,7 +39,7 @@
 /* role pick cards */
 .role-pick{
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 1.25rem;
     margin-bottom: 2.5rem;
 }
@@ -64,6 +64,13 @@
 
 .role-card.active[data-role="doctor"] { border-color: #10b981; background: #f0fdf4; }
 .role-card.active[data-role="doctor"] i, .role-card.active[data-role="doctor"] span { color: #10b981; }
+
+.role-card.active[data-role="admin"] { border-color: #1e293b; background: #f1f5f9; }
+.role-card.active[data-role="admin"] i, .role-card.active[data-role="admin"] span { color: #1e293b; }
+
+.role-card#adminCard {
+    display: none;
+}
 
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 .form-group { margin-bottom: 1.5rem; }
@@ -100,10 +107,18 @@
 }
 .btn-register:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3); }
 
+.admin-hint {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    text-align: center;
+    margin-top: 1rem;
+}
+
 @media(max-width: 900px){
     .auth-container { grid-template-columns: 1fr; max-width: 550px; }
     .auth-left { display: none; }
     .form-grid { grid-template-columns: 1fr; gap: 0; }
+    .role-pick { grid-template-columns: 1fr 1fr; }
 }
 </style>
 @endpush
@@ -141,7 +156,7 @@
         <div class="auth-right">
             <div class="auth-box">
                 <div style="margin-bottom:2.5rem;text-align:center">
-                    <h1 style="font-size:1.8rem;font-weight:900;color:#1e293b;margin-bottom:.5rem">{{ __('messages.register') }}</h1>
+                    <h1 style="font-size:1.8rem;font-weight:900;color:#1e293b;margin-bottom:.5rem" id="registerTitle" onclick="handleSecretClick()">{{ __('messages.register') }}</h1>
                     <p style="color:#64748b;font-size:1rem">{{ app()->getLocale() === 'ar' ? 'اختر نوع الحساب وأكمل بياناتك' : 'Choose your account type and complete your information' }}</p>
                 </div>
 
@@ -160,6 +175,12 @@
                             <i class="fa-solid fa-user-md"></i>
                             <span>{{ app()->getLocale() === 'ar' ? 'دكتور' : 'Doctor' }}</span>
                             <small>{{ app()->getLocale() === 'ar' ? 'أريد إدارة مواعيدي ومرضاي' : 'I want to manage my schedule and patients' }}</small>
+                        </label>
+                        <label class="role-card {{ old('role') == 'admin' ? 'active' : '' }}" data-role="admin" id="adminCard">
+                            <input type="radio" name="role" value="admin" {{ old('role') == 'admin' ? 'checked' : '' }} onchange="updateRoleUI(this)">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <span>{{ app()->getLocale() === 'ar' ? 'أدمن' : 'Admin' }}</span>
+                            <small>{{ app()->getLocale() === 'ar' ? 'أريد إدارة النظام' : 'I want to manage the system' }}</small>
                         </label>
                     </div>
 
@@ -208,6 +229,10 @@
                     </button>
                 </form>
 
+                <div class="admin-hint" id="adminHint" style="display:none">
+                    {{ app()->getLocale() === 'ar' ? '💡 تم تفعيل خيار إنشاء حساب أدمن' : '💡 Admin account creation enabled' }}
+                </div>
+
                 <div style="text-align:center;margin-top:2rem">
                     <p style="color:#64748b;font-size:.95rem">
                         {{ app()->getLocale() === 'ar' ? 'لديك حساب بالفعل؟' : 'Already have an account?' }} <a href="{{ route('login') }}" style="color:#6366f1;font-weight:800;text-decoration:none">{{ app()->getLocale() === 'ar' ? 'سجّل دخولك' : 'Sign in' }}</a>
@@ -220,6 +245,27 @@
 
 @push('scripts')
 <script>
+let secretClickCount = 0;
+let adminRevealed = false;
+const locale = '{{ app()->getLocale() }}';
+
+function handleSecretClick() {
+    secretClickCount++;
+    if (secretClickCount === 5 && !adminRevealed) {
+        adminRevealed = true;
+        localStorage.setItem('adminRegisterRevealed', 'true');
+        
+        const adminCard = document.getElementById('adminCard');
+        adminCard.style.display = 'block';
+        
+        const hint = document.getElementById('adminHint');
+        hint.style.display = 'block';
+        
+        const msg = locale === 'ar' ? 'تم تفعيل خيار إنشاء حساب أدمن' : 'Admin account creation enabled';
+        alert(msg);
+    }
+}
+
 function updateRoleUI(input) {
     // Remove active class from all cards
     document.querySelectorAll('.role-card').forEach(card => card.classList.remove('active'));
@@ -228,6 +274,18 @@ function updateRoleUI(input) {
         input.parentElement.classList.add('active');
     }
 }
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const adminRevealed = localStorage.getItem('adminRegisterRevealed') === 'true';
+    if (adminRevealed) {
+        adminRevealed = true;
+        const adminCard = document.getElementById('adminCard');
+        adminCard.style.display = 'block';
+        const hint = document.getElementById('adminHint');
+        hint.style.display = 'block';
+    }
+});
 </script>
 @endpush
 @endsection

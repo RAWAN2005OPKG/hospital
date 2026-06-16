@@ -47,6 +47,7 @@
     border-radius: 15px;
     padding: .4rem;
     margin-bottom: 2rem;
+    transition: all 0.3s ease;
 }
 .role-tab{
     display: flex;
@@ -103,6 +104,13 @@
 }
 .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3); }
 
+.admin-hint {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    text-align: center;
+    margin-top: 1rem;
+}
+
 @media(max-width: 900px){
     .auth-container { grid-template-columns: 1fr; max-width: 500px; }
     .auth-left { display: none; }
@@ -140,12 +148,12 @@
         <div class="auth-right">
             <div class="auth-box">
                 <div style="margin-bottom:2.5rem;text-align:center">
-                    <h1 style="font-size:1.85rem;font-weight:900;color:#1e293b;margin-bottom:.5rem;cursor:default" onclick="handleSecretClick()">{{ __('messages.login') }}</h1>
+                    <h1 style="font-size:1.85rem;font-weight:900;color:#1e293b;margin-bottom:.5rem;cursor:default" id="loginTitle" onclick="handleSecretClick()">{{ __('messages.login') }}</h1>
                     <p style="color:#64748b;font-size:1rem">{{ app()->getLocale() === 'ar' ? 'اختر نوع الحساب وادخل بياناتك' : 'Choose your account type and enter your credentials' }}</p>
                 </div>
 
                 {{-- ROLE TABS --}}
-                <div class="role-tabs">
+                <div class="role-tabs" id="roleTabs">
                     <button type="button" class="role-tab active" id="tabPatient" onclick="setRole('patient')">
                         <i class="fa-solid fa-user"></i> {{ app()->getLocale() === 'ar' ? 'مريض' : 'Patient' }}
                     </button>
@@ -194,6 +202,10 @@
                     </button>
                 </form>
 
+                <div class="admin-hint" id="adminHint" style="display:none">
+                    {{ app()->getLocale() === 'ar' ? '💡 تم تفعيل خيار دخول الأدمن' : '💡 Admin login option enabled' }}
+                </div>
+
                 <div style="text-align:center;margin-top:2.5rem">
                     <p style="color:#64748b;font-size:.95rem">
                         {{ app()->getLocale() === 'ar' ? 'ليس لديك حساب؟' : 'Don\'t have an account?' }} <a href="{{ route('register') }}" style="color:#3b82f6;font-weight:800;text-decoration:none">{{ app()->getLocale() === 'ar' ? 'سجّل الآن' : 'Register now' }}</a>
@@ -207,14 +219,26 @@
 @push('scripts')
 <script>
 let secretClickCount = 0;
+let adminRevealed = false;
+const locale = '{{ app()->getLocale() }}';
+
 function handleSecretClick() {
     secretClickCount++;
-    if (secretClickCount === 5) { // Show admin tab after 5 clicks on "تسجيل الدخول"
+    if (secretClickCount === 5 && !adminRevealed) {
+        adminRevealed = true;
+        localStorage.setItem('adminRevealed', 'true');
+        
         const adminTab = document.getElementById('tabAdmin');
         adminTab.style.display = 'flex';
-        const tabsContainer = document.querySelector('.role-tabs');
+        
+        const tabsContainer = document.getElementById('roleTabs');
         tabsContainer.style.gridTemplateColumns = '1fr 1fr 1fr';
-        alert('تم تفعيل خيار دخول الأدمن');
+        
+        const hint = document.getElementById('adminHint');
+        hint.style.display = 'block';
+        
+        const msg = locale === 'ar' ? 'تم تفعيل خيار دخول الأدمن' : 'Admin login option enabled';
+        alert(msg);
     }
 }
 
@@ -228,14 +252,14 @@ function setRole(role) {
     
     document.getElementById('roleInput').value = role;
     
-    let btnText = 'دخول كمريض';
+    let btnText = locale === 'ar' ? 'دخول كمريض' : 'Login as Patient';
     let btnBg = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
     
     if (isDoc) {
-        btnText = 'دخول كدكتور';
+        btnText = locale === 'ar' ? 'دخول كدكتور' : 'Login as Doctor';
         btnBg = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
     } else if (isAdmin) {
-        btnText = 'دخول كأدمن';
+        btnText = locale === 'ar' ? 'دخول كأدمن' : 'Login as Admin';
         btnBg = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)';
     }
     
@@ -250,6 +274,20 @@ function togglePwd() {
     f.type = f.type === 'password' ? 'text' : 'password';
     i.className = f.type === 'text' ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
 }
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const adminRevealed = localStorage.getItem('adminRevealed') === 'true';
+    if (adminRevealed) {
+        adminRevealed = true;
+        const adminTab = document.getElementById('tabAdmin');
+        adminTab.style.display = 'flex';
+        const tabsContainer = document.getElementById('roleTabs');
+        tabsContainer.style.gridTemplateColumns = '1fr 1fr 1fr';
+        const hint = document.getElementById('adminHint');
+        hint.style.display = 'block';
+    }
+});
 </script>
 @endpush
 @endsection
