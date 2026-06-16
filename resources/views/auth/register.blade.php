@@ -116,22 +116,22 @@
             <div style="width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:2rem;backdrop-filter:blur(10px)">
                 <i class="fa-solid fa-user-plus"></i>
             </div>
-            <h2 style="font-size:2.25rem;font-weight:900;margin-bottom:1.5rem;line-height:1.2">انضم إلى<br>ProHealth</h2>
-            <p style="opacity:0.9;font-size:1.1rem;line-height:1.7;margin-bottom:3rem">سجّل حسابك الآن واستمتع بتجربة صحية متكاملة ومطورة خصيصاً لتلبية احتياجاتك.</p>
+            <h2 style="font-size:2.25rem;font-weight:900;margin-bottom:1.5rem;line-height:1.2">{{ app()->getLocale() === 'ar' ? 'انضم إلى' : 'Join' }}<br>{{ __('messages.sehati') }}</h2>
+            <p style="opacity:0.9;font-size:1.1rem;line-height:1.7;margin-bottom:3rem">{{ app()->getLocale() === 'ar' ? 'سجّل حسابك الآن واستمتع بتجربة صحية متكاملة ومطورة خصيصاً لتلبية احتياجاتك.' : 'Register your account now and enjoy a comprehensive and advanced healthcare experience tailored to meet your needs.' }}</p>
             
             <div style="display:flex;flex-direction:column;gap:1.5rem">
                 <div style="display:flex;gap:1rem;background:rgba(255,255,255,0.1);padding:1.25rem;border-radius:20px;backdrop-filter:blur(5px)">
                     <i class="fa-solid fa-user-injured" style="font-size:1.5rem"></i>
                     <div>
-                        <div style="font-weight:800;margin-bottom:.2rem">للمرضى</div>
-                        <div style="font-size:.85rem;opacity:0.8">حجز مواعيد فورية ومتابعة التقارير الطبية.</div>
+                        <div style="font-weight:800;margin-bottom:.2rem">{{ app()->getLocale() === 'ar' ? 'للمرضى' : 'For Patients' }}</div>
+                        <div style="font-size:.85rem;opacity:0.8">{{ app()->getLocale() === 'ar' ? 'حجز مواعيد فورية ومتابعة التقارير الطبية.' : 'Book instant appointments and track medical reports.' }}</div>
                     </div>
                 </div>
                 <div style="display:flex;gap:1rem;background:rgba(255,255,255,0.1);padding:1.25rem;border-radius:20px;backdrop-filter:blur(5px)">
                     <i class="fa-solid fa-user-md" style="font-size:1.5rem"></i>
                     <div>
-                        <div style="font-weight:800;margin-bottom:.2rem">للأطباء</div>
-                        <div style="font-size:.85rem;opacity:0.8">إدارة جدول المواعيد والمرضى بذكاء.</div>
+                        <div style="font-weight:800;margin-bottom:.2rem">{{ app()->getLocale() === 'ar' ? 'للأطباء' : 'For Doctors' }}</div>
+                        <div style="font-size:.85rem;opacity:0.8">{{ app()->getLocale() === 'ar' ? 'إدارة جدول المواعيد والمرضى بذكاء.' : 'Manage your schedule and patients intelligently.' }}</div>
                     </div>
                 </div>
             </div>
@@ -141,8 +141,8 @@
         <div class="auth-right">
             <div class="auth-box">
                 <div style="margin-bottom:2.5rem;text-align:center">
-                    <h1 style="font-size:1.8rem;font-weight:900;color:#1e293b;margin-bottom:.5rem">إنشاء حساب جديد</h1>
-                    <p style="color:#64748b;font-size:1rem">اختر نوع الحساب وأكمل بياناتك</p>
+                    <h1 style="font-size:1.8rem;font-weight:900;color:#1e293b;margin-bottom:.5rem">{{ __('messages.register') }}</h1>
+                    <p style="color:#64748b;font-size:1rem">{{ app()->getLocale() === 'ar' ? 'اختر نوع الحساب وأكمل بياناتك' : 'Choose your account type and complete your information' }}</p>
                 </div>
 
                 <form method="POST" action="{{ route('register') }}">
@@ -152,19 +152,19 @@
                         <label class="role-card {{ old('role', 'patient') == 'patient' ? 'active' : '' }}" data-role="patient">
                             <input type="radio" name="role" value="patient" {{ old('role', 'patient') == 'patient' ? 'checked' : '' }} onchange="updateRoleUI(this)">
                             <i class="fa-solid fa-user"></i>
-                            <span>مريض</span>
-                            <small>أريد حجز مواعيد ومتابعة حالتي</small>
+                            <span>{{ app()->getLocale() === 'ar' ? 'مريض' : 'Patient' }}</span>
+                            <small>{{ app()->getLocale() === 'ar' ? 'أريد حجز مواعيد ومتابعة حالتي' : 'I want to book appointments and track my health' }}</small>
                         </label>
                         <label class="role-card {{ old('role') == 'doctor' ? 'active' : '' }}" data-role="doctor">
                             <input type="radio" name="role" value="doctor" {{ old('role') == 'doctor' ? 'checked' : '' }} onchange="updateRoleUI(this)">
                             <i class="fa-solid fa-user-md"></i>
-                            <span>دكتور</span>
-                            <small>أريد إدارة مواعيدي ومرضاي</small>
+                            <span>{{ app()->getLocale() === 'ar' ? 'دكتور' : 'Doctor' }}</span>
+                            <small>{{ app()->getLocale() === 'ar' ? 'أريد إدارة مواعيدي ومرضاي' : 'I want to manage my schedule and patients' }}</small>
                         </label>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">الاسم الكامل</label>
+                        <label class="form-label">{{ app()->getLocale() === 'ar' ? 'الاسم الكامل' : 'Full Name' }}</label>
                         <div class="input-wrap">
                             <i class="ico fa-solid fa-user"></i>
                             <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required placeholder="مثال: محمد أحمد">
@@ -174,7 +174,7 @@
 
                     <div class="form-grid">
                         <div class="form-group">
-                            <label class="form-label">البريد الإلكتروني</label>
+                            <label class="form-label">{{ app()->getLocale() === 'ar' ? 'البريد الإلكتروني' : 'Email' }}</label>
                             <div class="input-wrap">
                                 <i class="ico fa-solid fa-envelope"></i>
                                 <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required placeholder="example@email.com">
@@ -182,7 +182,7 @@
                             @error('email')<div style="color:#ef4444;font-size:.85rem;margin-top:.5rem">{{ $message }}</div>@enderror
                         </div>
                         <div class="form-group">
-                            <label class="form-label">رقم الهاتف</label>
+                            <label class="form-label">{{ app()->getLocale() === 'ar' ? 'رقم الهاتف' : 'Phone Number' }}</label>
                             <div class="input-wrap">
                                 <i class="ico fa-solid fa-phone"></i>
                                 <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}" required placeholder="05xxxxxxxx">
@@ -193,24 +193,24 @@
 
                     <div class="form-grid">
                         <div class="form-group">
-                            <label class="form-label">كلمة المرور</label>
+                            <label class="form-label">{{ app()->getLocale() === 'ar' ? 'كلمة المرور' : 'Password' }}</label>
                             <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" required placeholder="••••••••" style="padding-right:1rem">
                             @error('password')<div style="color:#ef4444;font-size:.85rem;margin-top:.5rem">{{ $message }}</div>@enderror
                         </div>
                         <div class="form-group">
-                            <label class="form-label">تأكيد كلمة المرور</label>
+                            <label class="form-label">{{ app()->getLocale() === 'ar' ? 'تأكيد كلمة المرور' : 'Confirm Password' }}</label>
                             <input type="password" name="password_confirmation" class="form-control" required placeholder="••••••••" style="padding-right:1rem">
                         </div>
                     </div>
 
                     <button type="submit" class="btn-register">
-                        <i class="fa-solid fa-user-plus"></i> إنشاء الحساب الآن
+                        <i class="fa-solid fa-user-plus"></i> {{ app()->getLocale() === 'ar' ? 'إنشاء الحساب الآن' : 'Create Account Now' }}
                     </button>
                 </form>
 
                 <div style="text-align:center;margin-top:2rem">
                     <p style="color:#64748b;font-size:.95rem">
-                        لديك حساب بالفعل؟ <a href="{{ route('login') }}" style="color:#6366f1;font-weight:800;text-decoration:none">سجّل دخولك</a>
+                        {{ app()->getLocale() === 'ar' ? 'لديك حساب بالفعل؟' : 'Already have an account?' }} <a href="{{ route('login') }}" style="color:#6366f1;font-weight:800;text-decoration:none">{{ app()->getLocale() === 'ar' ? 'سجّل دخولك' : 'Sign in' }}</a>
                     </p>
                 </div>
             </div>

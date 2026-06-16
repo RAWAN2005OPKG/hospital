@@ -118,20 +118,20 @@
             <div style="width:64px;height:64px;border-radius:20px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:2rem;backdrop-filter:blur(10px)">
                 <i class="fa-solid fa-heart-pulse"></i>
             </div>
-            <h2 style="font-size:2.25rem;font-weight:900;margin-bottom:1.5rem;line-height:1.2">مرحباً بك في<br>ProHealth</h2>
-            <p style="opacity:0.9;font-size:1.1rem;line-height:1.7;margin-bottom:2.5rem">سجّل دخولك للوصول إلى لوحة التحكم الخاصة بك وإدارة المواعيد والحجوزات الطبية بسهولة.</p>
+            <h2 style="font-size:2.25rem;font-weight:900;margin-bottom:1.5rem;line-height:1.2">{{ app()->getLocale() === 'ar' ? 'مرحباً بك في' : 'Welcome to' }}<br>{{ __('messages.sehati') }}</h2>
+            <p style="opacity:0.9;font-size:1.1rem;line-height:1.7;margin-bottom:2.5rem">{{ app()->getLocale() === 'ar' ? 'سجّل دخولك للوصول إلى لوحة التحكم الخاصة بك وإدارة المواعيد والحجوزات الطبية بسهولة.' : 'Sign in to access your dashboard and manage your appointments and medical bookings easily.' }}</p>
             <div style="display:flex;flex-direction:column;gap:1.25rem">
                 <div style="display:flex;align-items:center;gap:1rem">
                     <i class="fa-solid fa-check-circle" style="color:#fff"></i>
-                    <span>إدارة المواعيد بذكاء</span>
+                    <span>{{ app()->getLocale() === 'ar' ? 'إدارة المواعيد بذكاء' : 'Smart Appointment Management' }}</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:1rem">
                     <i class="fa-solid fa-check-circle" style="color:#fff"></i>
-                    <span>سجلات طبية آمنة</span>
+                    <span>{{ app()->getLocale() === 'ar' ? 'سجلات طبية آمنة' : 'Secure Medical Records' }}</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:1rem">
                     <i class="fa-solid fa-check-circle" style="color:#fff"></i>
-                    <span>تواصل مباشر مع الأطباء</span>
+                    <span>{{ app()->getLocale() === 'ar' ? 'تواصل مباشر مع الأطباء' : 'Direct Communication with Doctors' }}</span>
                 </div>
             </div>
         </div>
@@ -140,20 +140,20 @@
         <div class="auth-right">
             <div class="auth-box">
                 <div style="margin-bottom:2.5rem;text-align:center">
-                    <h1 style="font-size:1.85rem;font-weight:900;color:#1e293b;margin-bottom:.5rem;cursor:default" onclick="handleSecretClick()">تسجيل الدخول</h1>
-                    <p style="color:#64748b;font-size:1rem">اختر نوع الحساب وادخل بياناتك</p>
+                    <h1 style="font-size:1.85rem;font-weight:900;color:#1e293b;margin-bottom:.5rem;cursor:default" onclick="handleSecretClick()">{{ __('messages.login') }}</h1>
+                    <p style="color:#64748b;font-size:1rem">{{ app()->getLocale() === 'ar' ? 'اختر نوع الحساب وادخل بياناتك' : 'Choose your account type and enter your credentials' }}</p>
                 </div>
 
                 {{-- ROLE TABS --}}
                 <div class="role-tabs">
                     <button type="button" class="role-tab active" id="tabPatient" onclick="setRole('patient')">
-                        <i class="fa-solid fa-user"></i> مريض
+                        <i class="fa-solid fa-user"></i> {{ app()->getLocale() === 'ar' ? 'مريض' : 'Patient' }}
                     </button>
                     <button type="button" class="role-tab" id="tabDoctor" onclick="setRole('doctor')">
-                        <i class="fa-solid fa-user-md"></i> دكتور
+                        <i class="fa-solid fa-user-md"></i> {{ app()->getLocale() === 'ar' ? 'دكتور' : 'Doctor' }}
                     </button>
                     <button type="button" class="role-tab" id="tabAdmin" onclick="setRole('admin')" style="display:none">
-                        <i class="fa-solid fa-user-shield"></i> أدمن
+                        <i class="fa-solid fa-user-shield"></i> {{ app()->getLocale() === 'ar' ? 'أدمن' : 'Admin' }}
                     </button>
                 </div>
 
@@ -162,7 +162,7 @@
                     <input type="hidden" name="role" id="roleInput" value="patient">
 
                     <div class="form-group">
-                        <label class="form-label">البريد الإلكتروني</label>
+                        <label class="form-label">{{ app()->getLocale() === 'ar' ? 'البريد الإلكتروني' : 'Email' }}</label>
                         <div class="input-wrap">
                             <i class="ico fa-solid fa-envelope"></i>
                             <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', session('registered_email')) }}" required autofocus placeholder="example@email.com">
@@ -171,7 +171,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">كلمة المرور</label>
+                        <label class="form-label">{{ app()->getLocale() === 'ar' ? 'كلمة المرور' : 'Password' }}</label>
                         <div class="input-wrap">
                             <i class="ico fa-solid fa-lock"></i>
                             <input type="password" name="password" id="pwdField" class="form-control" required placeholder="••••••••">
@@ -183,20 +183,20 @@
 
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem">
                         <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.9rem;color:#64748b">
-                            <input type="checkbox" name="remember" style="width:18px;height:18px;accent-color:#3b82f6"> تذكرني
+                            <input type="checkbox" name="remember" style="width:18px;height:18px;accent-color:#3b82f6"> {{ app()->getLocale() === 'ar' ? 'تذكرني' : 'Remember me' }}
                         </label>
-                        <a href="#" style="font-size:.9rem;color:#3b82f6;font-weight:700;text-decoration:none">نسيت كلمة المرور؟</a>
+                        <a href="#" style="font-size:.9rem;color:#3b82f6;font-weight:700;text-decoration:none">{{ app()->getLocale() === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?' }}</a>
                     </div>
 
                     <button type="submit" class="btn-login">
                         <i class="fa-solid fa-right-to-bracket"></i>
-                        <span id="loginBtnText">دخول كمريض</span>
+                        <span id="loginBtnText">{{ app()->getLocale() === 'ar' ? 'دخول كمريض' : 'Login as Patient' }}</span>
                     </button>
                 </form>
 
                 <div style="text-align:center;margin-top:2.5rem">
                     <p style="color:#64748b;font-size:.95rem">
-                        ليس لديك حساب؟ <a href="{{ route('register') }}" style="color:#3b82f6;font-weight:800;text-decoration:none">سجّل الآن</a>
+                        {{ app()->getLocale() === 'ar' ? 'ليس لديك حساب؟' : 'Don\'t have an account?' }} <a href="{{ route('register') }}" style="color:#3b82f6;font-weight:800;text-decoration:none">{{ app()->getLocale() === 'ar' ? 'سجّل الآن' : 'Register now' }}</a>
                     </p>
                 </div>
             </div>

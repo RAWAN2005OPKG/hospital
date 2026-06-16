@@ -15,9 +15,10 @@
     }
 
     .departments-hero {
-        padding: 120px 0 60px;
+        padding: 100px 0 50px;
         text-align: center;
         background: linear-gradient(180deg, rgba(224, 244, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+        margin-top: 80px;
     }
 
     .sec-tag {
@@ -47,16 +48,19 @@
         font-size: 1.1rem;
     }
 
+    .departments-section {
+        padding: 40px 0 100px;
+    }
+
     .departments-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 2.5rem;
-        padding: 40px 0 100px;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
     }
 
     .department-card {
         background: var(--white);
-        border-radius: 24px;
+        border-radius: 20px;
         overflow: hidden;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         border: 1px solid var(--border);
@@ -64,6 +68,7 @@
         position: relative;
         display: flex;
         flex-direction: column;
+        height: 100%;
     }
 
     .department-card::before {
@@ -145,21 +150,21 @@
     }
 
     .department-content {
-        padding: 2rem;
+        padding: 1.75rem;
         flex: 1;
         display: flex;
         flex-direction: column;
     }
 
     .department-name {
-        font-size: 1.4rem;
+        font-size: 1.35rem;
         font-weight: 800;
         margin-bottom: 0.75rem;
         color: #111827;
     }
 
     .department-description {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         color: var(--gray-500);
         line-height: 1.6;
         margin-bottom: 1.5rem;
@@ -170,7 +175,7 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         color: var(--gray-500);
         margin-bottom: 1.5rem;
         padding-bottom: 1.5rem;
@@ -192,23 +197,24 @@
 
     .department-actions {
         display: flex;
-        gap: 1rem;
+        gap: 0.75rem;
     }
 
     .btn-department {
         flex: 1;
-        padding: 12px 16px;
-        border-radius: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         text-decoration: none;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.5rem;
+        gap: 0.4rem;
         border: none;
         cursor: pointer;
+        white-space: nowrap;
     }
 
     .btn-primary-dept {
@@ -222,7 +228,7 @@
     }
 
     .btn-outline-dept {
-        border: 2px solid var(--primary-light);
+        border: 1.5px solid var(--primary-light);
         color: var(--primary);
         background: transparent;
     }
@@ -250,8 +256,28 @@
         font-size: 1.1rem;
     }
 
-    [dir="rtl"] .btn-department i {
-        transform: rotate(180deg);
+    @media (max-width: 768px) {
+        .departments-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .department-image {
+            height: 160px;
+        }
+
+        .department-content {
+            padding: 1.25rem;
+        }
+
+        .department-actions {
+            gap: 0.5rem;
+        }
+
+        .btn-department {
+            padding: 8px 10px;
+            font-size: 0.8rem;
+        }
     }
 </style>
 @endpush
@@ -265,7 +291,7 @@
     </div>
 </div>
 
-<div class="container">
+<div class="container departments-section">
     @if($departments->count())
         <div class="departments-grid">
             @foreach($departments as $department)
@@ -298,11 +324,11 @@
                     </div>
 
                     <div class="department-actions">
-                        <a href="{{ route('departments.show', $department->id) }}" class="btn-department btn-primary-dept">
+                        <a href="{{ route('departments.show', $department->id) }}" class="btn-department btn-primary-dept" title="{{ __('messages.view_all') }}">
                             <i class="fa-solid fa-stethoscope"></i>
                             {{ __('messages.view_all') }}
                         </a>
-                        <a href="{{ route('doctors.index') }}?department={{ $department->id }}" class="btn-department btn-outline-dept">
+                        <a href="{{ route('doctors.index') }}" class="btn-department btn-outline-dept" title="{{ __('messages.view_doctors') }}">
                             <i class="fa-solid fa-user-md"></i>
                             {{ __('messages.view_doctors') }}
                         </a>

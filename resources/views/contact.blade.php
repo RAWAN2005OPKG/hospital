@@ -17,9 +17,10 @@
     }
 
     .contact-hero {
-        padding: 120px 0 60px;
+        padding: 100px 0 50px;
         text-align: center;
         background: linear-gradient(180deg, rgba(224, 244, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+        margin-top: 80px;
     }
 
     .sec-tag {
@@ -49,12 +50,15 @@
         font-size: 1.1rem;
     }
 
+    .contact-section {
+        padding: 40px 0 100px;
+    }
+
     .contact-container {
         display: grid;
         grid-template-columns: 1fr 1.6fr;
         gap: 3rem;
         align-items: start;
-        padding: 40px 0 100px;
     }
 
     @media (max-width: 768px) {
@@ -66,14 +70,14 @@
 
     .contact-info-card {
         background: var(--white);
-        border-radius: 20px;
-        padding: 1.75rem;
+        border-radius: 16px;
+        padding: 1.5rem;
         margin-bottom: 1.5rem;
         border: 1px solid var(--border);
         box-shadow: var(--shadow);
         transition: all 0.3s ease;
         display: flex;
-        gap: 1.25rem;
+        gap: 1rem;
         align-items: flex-start;
     }
 
@@ -84,15 +88,15 @@
     }
 
     .contact-icon {
-        width: 56px;
-        height: 56px;
-        border-radius: 16px;
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
         background: var(--primary-light);
         color: var(--primary);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.4rem;
+        font-size: 1.3rem;
         flex-shrink: 0;
     }
 
@@ -100,19 +104,19 @@
         font-size: 1rem;
         font-weight: 700;
         color: #111827;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
     }
 
     .contact-info-text p {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         color: var(--gray-500);
         line-height: 1.5;
     }
 
     .contact-form-card {
         background: var(--white);
-        border-radius: 20px;
-        padding: 2.5rem;
+        border-radius: 16px;
+        padding: 2rem;
         border: 1px solid var(--border);
         box-shadow: var(--shadow);
     }
@@ -157,10 +161,10 @@
     }
 
     .form-label {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         font-weight: 600;
         color: #111827;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.5rem;
     }
 
     .form-label .required {
@@ -168,10 +172,10 @@
     }
 
     .form-control {
-        padding: 12px 16px;
+        padding: 11px 14px;
         border: 1.5px solid var(--border);
-        border-radius: 12px;
-        font-size: 0.95rem;
+        border-radius: 10px;
+        font-size: 0.9rem;
         font-family: inherit;
         transition: all 0.3s ease;
         background: var(--white);
@@ -193,13 +197,13 @@
 
     textarea.form-control {
         resize: vertical;
-        min-height: 140px;
+        min-height: 130px;
     }
 
     .invalid-feedback {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         color: var(--error);
-        margin-top: 0.5rem;
+        margin-top: 0.4rem;
         display: block;
     }
 
@@ -209,19 +213,19 @@
 
     .submit-btn {
         width: 100%;
-        padding: 14px 24px;
+        padding: 12px 20px;
         background: linear-gradient(135deg, var(--primary), var(--secondary));
         color: white;
         border: none;
-        border-radius: 12px;
-        font-size: 1rem;
+        border-radius: 10px;
+        font-size: 0.95rem;
         font-weight: 700;
         cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.75rem;
+        gap: 0.6rem;
     }
 
     .submit-btn:hover {
@@ -234,12 +238,12 @@
     }
 
     .alert {
-        padding: 1rem 1.5rem;
-        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        border-radius: 10px;
         margin-bottom: 1.5rem;
         display: flex;
-        align-items: center;
-        gap: 1rem;
+        align-items: flex-start;
+        gap: 0.75rem;
     }
 
     .alert-success {
@@ -255,8 +259,18 @@
     }
 
     .alert i {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         flex-shrink: 0;
+        margin-top: 0.1rem;
+    }
+
+    .alert ul {
+        margin: 0.5rem 0 0 0;
+        padding-left: 1.25rem;
+    }
+
+    .alert ul li {
+        font-size: 0.9rem;
     }
 
     [dir="rtl"] .form-row {
@@ -274,16 +288,19 @@
     </div>
 </div>
 
-<div class="container">
+<div class="container contact-section">
     <div class="contact-container">
         <!-- Contact Information -->
         <div>
-            @foreach([
-                ['icon' => 'fa-location-dot', 'title' => __('messages.location'), 'value' => __('messages.location')],
-                ['icon' => 'fa-phone', 'title' => __('messages.phone'), 'value' => __('messages.phone')],
-                ['icon' => 'fa-envelope', 'title' => __('messages.email'), 'value' => __('messages.email')],
-                ['icon' => 'fa-clock', 'title' => 'ساعات العمل', 'value' => 'السبت — الخميس: 8ص — 8م']
-            ] as $info)
+            @php
+                $contactInfo = [
+                    ['icon' => 'fa-location-dot', 'title' => __('messages.location'), 'value' => __('messages.location')],
+                    ['icon' => 'fa-phone', 'title' => __('messages.phone'), 'value' => __('messages.phone')],
+                    ['icon' => 'fa-envelope', 'title' => __('messages.email'), 'value' => __('messages.email')],
+                ];
+            @endphp
+
+            @foreach($contactInfo as $info)
             <div class="contact-info-card">
                 <div class="contact-icon">
                     <i class="fa-solid {{ $info['icon'] }}"></i>
@@ -307,8 +324,8 @@
                 <div class="alert alert-error">
                     <i class="fa-solid fa-exclamation-circle"></i>
                     <div>
-                        <strong>خطأ في النموذج</strong>
-                        <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                        <strong>{{ app()->getLocale() === 'ar' ? 'خطأ في النموذج' : 'Form Error' }}</strong>
+                        <ul>
                             @foreach($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -330,7 +347,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">
-                            الاسم <span class="required">*</span>
+                            {{ app()->getLocale() === 'ar' ? 'الاسم' : 'Name' }} <span class="required">*</span>
                         </label>
                         <input 
                             type="text" 
@@ -338,7 +355,7 @@
                             class="form-control @error('name') is-invalid @enderror" 
                             value="{{ old('name') }}" 
                             required
-                            placeholder="أدخل اسمك الكامل"
+                            placeholder="{{ app()->getLocale() === 'ar' ? 'أدخل اسمك الكامل' : 'Enter your full name' }}"
                         >
                         @error('name')
                             <span class="invalid-feedback">{{ $message }}</span>
@@ -347,7 +364,7 @@
 
                     <div class="form-group">
                         <label class="form-label">
-                            البريد الإلكتروني <span class="required">*</span>
+                            {{ app()->getLocale() === 'ar' ? 'البريد الإلكتروني' : 'Email' }} <span class="required">*</span>
                         </label>
                         <input 
                             type="email" 
@@ -365,7 +382,7 @@
 
                 <div class="form-group form-row-full">
                     <label class="form-label">
-                        الموضوع <span class="required">*</span>
+                        {{ app()->getLocale() === 'ar' ? 'الموضوع' : 'Subject' }} <span class="required">*</span>
                     </label>
                     <input 
                         type="text" 
@@ -373,7 +390,7 @@
                         class="form-control @error('subject') is-invalid @enderror" 
                         value="{{ old('subject') }}" 
                         required
-                        placeholder="ما موضوع استفسارك؟"
+                        placeholder="{{ app()->getLocale() === 'ar' ? 'ما موضوع استفسارك؟' : 'What is your inquiry about?' }}"
                     >
                     @error('subject')
                         <span class="invalid-feedback">{{ $message }}</span>
@@ -382,13 +399,13 @@
 
                 <div class="form-group form-row-full">
                     <label class="form-label">
-                        الرسالة <span class="required">*</span>
+                        {{ app()->getLocale() === 'ar' ? 'الرسالة' : 'Message' }} <span class="required">*</span>
                     </label>
                     <textarea 
                         name="message" 
                         class="form-control @error('message') is-invalid @enderror" 
                         required
-                        placeholder="اكتب رسالتك هنا..."
+                        placeholder="{{ app()->getLocale() === 'ar' ? 'اكتب رسالتك هنا...' : 'Write your message here...' }}"
                     >{{ old('message') }}</textarea>
                     @error('message')
                         <span class="invalid-feedback">{{ $message }}</span>
@@ -397,7 +414,7 @@
 
                 <button type="submit" class="submit-btn">
                     <i class="fa-solid fa-paper-plane"></i>
-                    إرسال الرسالة
+                    {{ app()->getLocale() === 'ar' ? 'إرسال الرسالة' : 'Send Message' }}
                 </button>
             </form>
         </div>

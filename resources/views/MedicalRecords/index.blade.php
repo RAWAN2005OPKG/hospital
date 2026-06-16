@@ -15,9 +15,10 @@
     }
 
     .doctors-hero {
-        padding: 120px 0 60px;
+        padding: 100px 0 50px;
         text-align: center;
         background: linear-gradient(180deg, rgba(224, 244, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+        margin-top: 80px;
     }
 
     .sec-tag {
@@ -47,44 +48,19 @@
         font-size: 1.1rem;
     }
 
-    .filters-section {
-        display: flex;
-        gap: 1rem;
-        margin: 2rem 0;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .filter-btn {
-        padding: 10px 20px;
-        border-radius: 50px;
-        border: 2px solid var(--border);
-        background: var(--white);
-        color: var(--gray-500);
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .filter-btn:hover,
-    .filter-btn.active {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
+    .doctors-section {
+        padding: 40px 0 100px;
     }
 
     .doctors-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 2.5rem;
-        padding: 40px 0 100px;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
     }
 
     .doctor-card {
         background: var(--white);
-        border-radius: 24px;
+        border-radius: 20px;
         overflow: hidden;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         border: 1px solid var(--border);
@@ -92,6 +68,7 @@
         position: relative;
         display: flex;
         flex-direction: column;
+        height: 100%;
     }
 
     .doctor-card::before {
@@ -118,13 +95,13 @@
     }
 
     .doctor-image {
-        height: 240px;
+        height: 220px;
         background: linear-gradient(135deg, var(--primary), var(--secondary));
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 4rem;
+        font-size: 3.5rem;
         position: relative;
         overflow: hidden;
     }
@@ -142,18 +119,18 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.15) 100%);
     }
 
     .doctor-content {
-        padding: 2rem;
+        padding: 1.75rem;
         flex: 1;
         display: flex;
         flex-direction: column;
     }
 
     .doctor-name {
-        font-size: 1.3rem;
+        font-size: 1.25rem;
         font-weight: 800;
         margin-bottom: 0.5rem;
         color: #111827;
@@ -161,15 +138,15 @@
 
     .doctor-specialty {
         color: var(--primary);
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         font-weight: 600;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.5rem;
     }
 
     .doctor-department {
         color: var(--gray-500);
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
     }
 
     .doctor-experience {
@@ -177,7 +154,7 @@
         align-items: center;
         gap: 0.5rem;
         color: var(--gray-500);
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         margin-bottom: 1rem;
     }
 
@@ -190,28 +167,30 @@
         gap: 0.25rem;
         margin-bottom: 1.5rem;
         color: #fbbf24;
+        font-size: 0.9rem;
     }
 
     .doctor-actions {
         display: flex;
-        gap: 1rem;
+        gap: 0.75rem;
         margin-top: auto;
     }
 
     .btn-doctor {
         flex: 1;
-        padding: 12px 16px;
-        border-radius: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         text-decoration: none;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.5rem;
+        gap: 0.4rem;
         border: none;
         cursor: pointer;
+        white-space: nowrap;
     }
 
     .btn-primary-doctor {
@@ -225,7 +204,7 @@
     }
 
     .btn-outline-doctor {
-        border: 2px solid var(--primary-light);
+        border: 1.5px solid var(--primary-light);
         color: var(--primary);
         background: transparent;
     }
@@ -236,22 +215,27 @@
         transform: translateY(-2px);
     }
 
-    .pagination {
+    .pagination-wrapper {
         display: flex;
         justify-content: center;
-        gap: 0.5rem;
         margin-top: 3rem;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
         flex-wrap: wrap;
     }
 
     .pagination a,
     .pagination span {
-        padding: 10px 14px;
+        padding: 10px 12px;
         border-radius: 8px;
         border: 1px solid var(--border);
         text-decoration: none;
         color: var(--gray-500);
         transition: all 0.3s ease;
+        font-size: 0.9rem;
     }
 
     .pagination a:hover {
@@ -266,8 +250,45 @@
         border-color: var(--primary);
     }
 
-    [dir="rtl"] .btn-doctor i {
-        transform: rotate(180deg);
+    .empty-state {
+        text-align: center;
+        padding: 5rem 2rem;
+        color: var(--gray-500);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        display: block;
+        opacity: 0.2;
+    }
+
+    .empty-state p {
+        font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+        .doctors-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .doctor-image {
+            height: 180px;
+        }
+
+        .doctor-content {
+            padding: 1.25rem;
+        }
+
+        .doctor-actions {
+            gap: 0.5rem;
+        }
+
+        .btn-doctor {
+            padding: 8px 10px;
+            font-size: 0.8rem;
+        }
     }
 </style>
 @endpush
@@ -281,7 +302,7 @@
     </div>
 </div>
 
-<div class="container">
+<div class="container doctors-section">
     @if($doctors->count())
         <div class="doctors-grid">
             @foreach($doctors as $doctor)
@@ -326,11 +347,11 @@
                     </div>
 
                     <div class="doctor-actions">
-                        <a href="{{ route('doctors.show', $doctor) }}" class="btn-doctor btn-primary-doctor">
+                        <a href="{{ route('doctors.show', $doctor) }}" class="btn-doctor btn-primary-doctor" title="{{ __('messages.book') }}">
                             <i class="fa-solid fa-calendar-plus"></i>
                             {{ __('messages.book') }}
                         </a>
-                        <a href="{{ route('doctors.show', $doctor) }}" class="btn-doctor btn-outline-doctor">
+                        <a href="{{ route('doctors.show', $doctor) }}" class="btn-doctor btn-outline-doctor" title="{{ __('messages.view_all') }}">
                             <i class="fa-solid fa-info-circle"></i>
                             {{ __('messages.view_all') }}
                         </a>
@@ -341,13 +362,17 @@
         </div>
 
         <!-- Pagination -->
-        <div class="pagination">
-            {{ $doctors->links() }}
+        @if($doctors->hasPages())
+        <div class="pagination-wrapper">
+            <div class="pagination">
+                {{ $doctors->links() }}
+            </div>
         </div>
+        @endif
     @else
-        <div style="text-align: center; padding: 5rem 2rem; color: var(--gray-500);">
-            <i class="fa-solid fa-folder-open" style="font-size: 4rem; margin-bottom: 1rem; display: block; opacity: 0.2;"></i>
-            <p style="font-size: 1.1rem;">{{ __('messages.no_doctors') }}</p>
+        <div class="empty-state">
+            <i class="fa-solid fa-folder-open"></i>
+            <p>{{ __('messages.no_doctors') }}</p>
         </div>
     @endif
 </div>
