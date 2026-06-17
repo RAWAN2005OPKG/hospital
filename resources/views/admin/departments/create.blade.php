@@ -5,8 +5,8 @@
 @section('content')
 <div class="container section">
     <div class="mb-8">
-        <h1 style="font-size: 2rem; font-weight: 900; color: var(--text);">إضافة قسم جديد</h1>
-        <p style="color: var(--muted);">قم بتعبئة البيانات أدناه لإنشاء قسم طبي جديد في المستشفى</p>
+        <h1 class="page-title">إضافة قسم جديد</h1>
+        <p class="page-subtitle">قم بتعبئة البيانات أدناه لإنشاء قسم طبي جديد في المستشفى</p>
     </div>
 
     <div class="card" style="max-width: 800px;">

@@ -28,11 +28,19 @@
             --success: #10b981;
             --primary: #0077B6;
             --secondary: #00B4D8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
             --gray-50: #f9fafb;
             --gray-100: #f3f4f6;
             --gray-200: #e5e7eb;
             --gray-300: #d1d5db;
             --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --bg: #f9fafb;
         }
 
         * {
@@ -239,7 +247,223 @@
 
         /* Main Content */
         main {
-            padding-top: 70px;
+            padding-top: 100px;
+        }
+
+        /* Container & Spacing */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .section {
+            padding: 2rem 0;
+        }
+
+        .section-sm {
+            padding: 1.25rem 0;
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+
+        /* Page Header Styles */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding: 0 1.5rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--gray-900);
+        }
+
+        .page-subtitle {
+            color: var(--gray-500);
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Card Styles */
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--gray-900);
+        }
+
+        .card-body {
+            padding: 0;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--gray-700);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.85rem 1.25rem;
+            border: 2px solid var(--gray-100);
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            background: var(--gray-50);
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+        }
+
+        .form-control.is-invalid {
+            border-color: var(--danger);
+        }
+
+        .invalid-feedback {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 0.75rem;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: right;
+            color: var(--gray-500);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        td {
+            padding: 1.25rem 1rem;
+            background: #fff;
+            border-top: 1px solid #f8f9fa;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        tr td:first-child {
+            border-right: 1px solid #f8f9fa;
+            border-radius: 0 12px 12px 0;
+        }
+
+        tr td:last-child {
+            border-left: 1px solid #f8f9fa;
+            border-radius: 12px 0 0 12px;
+        }
+
+        /* Badge Styles */
+        .badge {
+            padding: 0.35rem 0.85rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            display: inline-block;
+        }
+
+        .badge-blue {
+            background: rgba(0, 102, 204, 0.1);
+            color: #0066cc;
+        }
+
+        .badge-cyan {
+            background: rgba(0, 188, 212, 0.12);
+            color: #0e7490;
+        }
+
+        .badge-gray {
+            background: rgba(107, 114, 128, 0.12);
+            color: #4b5563;
+        }
+
+        .badge-yellow {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .badge-green {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .badge-red {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        /* Grid Utilities */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .navbar {
+                padding: 0 1rem;
+                height: 60px;
+            }
+
+            .navbar-nav {
+                display: none;
+            }
+
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
         }
 
         /* Footer */
@@ -327,6 +551,25 @@
             }
         }
 
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .navbar {
@@ -340,6 +583,10 @@
 
             .navbar-brand {
                 font-size: 1.1rem;
+            }
+
+            main {
+                padding-top: 80px;
             }
         }
     </style>
@@ -406,110 +653,60 @@
                         </li>
                     </ul>
                 </div>
-            @else
-                <a href="{{ route('login') }}" class="btn btn-outline btn-sm"><i class="fas fa-sign-in-alt"></i> دخول</a>
-                <a href="{{ route('register') }}" class="btn btn-primary btn-sm"><i class="fas fa-user-plus"></i> تسجيل</a>
             @endauth
         </div>
     </nav>
-    
-    <!-- Flash Messages -->
-    @if(session('success'))
-        <div style="position:fixed;top:80px;right:1.5rem;z-index:800;max-width:400px;animation:slideIn 0.3s ease">
-            <div class="alert alert-success">
-                <i class="fa-solid fa-circle-check"></i>
-                <span>{{ session('success') }}</span>
-            </div>
-        </div>
-    @endif
-    
-    @if(session('error'))
-        <div style="position:fixed;top:80px;right:1.5rem;z-index:800;max-width:400px;animation:slideIn 0.3s ease">
-            <div class="alert alert-danger">
-                <i class="fa-solid fa-circle-xmark"></i>
-                <span>{{ session('error') }}</span>
-            </div>
-        </div>
-    @endif
-    
+
     <!-- Main Content -->
-    <main>
-        @if(isset($slot))
-            {{ $slot }}
-        @endif
+    <main class="container section">
         @yield('content')
     </main>
-    
+
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-grid">
             <div>
-                <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
-                    <div style="width:45px;height:45px;border-radius:12px;background:linear-gradient(135deg,#0077B6,#00B4D8);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;box-shadow:0 8px 20px rgba(0, 119, 182, 0.28)">
-                        <i class="fa-solid fa-heart-pulse"></i>
-                    </div>
-                    <span style="color:#fff;font-size:1.2rem;font-family:'Poppins',sans-serif;font-weight:800;background:linear-gradient(135deg,#fff,rgba(255,255,255,0.8));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">صحتي</span>
-                </div>
-                <p style="font-size:.9rem;line-height:1.9;color:rgba(255,255,255,0.7)">منصة طبية متكاملة توفر أعلى معايير الرعاية الصحية بأيدي نخبة من الأطباء المتخصصين.</p>
+                <h4>عن المستشفى</h4>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">مستشفى صحتي - نقدم أفضل الخدمات الطبية بأحدث التقنيات</p>
+            </div>
+            <div>
+                <h4>الخدمات</h4>
+                <a href="#">الاستشارات الطبية</a>
+                <a href="#">الفحوصات</a>
+                <a href="#">الجراحات</a>
             </div>
             <div>
                 <h4>روابط سريعة</h4>
-                <a href="{{ route('home') }}">الرئيسية</a>
-                <a href="{{ route('services.index') }}">الخدمات</a>
-                <a href="{{ route('departments') }}">الأقسام</a>
-                <a href="{{ route('doctors.index') }}">الأطباء</a>
-                <a href="{{ route('about') }}">عن المنصة</a>
-            </div>
-            <div>
-                <h4>خدمات المرضى</h4>
-                <a href="{{ route('appointments.book') }}">حجز المواعيد</a>
-                <a href="{{ route('consultations.index') }}">استشارات طبية</a>
-                @auth
-                    @if(Auth::user()->isPatient())
-                        <a href="{{ route('patient.medical_records_list') }}">السجلات الطبية</a>
-                        <a href="{{ route('patient.prescriptions_list') }}">الوصفات الطبية</a>
-                    @endif
-                @endauth
+                <a href="#">الرئيسية</a>
+                <a href="#">الأطباء</a>
+                <a href="#">المواعيد</a>
             </div>
             <div>
                 <h4>تواصل معنا</h4>
-                <div style="display:flex;gap:.5rem;margin-bottom:.75rem;font-size:.9rem;align-items:flex-start">
-                    <i class="fa-solid fa-location-dot" style="color:#00B4D8;margin-top:.25rem;flex-shrink:0"></i>
-                    <span>غزة - فلسطين</span>
-                </div>
-                <div style="display:flex;gap:.5rem;margin-bottom:.75rem;font-size:.9rem;align-items:center">
-                    <i class="fa-solid fa-phone" style="color:#00B4D8"></i>
-                    <span>+970-8-2345678</span>
-                </div>
-                <div style="display:flex;gap:.5rem;font-size:.9rem;align-items:center">
-                    <i class="fa-solid fa-envelope" style="color:#00B4D8"></i>
-                    <span>info@sehati.ps</span>
-                </div>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">البريد: info@sehhaty.com</p>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">الهاتف: +970 590000000</p>
             </div>
         </div>
-        <div class="footer-bottom">© {{ date('Y') }} صحتي | Sehati — جميع الحقوق محفوظة</div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 مستشفى صحتي. جميع الحقوق محفوظة.</p>
+        </div>
     </footer>
-    
-    <!-- Bootstrap JS CDN -->
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
         // Navbar scroll effect
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            navbar.classList.toggle('scrolled', window.scrollY > 20);
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
         });
-        
-        // Auto-dismiss alerts after 5s
-        setTimeout(() => {
-            document.querySelectorAll('.alert').forEach(a => {
-                a.style.transition = 'opacity .5s';
-                a.style.opacity = '0';
-                setTimeout(() => a.parentElement?.remove(), 500);
-            });
-        }, 5000);
     </script>
-    
+
     @stack('scripts')
 </body>
 </html>

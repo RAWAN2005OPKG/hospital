@@ -1,13 +1,12 @@
 @extends('layouts.app')
 
 @section('title', 'تعديل القسم: ' . $department->name)
-@php use Illuminate\Support\Facades\Storage; @endphp
 
 @section('content')
 <div class="container section">
     <div class="mb-8">
-        <h1 style="font-size: 2rem; font-weight: 900; color: var(--text);">تعديل القسم</h1>
-        <p style="color: var(--muted);">تعديل بيانات القسم الطبي: {{ $department->name }}</p>
+        <h1 class="page-title">تعديل القسم</h1>
+        <p class="page-subtitle">تحديث بيانات القسم الطبي: {{ $department->name }}</p>
     </div>
 
     <div class="card" style="max-width: 800px;">
@@ -44,19 +43,13 @@
                     <div class="form-group">
                         <label class="form-label">صورة القسم (اختياري)</label>
                         <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
-                        @if($department->image)
-                            <div style="margin-top: .5rem;">
-                                <img src="{{ Storage::url($department->image) }}" alt="{{ $department->name }}" style="width: 100px; height: 60px; object-fit: cover; border-radius: 8px;">
-                                <p style="font-size: .75rem; color: var(--muted);">الصورة الحالية</p>
-                            </div>
-                        @endif
                         @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">وصف القسم</label>
-                    <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="4">{{ old('description', $department->description) }}</textarea>
+                    <textarea name="description" class="form-control @error('description') is-invalid @enderror">{{ old('description', $department->description) }}</textarea>
                     @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 

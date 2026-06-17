@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('title', 'إدارة الأقسام والتخصصات')
 
@@ -9,10 +9,10 @@
         <p class="page-subtitle">إدارة الأقسام الطبية وتوزيع التخصصات لضمان دقة توجيه المرضى</p>
     </div>
     <div style="display: flex; gap: 1rem;">
-        <a href="{{ route('admin.departments.create') }}" class="btn btn-primary" style="background: linear-gradient(135deg, var(--primary), #004499);">
+        <a href="{{ route('admin.departments.create') }}" class="btn btn-primary">
             <i class="fa-solid fa-plus-circle"></i> إضافة قسم طبي
         </a>
-        <a href="{{ route('admin.specializations.create') }}" class="btn" style="background: linear-gradient(135deg, var(--success), #059669); color: #fff; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);">
+        <a href="{{ route('admin.specializations.create') }}" class="btn btn-primary" style="background: linear-gradient(135deg, var(--success), #059669);">
             <i class="fa-solid fa-stethoscope"></i> إضافة تخصص
         </a>
     </div>
@@ -20,7 +20,7 @@
 
 <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 2rem;">
     <!-- Departments Management -->
-    <div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.03);">
+    <div class="card" style="padding: 0; overflow: hidden;">
         <div style="padding: 1.5rem; background: #fff; border-bottom: 1px solid var(--gray-100); display: flex; justify-content: space-between; align-items: center;">
             <h3 class="card-title" style="margin: 0;"><i class="fa-solid fa-hospital" style="color: var(--primary); margin-left: 0.5rem;"></i> الأقسام الطبية الحالية</h3>
             <span style="background: var(--gray-100); color: var(--gray-600); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 800;">{{ $departments->total() }} قسم</span>
@@ -38,7 +38,7 @@
                 </thead>
                 <tbody>
                     @forelse($departments as $dept)
-                    <tr style="transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.01)';" onmouseout="this.style.transform='scale(1)';">
+                    <tr style="transition: all 0.3s ease;">
                         <td style="padding: 1.25rem 1rem; border-radius: 0 12px 12px 0; background: #fff; border: 1px solid var(--gray-100); border-left: none;">
                             <div style="font-weight: 900; color: var(--gray-900); font-size: 1.05rem;">{{ $dept->name }}</div>
                             <div style="font-size: 0.8rem; color: var(--gray-500); margin-top: 0.25rem;">{{ Str::limit($dept->description, 60) }}</div>
@@ -53,12 +53,12 @@
                         </td>
                         <td style="padding: 1.25rem 1rem; border-radius: 12px 0 0 12px; background: #fff; border: 1px solid var(--gray-100); border-right: none; text-align: left;">
                             <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
-                                <a href="{{ route('admin.departments.edit', $dept->id) }}" style="width: 35px; height: 35px; border-radius: 8px; background: var(--gray-50); color: var(--primary); display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='var(--primary)'; this.style.color='#fff';">
+                                <a href="{{ route('admin.departments.edit', $dept->id) }}" style="width: 35px; height: 35px; border-radius: 8px; background: var(--gray-50); color: var(--primary); display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s;">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
                                 <form action="{{ route('admin.departments.destroy', $dept->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('حذف القسم سيؤدي لإزالة كافة التخصصات المرتبطة به. هل أنت متأكد؟');">
                                     @csrf @method('DELETE')
-                                    <button type="submit" style="width: 35px; height: 35px; border-radius: 8px; background: #fff5f5; color: var(--danger); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s;" onmouseover="this.style.background='var(--danger)'; this.style.color='#fff';">
+                                    <button type="submit" style="width: 35px; height: 35px; border-radius: 8px; background: #fff5f5; color: var(--danger); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
                                         <i class="fa-solid fa-trash-can"></i>
                                     </button>
                                 </form>
@@ -79,14 +79,14 @@
 
     <!-- Specializations Summary -->
     <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-        <div class="card" style="border: none; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;">
+        <div class="card" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;">
             <h4 style="font-weight: 800; margin-bottom: 0.5rem;">لماذا هذه الصفحة؟</h4>
             <p style="font-size: 0.85rem; line-height: 1.6; opacity: 0.9;">
                 الأقسام التي تضيفها هنا هي العمود الفقري للمستشفى. بمجرد إضافة قسم، سيظهر فوراً كخيار للأطباء الجدد وللمرضى عند حجز مواعيدهم، مما يضمن ترحيل البيانات وتكاملها في كل النظام.
             </p>
         </div>
 
-        <div class="card" style="padding: 0; overflow: hidden; border: none;">
+        <div class="card" style="padding: 0; overflow: hidden;">
             <div style="padding: 1.25rem; background: #fff; border-bottom: 1px solid var(--gray-100);">
                 <h3 class="card-title" style="font-size: 1rem; margin: 0;"><i class="fa-solid fa-stethoscope" style="color: var(--success); margin-left: 0.5rem;"></i> التخصصات الطبية</h3>
             </div>

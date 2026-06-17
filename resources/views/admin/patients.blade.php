@@ -1,160 +1,136 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-gray-800 dark:text-white leading-tight flex items-center">
-            <i class="fas fa-users mr-3 text-emerald-500"></i>
-            إدارة المرضى
-        </h2>
-    </x-slot>
+@extends('layouts.dashboard')
 
-    <div class="space-y-8">
-        {{-- Header --}}
-        <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h3 class="text-3xl font-bold text-gray-900 dark:text-white">جميع المرضى</h3>
-                <p class="text-gray-600 dark:text-gray-400 mt-1">{{ $patients->total() ?? 0 }} مريض مسجل</p>
-            </div>
-            <button class="px-10 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-3xl shadow-2xl hover:shadow-3xl hover:-translate-y-1 transition-all self-start sm:self-auto">
-                <i class="fas fa-plus mr-2"></i>مريض جديد
-            </button>
-        </div>
+@section('title', 'إدارة المرضى')
 
-        {{-- Filters & Search --}}
-        <div class="bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-emerald-900/20 dark:to-blue-900/20 rounded-3xl shadow-xl border border-emerald-200 dark:border-emerald-800 p-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="relative">
-                    <i class="fas fa-search absolute left-4 top-4 text-gray-400"></i>
-                    <input type="text" placeholder="ابحث بالاسم أو الهاتف..." class="w-full pl-12 pr-4 py-4 border border-gray-300 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800 focus:ring-2 focus:ring-emerald-500 shadow-lg transition-all">
-                </div>
-                <select class="px-4 py-4 border border-gray-300 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
-                    <option>الحالة</option>
-                    <option>نشط</option>
-                    <option>غير نشط</option>
-                    <option>تحت المراقبة</option>
-                </select>
-                <input type="date" class="px-4 py-4 border border-gray-300 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800 focus:ring-2 focus:ring-orange-500">
-                <button class="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
-                    <i class="fas fa-filter mr-2"></i>البحث
-                </button>
-            </div>
-        </div>
-
-        {{-- Patients Table --}}
-        <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30">
-                        <tr>
-                            <th class="px-8 py-6 text-right text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">الاسم</th>
-                            <th class="px-8 py-6 text-right text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">الهاتف</th>
-                            <th class="px-8 py-6 text-right text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">البريد الإلكتروني</th>
-                            <th class="px-8 py-6 text-right text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">آخر موعد</th>
-                            <th class="px-8 py-6 text-right text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">السجلات الطبية</th>
-                            <th class="px-8 py-6 text-right text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">الحالة</th>
-                            <th class="px-8 py-6 text-right text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
-                        @forelse($patients ?? collect() as $patient)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all group">
-                                <td class="px-8 py-6">
-                                    <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                                        <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl flex items-center justify-center text-white font-bold text-lg shadow-2xl">
-                                            {{ Str::upper(substr($patient->name, 0, 2)) }}
-                                        </div>
-                                        <div class="text-right">
-                                            <div class="font-bold text-lg text-gray-900 dark:text-white truncate" title="{{ $patient->name }}">{{ $patient->name }}</div>
-                                            <div class="text-sm text-gray-600 dark:text-gray-400">{{ $patient->age ?? 'غير محدد' }} سنة</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-8 py-6 font-mono text-gray-900 dark:text-white">{{ $patient->phone ?? '-' }}</td>
-                                <td class="px-8 py-6 text-sm text-gray-700 dark:text-gray-300 max-w-xs truncate" title="{{ $patient->email }}">{{ $patient->email }}</td>
-                                <td class="px-8 py-6 text-sm text-gray-600 dark:text-gray-400">
-                                    {{ $patient->last_appointment ? \Carbon\Carbon::parse($patient->last_appointment)->format('d M Y') : '-' }}
-                                </td>
-                                <td class="px-8 py-6 font-bold text-emerald-600 dark:text-emerald-400">{{ $patient->records_count ?? 0 }}</td>
-                                <td class="px-8 py-6">
-                                    <span class="px-4 py-2 bg-gradient-to-r from-emerald-100 to-blue-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-200 rounded-xl font-semibold shadow-md">
-                                        <i class="fas fa-circle mr-1 text-emerald-500"></i>نشط
-                                    </span>
-                                </td>
-                                <td class="px-8 py-6">
-                                    <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                                        <a href="#" class="p-3 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-xl hover:scale-105 transition-all shadow-md">
-                                            <i class="fas fa-eye text-xl"></i>
-                                        </a>
-                                        <a href="#" class="p-3 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-xl hover:scale-105 transition-all shadow-md">
-                                            <i class="fas fa-file-invoice text-xl"></i>
-                                        </a>
-                                        <a href="#" class="p-3 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-xl hover:scale-105 transition-all shadow-md">
-                                            <i class="fas fa-edit text-xl"></i>
-                                        </a>
-                                        <button class="p-3 bg-red-100 hover:bg-red-200 text-red-700 rounded-xl hover:scale-105 transition-all shadow-md">
-                                            <i class="fas fa-trash text-xl"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="py-24 text-center">
-                                    <i class="fas fa-users-slash text-9xl text-gray-300 dark:text-gray-600 mb-8"></i>
-                                    <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">لا يوجد مرضى</h3>
-                                    <p class="text-xl text-gray-600 dark:text-gray-400 mb-8">سيتم إضافة المرضى عند حجزهم لمواعيد</p>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            @if($patients ?? false)
-                <div class="px-8 py-6 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-                    {{ $patients->appends(request()->query())->links() }}
-                </div>
-            @endif
-        </div>
-
-        {{-- Patient Stats Cards --}}
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div class="bg-gradient-to-br from-emerald-500 to-teal-500 text-white p-8 rounded-3xl shadow-2xl hover:shadow-3xl transition-all text-center">
-                <i class="fas fa-calendar-heart text-4xl mb-4"></i>
-                <div class="text-3xl font-bold">{{ $patientsWithAppointments ?? 0 }}</div>
-                <p class="opacity-90">لديهم مواعيد</p>
-            </div>
-            <div class="bg-gradient-to-br from-blue-500 to-indigo-500 text-white p-8 rounded-3xl shadow-2xl hover:shadow-3xl transition-all text-center">
-                <i class="fas fa-file-medical-alt text-4xl mb-4"></i>
-                <div class="text-3xl font-bold">{{ $patientsWithRecords ?? 0 }}</div>
-                <p class="opacity-90">لديهم سجلات</p>
-            </div>
-            <div class="bg-gradient-to-br from-purple-500 to-pink-500 text-white p-8 rounded-3xl shadow-2xl hover:shadow-3xl transition-all text-center">
-                <i class="fas fa-eye text-4xl mb-4"></i>
-                <div class="text-3xl font-bold">{{ $activePatients ?? 0 }}</div>
-                <p class="opacity-90">نشط الشهر</p>
-            </div>
-            <div class="bg-gradient-to-br from-orange-500 to-red-500 text-white p-8 rounded-3xl shadow-2xl hover:shadow-3xl transition-all text-center">
-                <i class="fas fa-users-cog text-4xl mb-4"></i>
-                <div class="text-3xl font-bold">{{ $needsAttention ?? 0 }}</div>
-                <p class="opacity-90">يحتاجون متابعة</p>
-            </div>
-        </div>
+@section('content')
+<div class="page-header">
+    <div>
+        <h1 class="page-title">إدارة المرضى</h1>
+        <p class="page-subtitle">عرض وإدارة جميع المرضى المسجلين في النظام</p>
     </div>
+</div>
 
-    <script>
-        // Live search
-        const searchInput = document.querySelector('input[placeholder*="ابحث"]');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                const term = e.target.value.toLowerCase();
-                document.querySelectorAll('tbody tr').forEach(row => {
-                    row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
-                });
-            });
-        }
+<!-- Filters & Search -->
+<div class="card" style="background: rgba(0, 102, 204, 0.02); border: 1px solid rgba(0, 102, 204, 0.1); margin-bottom: 2rem;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 1rem; padding: 1.5rem;">
+        <div class="form-group" style="margin: 0;">
+            <label class="form-label">بحث بالاسم أو الهاتف</label>
+            <input type="text" placeholder="ابحث..." class="form-control">
+        </div>
+        <div class="form-group" style="margin: 0;">
+            <label class="form-label">الحالة</label>
+            <select class="form-control">
+                <option>الحالة</option>
+                <option>نشط</option>
+                <option>غير نشط</option>
+                <option>تحت المراقبة</option>
+            </select>
+        </div>
+        <div class="form-group" style="margin: 0;">
+            <label class="form-label">التاريخ</label>
+            <input type="date" class="form-control">
+        </div>
+        <button class="btn btn-primary" style="padding: 0.75rem 1.5rem; align-self: flex-end;">
+            <i class="fa-solid fa-filter"></i> البحث
+        </button>
+    </div>
+</div>
 
-        // Button hover effects
-        document.querySelectorAll('.hover:scale-105').forEach(btn => {
-            btn.addEventListener('mouseenter', () => btn.style.transform = 'scale(1.05)');
-            btn.addEventListener('mouseleave', () => btn.style.transform = 'scale(1)');
-        });
-    </script>
-</x-app-layout>
+<!-- Patients Table -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">قائمة المرضى</h3>
+        <span class="badge badge-blue">{{ $patients->total() ?? 0 }} مريض</span>
+    </div>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>الاسم</th>
+                    <th>الهاتف</th>
+                    <th>البريد الإلكتروني</th>
+                    <th>آخر موعد</th>
+                    <th>السجلات الطبية</th>
+                    <th>الحالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($patients ?? collect() as $patient)
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 0.9rem;">
+                                    {{ mb_substr($patient->name ?? '', 0, 1) }}
+                                </div>
+                                <div>
+                                    <div style="font-weight: bold; color: var(--gray-900);">{{ $patient->name ?? 'غير معروف' }}</div>
+                                    <div style="font-size: 0.8rem; color: var(--gray-500);">{{ $patient->age ?? 'غير محدد' }} سنة</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="font-family: monospace; font-weight: 600;">{{ $patient->phone ?? '-' }}</td>
+                        <td style="font-size: 0.9rem; color: var(--gray-600);">{{ $patient->email ?? '-' }}</td>
+                        <td style="font-size: 0.9rem; color: var(--gray-600);">
+                            {{ $patient->last_appointment ? \Carbon\Carbon::parse($patient->last_appointment)->format('d M Y') : '-' }}
+                        </td>
+                        <td style="font-weight: bold; color: var(--success);">{{ $patient->records_count ?? 0 }}</td>
+                        <td>
+                            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 0.35rem 0.85rem; border-radius: 30px; font-size: 0.75rem; font-weight: 800;">
+                                <i class="fa-solid fa-circle" style="font-size: 0.5rem; margin-left: 0.25rem;"></i> نشط
+                            </span>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <a href="#" class="btn" style="padding: 0.5rem; background: rgba(0, 102, 204, 0.1); color: var(--primary); border-radius: 8px;"><i class="fa-solid fa-eye"></i></a>
+                                <a href="#" class="btn" style="padding: 0.5rem; background: rgba(139, 92, 246, 0.1); color: var(--purple); border-radius: 8px;"><i class="fa-solid fa-file-medical"></i></a>
+                                <a href="#" class="btn" style="padding: 0.5rem; background: rgba(249, 115, 22, 0.1); color: #f97316; border-radius: 8px;"><i class="fa-solid fa-edit"></i></a>
+                                <button class="btn" style="padding: 0.5rem; background: rgba(239, 68, 68, 0.1); color: var(--danger); border-radius: 8px; border: none; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 4rem; color: var(--gray-400);">
+                            <i class="fa-solid fa-users-slash" style="font-size: 2.5rem; margin-bottom: 1rem; display: block; opacity: 0.3;"></i>
+                            <p style="font-size: 1.1rem; font-weight: 600;">لا يوجد مرضى</p>
+                            <p style="font-size: 0.9rem; color: var(--gray-500);">سيتم إضافة المرضى عند حجزهم لمواعيد</p>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+    
+    @if($patients ?? false)
+        <div style="margin-top: 1.5rem;">
+            {{ $patients->appends(request()->query())->links() }}
+        </div>
+    @endif
+</div>
+
+<!-- Patient Stats Cards -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+    <div class="card" style="background: linear-gradient(135deg, var(--success), #059669); color: #fff;">
+        <i class="fa-solid fa-calendar-heart" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
+        <div style="font-size: 1.8rem; font-weight: 900;">{{ $patientsWithAppointments ?? 0 }}</div>
+        <p style="opacity: 0.9; font-size: 0.9rem;">لديهم مواعيد</p>
+    </div>
+    <div class="card" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;">
+        <i class="fa-solid fa-file-medical-alt" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
+        <div style="font-size: 1.8rem; font-weight: 900;">{{ $patientsWithRecords ?? 0 }}</div>
+        <p style="opacity: 0.9; font-size: 0.9rem;">لديهم سجلات</p>
+    </div>
+    <div class="card" style="background: linear-gradient(135deg, var(--purple), #a855f7); color: #fff;">
+        <i class="fa-solid fa-eye" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
+        <div style="font-size: 1.8rem; font-weight: 900;">{{ $activePatients ?? 0 }}</div>
+        <p style="opacity: 0.9; font-size: 0.9rem;">نشط الشهر</p>
+    </div>
+    <div class="card" style="background: linear-gradient(135deg, #f97316, #ef4444); color: #fff;">
+        <i class="fa-solid fa-users-cog" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
+        <div style="font-size: 1.8rem; font-weight: 900;">{{ $needsAttention ?? 0 }}</div>
+        <p style="opacity: 0.9; font-size: 0.9rem;">يحتاجون متابعة</p>
+    </div>
+</div>
+@endsection

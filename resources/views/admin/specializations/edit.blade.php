@@ -5,8 +5,8 @@
 @section('content')
 <div class="container section">
     <div class="mb-8">
-        <h1 style="font-size: 2rem; font-weight: 900; color: var(--text);">تعديل التخصص</h1>
-        <p style="color: var(--muted);">تعديل بيانات التخصص الطبي: {{ $specialization->name }}</p>
+        <h1 class="page-title">تعديل التخصص</h1>
+        <p class="page-subtitle">تعديل بيانات التخصص الطبي: {{ $specialization->name }}</p>
     </div>
 
     <div class="card" style="max-width: 600px;">
@@ -26,13 +26,23 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="form-label">القسم المرتبط <span style="color: #ef4444;">*</span></label>
+                    <select name="department_id" class="form-control @error('department_id') is-invalid @enderror" required>
+                        @foreach($departments as $dept)
+                            <option value="{{ $dept->id }}" {{ old('department_id', $specialization->department_id) == $dept->id ? 'selected' : '' }}>{{ $dept->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('department_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-group">
                     <label class="form-label">وصف التخصص (اختياري)</label>
                     <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="4">{{ old('description', $specialization->description) }}</textarea>
                     @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
                 <div style="margin-top: 2rem; display: flex; gap: 1rem;">
-                    <button type="submit" class="btn btn-primary" style="padding: .85rem 2rem; background: linear-gradient(135deg, #7c3aed, #a855f7);">
+                    <button type="submit" class="btn btn-primary" style="padding: .85rem 2rem;">
                         <i class="fa-solid fa-save"></i> حفظ التغييرات
                     </button>
                     <a href="{{ route('admin.departments') }}" class="btn btn-outline" style="padding: .85rem 2rem;">إلغاء</a>

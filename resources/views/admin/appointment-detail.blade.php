@@ -3,18 +3,18 @@
 @section('content')
 
 <div class="page-header">
-    <div class="container">
+    <div>
         <div class="breadcrumb"><a href="{{ route('doctor.dashboard') }}">لوحتي</a> <i class="fa-solid fa-chevron-left fa-xs"></i> تفاصيل الموعد</div>
-        <h1>تفاصيل الموعد</h1>
+        <h1 class="page-title">تفاصيل الموعد</h1>
     </div>
 </div>
 
-<section class="section-sm"><div class="container">
+<section class="section-sm">
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start">
 
     {{-- APPOINTMENT INFO --}}
     <div>
-        <div class="card" style="margin-bottom:1.25rem">
+        <div class="card">
             <div class="card-header">
                 <span><i class="fa-solid fa-calendar-check" style="color:var(--blue);margin-left:.4rem"></i>معلومات الموعد</span>
                 <span class="badge {{ ['pending'=>'badge-yellow','confirmed'=>'badge-blue','completed'=>'badge-green','cancelled'=>'badge-red'][$appointment->status] ?? 'badge-gray' }}">
@@ -40,13 +40,13 @@
             <div class="card-body" style="display:flex;gap:.75rem">
                 <form method="POST" action="{{ route('doctor.confirm-appointment',$appointment) }}" style="flex:1">
                     @csrf @method('PATCH')
-                    <button type="submit" class="btn btn-success" style="width:100%;justify-content:center">
+                    <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">
                         <i class="fa-solid fa-check"></i> تأكيد الموعد
                     </button>
                 </form>
                 <form method="POST" action="{{ route('doctor.cancel-appointment',$appointment) }}" style="flex:1" onsubmit="return confirm('إلغاء هذا الموعد؟')">
                     @csrf @method('PATCH')
-                    <button type="submit" class="btn btn-danger" style="width:100%;justify-content:center">
+                    <button type="submit" class="btn" style="width:100%;justify-content:center;background:var(--danger);color:#fff">
                         <i class="fa-solid fa-xmark"></i> إلغاء
                     </button>
                 </form>
@@ -56,7 +56,7 @@
 
         {{-- EXISTING RECORD --}}
         @if($appointment->medicalRecord)
-        <div class="card" style="margin-top:1.25rem">
+        <div class="card">
             <div class="card-header">
                 <span><i class="fa-solid fa-file-medical" style="color:#059669;margin-left:.4rem"></i>السجل الطبي</span>
                 <span class="badge badge-green">مُضاف</span>
@@ -111,7 +111,7 @@
                 <i class="fa-solid fa-triangle-exclamation" style="flex-shrink:0;margin-top:.1rem"></i>
                 <span>بإضافة السجل الطبي سيتم تغيير حالة الموعد إلى <strong>مكتمل</strong> تلقائياً.</span>
             </div>
-            <button type="submit" class="btn btn-success" style="width:100%;justify-content:center;padding:.8rem">
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:.8rem">
                 <i class="fa-solid fa-floppy-disk"></i> حفظ السجل الطبي
             </button>
             </form>
@@ -125,5 +125,5 @@
     @endif
 
 </div>
-</div></section>
+</section>
 @endsection
