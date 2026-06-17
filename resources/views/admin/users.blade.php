@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.app')
 
 @section('title', 'إدارة المستخدمين')
 
@@ -20,20 +20,26 @@
     </div>
 </div>
 
+@if(session('success'))
+    <div class="alert alert-success">
+        <i class="fa-solid fa-circle-check"></i>
+        {{ session('success') }}
+    </div>
+@endif
+
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">قائمة المستخدمين</h3>
         <div style="display: flex; align-items: center; gap: 0.75rem;">
             <form method="GET" action="{{ route('admin.users') }}" style="display: flex; align-items: center; gap: 0.5rem;">
                 <label for="per_page_users" style="font-size: 0.85rem; color: var(--gray-600); font-weight: 700;">عرض</label>
-                <select id="per_page_users" name="per_page" class="form-control" onchange="this.form.submit()" style="width: 120px; padding: 0.5rem 0.75rem;">
+                <select id="per_page_users" name="per_page" class="form-control" onchange="this.form.submit()" style="width: 100px; padding: 0.4rem 0.75rem;">
                     <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
                     <option value="20" {{ request('per_page') == '20' ? 'selected' : '' }}>20</option>
                     <option value="30" {{ request('per_page') == '30' ? 'selected' : '' }}>30</option>
                     <option value="all" {{ request('per_page') == 'all' ? 'selected' : '' }}>الكل</option>
                 </select>
             </form>
-            <input type="text" class="form-control" placeholder="بحث باسم المستخدم..." style="width: 300px; padding: 0.5rem 1rem;">
         </div>
     </div>
     
@@ -52,8 +58,19 @@
                 @forelse($users as $user)
                 <tr>
                     <td>
-                        <div style="font-weight: 800; color: var(--gray-900);">{{ $user->name }}</div>
-                        <div style="font-size: 0.8rem; color: var(--gray-500);">{{ $user->email }}</div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--gray-100); overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                @if($user->avatar)
+                                    <img src="{{ asset('storage/' . $user->avatar) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                @else
+                                    <i class="fa-solid fa-user" style="color: var(--gray-400);"></i>
+                                @endif
+                            </div>
+                            <div>
+                                <div style="font-weight: 800; color: var(--gray-900);">{{ $user->name }}</div>
+                                <div style="font-size: 0.8rem; color: var(--gray-500);">{{ $user->email }}</div>
+                            </div>
+                        </div>
                     </td>
                     <td style="font-family: monospace; font-weight: 600;">{{ $user->phone ?? '---' }}</td>
                     <td>
@@ -62,9 +79,10 @@
                             $roleStyles = [
                                 'admin' => 'background: rgba(239, 68, 68, 0.1); color: #ef4444;',
                                 'doctor' => 'background: rgba(0, 102, 204, 0.1); color: #0066cc;',
-                                'patient' => 'background: rgba(16, 185, 129, 0.1); color: #10b981;'
+                                'patient' => 'background: rgba(16, 185, 129, 0.1); color: #10b981;',
+                                'receptionist' => 'background: rgba(139, 92, 246, 0.1); color: #8b5cf6;'
                             ];
-                            $roleNames = ['admin' => 'مدير', 'doctor' => 'طبيب', 'patient' => 'مريض'];
+                            $roleNames = ['admin' => 'مدير', 'doctor' => 'طبيب', 'patient' => 'مريض', 'receptionist' => 'موظف استقبال'];
                         @endphp
                         <span class="badge" style="{{ $roleStyles[$roleValue] ?? 'background: #f3f4f6; color: #6b7280;' }}">
                             {{ $roleNames[$roleValue] ?? $roleValue }}
@@ -75,11 +93,15 @@
                     </td>
                     <td>
                         <div style="display: flex; gap: 0.75rem;">
-                            <a href="{{ route('admin.users.edit', $user->id) }}" style="color: var(--primary); font-size: 1.1rem;"><i class="fa-solid fa-pen-to-square"></i></a>
-                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('هل أنت متأكد؟');">
+                            <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-white btn-sm" title="تعديل">
+                                <i class="fa-solid fa-pen-to-square" style="color: var(--primary);"></i>
+                            </a>
+                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء.');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1.1rem;"><i class="fa-solid fa-trash"></i></button>
+                                <button type="submit" class="btn btn-white btn-sm" title="حذف">
+                                    <i class="fa-solid fa-trash" style="color: var(--danger);"></i>
+                                </button>
                             </form>
                         </div>
                     </td>

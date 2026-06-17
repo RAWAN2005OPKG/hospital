@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.app')
 
 @section('title', 'إدارة المواعيد')
 
@@ -6,9 +6,16 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">إدارة المواعيد</h1>
-        <p class="page-subtitle">مراقبة وإدارة كافة مواعيد المرضى المسجلة في النظام</p>
+        <p class="page-subtitle">مراقبة وإدارة كافة مواعيد المرضى في النظام</p>
     </div>
 </div>
+
+@if(session('success'))
+    <div class="alert alert-success">
+        <i class="fa-solid fa-circle-check"></i>
+        {{ session('success') }}
+    </div>
+@endif
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
     <div class="card" style="border-right: 4px solid var(--primary);">
@@ -31,14 +38,13 @@
         <div style="display: flex; align-items: center; gap: 0.75rem;">
             <form method="GET" action="{{ route('admin.appointments') }}" style="display: flex; align-items: center; gap: 0.5rem;">
                 <label for="per_page_appointments" style="font-size: 0.85rem; color: var(--gray-600); font-weight: 700;">عرض</label>
-                <select id="per_page_appointments" name="per_page" class="form-control" onchange="this.form.submit()" style="width: 120px; padding: 0.5rem 0.75rem;">
+                <select id="per_page_appointments" name="per_page" class="form-control" onchange="this.form.submit()" style="width: 100px; padding: 0.4rem 0.75rem;">
                     <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
                     <option value="20" {{ request('per_page') == '20' ? 'selected' : '' }}>20</option>
                     <option value="30" {{ request('per_page') == '30' ? 'selected' : '' }}>30</option>
                     <option value="all" {{ request('per_page') == 'all' ? 'selected' : '' }}>الكل</option>
                 </select>
             </form>
-            <input type="text" class="form-control" placeholder="بحث..." style="width: 250px; padding: 0.5rem 1rem;">
         </div>
     </div>
     
@@ -88,8 +94,16 @@
                     </td>
                     <td>
                         <div style="display: flex; gap: 0.5rem;">
-                            <a href="#" class="btn" style="padding: 0.5rem; background: var(--gray-50); color: var(--gray-600);"><i class="fa-solid fa-eye"></i></a>
-                            <a href="#" class="btn" style="padding: 0.5rem; background: rgba(239, 68, 68, 0.1); color: var(--danger);"><i class="fa-solid fa-trash"></i></a>
+                            {{-- Assuming a route for details might exist or be the same as doctor's --}}
+                            <a href="{{ route('doctor.appointment-detail', $app->id) }}" class="btn btn-white btn-sm" title="عرض التفاصيل">
+                                <i class="fa-solid fa-eye" style="color: var(--primary);"></i>
+                            </a>
+                            <form action="#" method="POST" onsubmit="return confirm('حذف الموعد؟');">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn btn-white btn-sm" title="حذف">
+                                    <i class="fa-solid fa-trash" style="color: var(--danger);"></i>
+                                </button>
+                            </form>
                         </div>
                     </td>
                 </tr>

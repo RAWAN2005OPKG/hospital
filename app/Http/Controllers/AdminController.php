@@ -180,6 +180,7 @@ class AdminController extends Controller
             'password' => 'required|min:8',
             'department_id' => 'required|exists:departments,id',
             'specialization_id' => 'required|exists:specializations,id',
+            'license_number' => 'required|string|unique:doctors,license_number',
         ]);
 
         $user = User::create([
@@ -195,6 +196,7 @@ class AdminController extends Controller
             'department_id' => $request->department_id,
             'specialization_id' => $request->specialization_id,
             'experience_years' => $request->experience_years ?? 0,
+            'license_number' => $request->license_number,
             'bio' => $request->bio,
         ]);
 
@@ -261,9 +263,50 @@ class AdminController extends Controller
         return back()->with("success", "تم حذف المستخدم");
     }
 
-    // Doctors delete placeholders (views may not exist yet)
-    public function editDoctor(Doctor $doctor) { return view('admin.doctors.edit', compact('doctor')); }
-    public function destroyDoctor(Doctor $doctor) { $doctor->delete(); return back()->with('success', 'تم حذف الطبيب'); }
+    public function editDoctor(Doctor $doctor)
+    {
+        $departments = Department::all();
+        $specializations = Specialization::all();
+        return view('admin.doctors.edit', compact('doctor', 'departments', 'specializations'));
+    }
+
+    public function updateDoctor(Request $request, Doctor $doctor)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $doctor->user_id,
+            'department_id' => 'required|exists:departments,id',
+            'specialization_id' => 'required|exists:specializations,id',
+            'license_number' => 'required|string|unique:doctors,license_number,' . $doctor->id,
+            'experience_years' => 'required|integer|min:0',
+        ]);
+
+        $doctor->user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+        ]);
+
+        if ($request->filled('password')) {
+            $doctor->user->update(['password' => Hash::make($request->password)]);
+        }
+
+        $doctor->update([
+            'department_id' => $request->department_id,
+            'specialization_id' => $request->specialization_id,
+            'license_number' => $request->license_number,
+            'experience_years' => $request->experience_years,
+            'bio' => $request->bio,
+        ]);
+
+        return redirect()->route('admin.doctors')->with('success', 'تم تحديث بيانات الطبيب بنجاح');
+    }
+
+    public function destroyDoctor(Doctor $doctor)
+    {
+        $doctor->delete();
+        return back()->with('success', 'تم حذف الطبيب');
+    }
     
     public function contactMessages()
     {
