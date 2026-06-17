@@ -28,15 +28,33 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|string|email|max:255',
             'password' => 'required|string',
+            'role' => 'required|in:patient,doctor,admin',
         ]);
 
         $user = User::query()
             ->where('email', $request->email)
             ->first();
 
+        // 1. التحقق من وجود المستخدم وكلمة المرور
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'identifier' => __('auth.failed'),
+                'email' => __('auth.failed'),
+            ]);
+        }
+
+        // 2. التحقق من تطابق الدور (Role) مع نوع تسجيل الدخول المختار
+        $selectedRole = $request->role;
+        $userRole = is_object($user->role) ? $user->role->value : (string)$user->role;
+
+        if ($userRole !== $selectedRole) {
+            $roleNames = [
+                'patient' => 'مريض',
+                'doctor' => 'طبيب',
+                'admin' => 'مدير نظام'
+            ];
+            
+            throw ValidationException::withMessages([
+                'email' => "هذا الحساب مسجل كـ (" . ($roleNames[$userRole] ?? $userRole) . ")، يرجى اختيار نوع الحساب الصحيح لتسجيل الدخول.",
             ]);
         }
 
