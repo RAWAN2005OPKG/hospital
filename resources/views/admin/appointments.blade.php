@@ -6,39 +6,54 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">إدارة المواعيد</h1>
-        <p class="page-subtitle">مراقبة وإدارة كافة مواعيد المرضى المسجلة في النظام</p>
+        <p class="page-subtitle">متابعة وتنظيم مواعيد المرضى مع الأطباء</p>
     </div>
 </div>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
-    <div class="card" style="border-right: 4px solid var(--primary);">
-        <p style="color: var(--gray-500); font-weight: 700; font-size: 0.85rem;">مواعيد اليوم</p>
-        <h3 style="font-size: 1.8rem; font-weight: 900; margin-top: 0.5rem;">{{ $todayAppointments }}</h3>
+<div class="grid-2" style="margin-bottom: 2rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+    <div class="card" style="padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem;">
+        <div style="width: 56px; height: 56px; border-radius: 16px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+            <i class="fa-solid fa-calendar-day"></i>
+        </div>
+        <div>
+            <div style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); line-height: 1;">{{ $todayAppointments }}</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-top: 0.25rem;">مواعيد اليوم</div>
+        </div>
     </div>
-    <div class="card" style="border-right: 4px solid var(--success);">
-        <p style="color: var(--gray-500); font-weight: 700; font-size: 0.85rem;">هذا الأسبوع</p>
-        <h3 style="font-size: 1.8rem; font-weight: 900; margin-top: 0.5rem;">{{ $weekAppointments }}</h3>
+    
+    <div class="card" style="padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem;">
+        <div style="width: 56px; height: 56px; border-radius: 16px; background: #dcfce7; color: #15803d; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+            <i class="fa-solid fa-calendar-week"></i>
+        </div>
+        <div>
+            <div style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); line-height: 1;">{{ $weekAppointments }}</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-top: 0.25rem;">مواعيد الأسبوع</div>
+        </div>
     </div>
-    <div class="card" style="border-right: 4px solid var(--warning);">
-        <p style="color: var(--gray-500); font-weight: 700; font-size: 0.85rem;">قيد الانتظار</p>
-        <h3 style="font-size: 1.8rem; font-weight: 900; margin-top: 0.5rem;">{{ $pendingAppointments }}</h3>
+
+    <div class="card" style="padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem;">
+        <div style="width: 56px; height: 56px; border-radius: 16px; background: #fee2e2; color: #b91c1c; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+        </div>
+        <div>
+            <div style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); line-height: 1;">{{ $pendingAppointments }}</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-top: 0.25rem;">بانتظار التأكيد</div>
+        </div>
     </div>
 </div>
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">سجل المواعيد</h3>
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <form method="GET" action="{{ route('admin.appointments') }}" style="display: flex; align-items: center; gap: 0.5rem;">
-                <label for="per_page_appointments" style="font-size: 0.85rem; color: var(--gray-600); font-weight: 700;">عرض</label>
-                <select id="per_page_appointments" name="per_page" class="form-control" onchange="this.form.submit()" style="width: 120px; padding: 0.5rem 0.75rem;">
+        <h3 class="card-title">جدول المواعيد</h3>
+        <div style="display: flex; gap: 1rem;">
+             <form method="GET" action="{{ route('admin.appointments') }}" style="display: flex; align-items: center; gap: 0.5rem;">
+                <select name="per_page" class="form-control" onchange="this.form.submit()" style="width: 80px; padding: 0.5rem;">
                     <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
                     <option value="20" {{ request('per_page') == '20' ? 'selected' : '' }}>20</option>
                     <option value="30" {{ request('per_page') == '30' ? 'selected' : '' }}>30</option>
-                    <option value="all" {{ request('per_page') == 'all' ? 'selected' : '' }}>الكل</option>
                 </select>
             </form>
-            <input type="text" class="form-control" placeholder="بحث..." style="width: 250px; padding: 0.5rem 1rem;">
+            <input type="text" class="form-control" placeholder="بحث في المواعيد..." style="width: 250px;">
         </div>
     </div>
     
@@ -50,55 +65,69 @@
                     <th>الطبيب</th>
                     <th>التاريخ والوقت</th>
                     <th>الحالة</th>
-                    <th>الإجراءات</th>
+                    <th style="text-align: center;">الإجراءات</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($appointments as $app)
                 <tr>
                     <td>
-                        <div style="font-weight: 800; color: var(--gray-900);">{{ $app->patient->user->name ?? 'مريض غير معروف' }}</div>
-                        <div style="font-size: 0.8rem; color: var(--gray-500);">{{ $app->patient->user->email ?? '' }}</div>
+                        <div style="font-weight: 700; color: var(--text-main);">{{ $app->patient->user->name ?? 'مريض غير معروف' }}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">{{ $app->patient->user->phone ?? '' }}</div>
                     </td>
                     <td>
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(0, 102, 204, 0.1); display: flex; align-items: center; justify-content: center; color: var(--primary);">
-                                <i class="fa-solid fa-user-doctor"></i>
-                            </div>
-                            <span style="font-weight: 700;">{{ $app->doctor->user->name ?? '---' }}</span>
+                        <div style="font-weight: 600; color: var(--primary);">د. {{ $app->doctor->user->name ?? '---' }}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">{{ $app->doctor->specialization->name ?? 'تخصص عام' }}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 700; color: var(--text-main);">{{ $app->appointment_date }}</div>
+                        <div style="font-size: 0.85rem; color: var(--info); font-weight: 600;">
+                            <i class="fa-regular fa-clock"></i> {{ $app->appointment_time }}
                         </div>
                     </td>
                     <td>
-                        <div style="font-weight: 700;">{{ $app->appointment_date }}</div>
-                        <div style="font-size: 0.8rem; color: var(--primary); font-weight: 600;">{{ $app->appointment_time }}</div>
-                    </td>
-                    <td>
                         @php
-                            $statusStyles = [
-                                'pending' => 'background: rgba(245, 158, 11, 0.1); color: #f59e0b;',
-                                'confirmed' => 'background: rgba(0, 102, 204, 0.1); color: #0066cc;',
-                                'completed' => 'background: rgba(16, 185, 129, 0.1); color: #10b981;',
-                                'cancelled' => 'background: rgba(239, 68, 68, 0.1); color: #ef4444;'
+                            $statusClasses = [
+                                'pending' => 'badge-warning',
+                                'confirmed' => 'badge-primary',
+                                'completed' => 'badge-success',
+                                'cancelled' => 'badge-danger',
                             ];
-                            $statusLabels = ['pending' => 'انتظار', 'confirmed' => 'مؤكد', 'completed' => 'مكتمل', 'cancelled' => 'ملغي'];
+                            $statusLabels = [
+                                'pending' => 'قيد الانتظار',
+                                'confirmed' => 'مؤكد',
+                                'completed' => 'مكتمل',
+                                'cancelled' => 'ملغي',
+                            ];
                         @endphp
-                        <span class="badge" style="{{ $statusStyles[$app->status] ?? 'background: #f3f4f6; color: #6b7280;' }}">
+                        <span class="badge {{ $statusClasses[$app->status] ?? 'badge-secondary' }}">
                             {{ $statusLabels[$app->status] ?? $app->status }}
                         </span>
                     </td>
                     <td>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <a href="#" class="btn" style="padding: 0.5rem; background: var(--gray-50); color: var(--gray-600);"><i class="fa-solid fa-eye"></i></a>
-                            <a href="#" class="btn" style="padding: 0.5rem; background: rgba(239, 68, 68, 0.1); color: var(--danger);"><i class="fa-solid fa-trash"></i></a>
+                        <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                            <a href="#" class="btn btn-light" style="padding: 0.5rem; border-radius: 8px; color: var(--primary);">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                            <a href="#" class="btn btn-light" style="padding: 0.5rem; border-radius: 8px; color: var(--danger);">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
                         </div>
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="5" style="text-align: center; padding: 3rem; color: var(--gray-400);">لا توجد مواعيد مسجلة</td></tr>
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 4rem;">
+                        <i class="fa-solid fa-calendar-xmark" style="font-size: 3rem; color: var(--border-color); margin-bottom: 1rem; display: block;"></i>
+                        <p style="color: var(--text-muted); font-weight: 600;">لا يوجد مواعيد مسجلة حالياً</p>
+                    </td>
+                </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-    <div style="margin-top: 1.5rem;">{{ $appointments->links() }}</div>
+    <div style="margin-top: 2rem; display: flex; justify-content: center;">
+        {{ $appointments->links() }}
+    </div>
 </div>
 @endsection
