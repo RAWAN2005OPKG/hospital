@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\DepartmentController as AdminDepartmentController;
+use App\Http\Controllers\DepartmentController as PublicDepartmentController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Doctor\DoctorDashboardController;
@@ -102,8 +103,8 @@ Route::middleware(['auth', 'role:admin,receptionist'])->prefix($adminPath)->as('
     
     // Departments - Supporting 'admin.departments' and 'admin.departments.index'
     Route::get('/departments', [AdminController::class, 'departments'])->name('departments');
-    Route::resource('departments', DepartmentController::class)->names([
-        'index' => 'departments.index',
+    Route::get('/departments/index', [AdminController::class, 'departments'])->name('departments.index');
+    Route::resource('departments', AdminDepartmentController::class)->except(['index'])->names([
         'create' => 'departments.create',
         'store' => 'departments.store',
         'edit' => 'departments.edit',
@@ -125,8 +126,8 @@ Route::middleware(['auth', 'role:admin,receptionist'])->prefix($adminPath)->as('
 
 Route::get('/doctors', [DoctorController::class, 'index'])->name('doctors.index');
 Route::get('/doctors/{doctor}', [DoctorController::class, 'show'])->name('doctors.show');
-Route::get('/departments', [DepartmentController::class, 'index'])->name('departments');
-Route::get('/departments/{department}', [DepartmentController::class, 'show'])->name('departments.show');
+Route::get('/departments', [PublicDepartmentController::class, 'index'])->name('departments');
+Route::get('/departments/{department}', [PublicDepartmentController::class, 'show'])->name('departments.show');
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 

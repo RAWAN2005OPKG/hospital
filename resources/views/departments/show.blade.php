@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', '{{ $department->name }} - الأطباء')
+@php use Illuminate\Support\Facades\Storage; @endphp
 
 @section('content')
 <div class="py-12">
@@ -8,7 +9,7 @@
         {{-- Header --}}
         <div class="text-center mb-16">
             @if($department->image)
-                <div class="w-full h-64 md:h-96 bg-cover bg-center rounded-3xl shadow-2xl mb-8 overflow-hidden" style="background-image: url('{{ asset($department->image) }}');"></div>
+                <div class="w-full h-64 md:h-96 bg-cover bg-center rounded-3xl shadow-2xl mb-8 overflow-hidden" style="background-image: url('{{ Storage::url($department->image) }}');"></div>
             @endif
             <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
                 {{ $department->name }}

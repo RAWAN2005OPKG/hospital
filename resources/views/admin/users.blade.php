@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.app')
 
 @section('title', 'إدارة المستخدمين')
 
@@ -8,16 +8,33 @@
         <h1 class="page-title">إدارة المستخدمين</h1>
         <p class="page-subtitle">عرض وإدارة كافة الحسابات المسجلة في النظام</p>
     </div>
+    <div style="display:flex; gap: 1rem; align-items: center;">
+        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+            <i class="fa-solid fa-user-plus"></i>
+            إضافة مستخدم
+        </a>
     <div style="background: #fff; padding: 0.75rem 1.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center;">
         <div style="font-size: 1.5rem; font-weight: 900; color: var(--primary);">{{ $users->total() }}</div>
         <div style="font-size: 0.8rem; color: var(--gray-500); font-weight: 600;">إجمالي المستخدمين</div>
+    </div>
     </div>
 </div>
 
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">قائمة المستخدمين</h3>
-        <input type="text" class="form-control" placeholder="بحث باسم المستخدم..." style="width: 300px; padding: 0.5rem 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <form method="GET" action="{{ route('admin.users') }}" style="display: flex; align-items: center; gap: 0.5rem;">
+                <label for="per_page_users" style="font-size: 0.85rem; color: var(--gray-600); font-weight: 700;">عرض</label>
+                <select id="per_page_users" name="per_page" class="form-control" onchange="this.form.submit()" style="width: 120px; padding: 0.5rem 0.75rem;">
+                    <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
+                    <option value="20" {{ request('per_page') == '20' ? 'selected' : '' }}>20</option>
+                    <option value="30" {{ request('per_page') == '30' ? 'selected' : '' }}>30</option>
+                    <option value="all" {{ request('per_page') == 'all' ? 'selected' : '' }}>الكل</option>
+                </select>
+            </form>
+            <input type="text" class="form-control" placeholder="بحث باسم المستخدم..." style="width: 300px; padding: 0.5rem 1rem;">
+        </div>
     </div>
     
     <div class="table-container">

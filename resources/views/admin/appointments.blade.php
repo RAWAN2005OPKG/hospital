@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.app')
 
 @section('title', 'إدارة المواعيد')
 
@@ -28,7 +28,18 @@
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">سجل المواعيد</h3>
-        <input type="text" class="form-control" placeholder="بحث..." style="width: 250px; padding: 0.5rem 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <form method="GET" action="{{ route('admin.appointments') }}" style="display: flex; align-items: center; gap: 0.5rem;">
+                <label for="per_page_appointments" style="font-size: 0.85rem; color: var(--gray-600); font-weight: 700;">عرض</label>
+                <select id="per_page_appointments" name="per_page" class="form-control" onchange="this.form.submit()" style="width: 120px; padding: 0.5rem 0.75rem;">
+                    <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
+                    <option value="20" {{ request('per_page') == '20' ? 'selected' : '' }}>20</option>
+                    <option value="30" {{ request('per_page') == '30' ? 'selected' : '' }}>30</option>
+                    <option value="all" {{ request('per_page') == 'all' ? 'selected' : '' }}>الكل</option>
+                </select>
+            </form>
+            <input type="text" class="form-control" placeholder="بحث..." style="width: 250px; padding: 0.5rem 1rem;">
+        </div>
     </div>
     
     <div class="table-container">

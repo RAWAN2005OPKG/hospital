@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Department;
+use Illuminate\Support\Facades\Storage;
 
 class DepartmentController extends Controller
 {
@@ -24,9 +25,18 @@ class DepartmentController extends Controller
         $request->validate([
             "name" => "required|string|max:255|unique:departments,name",
             "description" => "nullable|string",
+            "manager_name" => "required|string|max:255",
+            "phone" => "required|string|max:255|unique:departments,phone",
+            "image" => "nullable|image|mimes:jpg,jpeg,png,webp|max:2048",
         ]);
 
-        Department::create($request->all());
+        $data = $request->only(["name", "description", "manager_name", "phone"]);
+
+        if ($request->hasFile("image")) {
+            $data["image"] = $request->file("image")->store("departments", "public");
+        }
+
+        Department::create($data);
 
         return redirect()->route("admin.departments.index")->with("success", "تم إضافة القسم بنجاح.");
     }
@@ -41,15 +51,34 @@ class DepartmentController extends Controller
         $request->validate([
             "name" => "required|string|max:255|unique:departments,name," . $department->id,
             "description" => "nullable|string",
+            "manager_name" => "required|string|max:255",
+            "phone" => "required|string|max:255|unique:departments,phone," . $department->id,
+            "image" => "nullable|image|mimes:jpg,jpeg,png,webp|max:2048",
         ]);
 
-        $department->update($request->all());
+        $data = $request->only(["name", "description", "manager_name", "phone"]);
+
+        if ($request->hasFile("image")) {
+            $newPath = $request->file("image")->store("departments", "public");
+
+            if ($department->image && Storage::disk("public")->exists($department->image)) {
+                Storage::disk("public")->delete($department->image);
+            }
+
+            $data["image"] = $newPath;
+        }
+
+        $department->update($data);
 
         return redirect()->route("admin.departments.index")->with("success", "تم تحديث القسم بنجاح.");
     }
 
     public function destroy(Department $department)
     {
+        if ($department->image && Storage::disk("public")->exists($department->image)) {
+            Storage::disk("public")->delete($department->image);
+        }
+
         $department->delete();
         return redirect()->route("admin.departments.index")->with("success", "تم حذف القسم بنجاح.");
     }

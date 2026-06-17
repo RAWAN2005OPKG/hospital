@@ -10,10 +10,22 @@ use App\Models\Appointment;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use App\Enums\UserRoleEnum;
 
 class AdminController extends Controller
 {
+    private function resolvePerPage(Request $request, string $modelClass): int
+    {
+        $perPage = $request->query("per_page", 15);
+
+        if ($perPage === "all") {
+            return max(1, $modelClass::count());
+        }
+
+        return in_array((int) $perPage, [10, 20, 30], true) ? (int) $perPage : 15;
+    }
+
     public function dashboard()
     {
         $totalUsers = User::count();
@@ -37,10 +49,54 @@ class AdminController extends Controller
         ));
     }
 
-    public function users()
+    public function users(Request $request)
     {
-        $users = User::orderBy('created_at', 'desc')->paginate(15);
+        $perPage = $this->resolvePerPage($request, User::class);
+        $users = User::orderBy('created_at', 'desc')
+            ->paginate($perPage)
+            ->withQueryString();
+
         return view("admin.users", compact("users"));
+    }
+
+    public function createUser()
+    {
+        $roles = [
+            UserRoleEnum::Admin,
+            UserRoleEnum::Receptionist,
+            UserRoleEnum::Doctor,
+            UserRoleEnum::Patient,
+        ];
+
+        return view("admin.users.create", compact("roles"));
+    }
+
+    public function storeUser(Request $request)
+    {
+        $request->validate([
+            "name" => "required|string|max:255",
+            "email" => "required|email|max:255|unique:users,email",
+            "password" => "required|string|min:8|confirmed",
+            "phone" => "nullable|string|max:255",
+            "role" => "required|in:admin,receptionist,doctor,patient",
+            "avatar" => "nullable|image|mimes:jpg,jpeg,png,webp|max:2048",
+        ]);
+
+        $data = [
+            "name" => $request->name,
+            "email" => $request->email,
+            "password" => Hash::make($request->password),
+            "phone" => $request->phone,
+            "role" => $request->role,
+        ];
+
+        if ($request->hasFile("avatar")) {
+            $data["avatar"] = $request->file("avatar")->store("avatars", "public");
+        }
+
+        User::create($data);
+
+        return redirect()->route("admin.users")->with("success", "تم إضافة المستخدم بنجاح");
     }
 
     public function doctors()
@@ -49,11 +105,13 @@ class AdminController extends Controller
         return view("admin.doctors", compact("doctors"));
     }
 
-    public function appointments()
+    public function appointments(Request $request)
     {
+        $perPage = $this->resolvePerPage($request, Appointment::class);
         $appointments = Appointment::with("patient.user", "doctor.user")
             ->orderBy("appointment_date", "desc")
-            ->paginate(15);
+            ->paginate($perPage)
+            ->withQueryString();
         
         $todayAppointments = Appointment::whereDate('appointment_date', now())->count();
         $weekAppointments = Appointment::whereBetween('appointment_date', [now()->startOfWeek(), now()->endOfWeek()])->count();
@@ -143,9 +201,67 @@ class AdminController extends Controller
         return redirect()->route('admin.doctors')->with('success', 'تم إضافة الطبيب بنجاح');
     }
     
-    // Additional placeholder methods for users/doctors edit/delete to prevent errors
-    public function editUser(User $user) { return view('admin.users.edit', compact('user')); }
-    public function destroyUser(User $user) { $user->delete(); return back()->with('success', 'تم حذف المستخدم'); }
+    public function editUser(User $user)
+    {
+        $roles = [
+            UserRoleEnum::Admin,
+            UserRoleEnum::Receptionist,
+            UserRoleEnum::Doctor,
+            UserRoleEnum::Patient,
+        ];
+
+        return view("admin.users.edit", compact("user", "roles"));
+    }
+
+    public function updateUser(Request $request, User $user)
+    {
+        $request->validate([
+            "name" => "required|string|max:255",
+            "email" => "required|email|max:255|unique:users,email," . $user->id,
+            "password" => "nullable|string|min:8|confirmed",
+            "phone" => "nullable|string|max:255",
+            "role" => "required|in:admin,receptionist,doctor,patient",
+            "avatar" => "nullable|image|mimes:jpg,jpeg,png,webp|max:2048",
+        ]);
+
+        $data = [
+            "name" => $request->name,
+            "email" => $request->email,
+            "phone" => $request->phone,
+            "role" => $request->role,
+        ];
+
+        if ($request->filled("password")) {
+            $data["password"] = Hash::make($request->password);
+        }
+
+        if ($request->hasFile("avatar")) {
+            $newPath = $request->file("avatar")->store("avatars", "public");
+
+            if ($user->avatar && Storage::disk("public")->exists($user->avatar)) {
+                Storage::disk("public")->delete($user->avatar);
+            }
+
+            $data["avatar"] = $newPath;
+        }
+
+        $user->update($data);
+
+        return redirect()->route("admin.users")->with("success", "تم تحديث المستخدم بنجاح");
+    }
+
+    public function destroyUser(User $user)
+    {
+        if ($user->avatar && Storage::disk("public")->exists($user->avatar)) {
+            Storage::disk("public")->delete($user->avatar);
+        }
+
+        $user->delete();
+
+        return back()->with("success", "تم حذف المستخدم");
+    }
+
+    // Doctors delete placeholders (views may not exist yet)
     public function editDoctor(Doctor $doctor) { return view('admin.doctors.edit', compact('doctor')); }
     public function destroyDoctor(Doctor $doctor) { $doctor->delete(); return back()->with('success', 'تم حذف الطبيب'); }
     

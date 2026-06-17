@@ -18,6 +18,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
+        :root {
+            --blue: #0077B6;
+            --green: #10b981;
+            --purple: #8b5cf6;
+            --red: #ef4444;
+            --muted: #6b7280;
+            --text: #374151;
+            --success: #10b981;
+            --primary: #0077B6;
+            --secondary: #00B4D8;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+        }
+
         * {
             margin: 0;
             padding: 0;

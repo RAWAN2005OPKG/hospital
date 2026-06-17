@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('title', __('messages.our_departments'))
+@php use Illuminate\Support\Facades\Storage; @endphp
 
 @push('styles')
 <style>
@@ -307,7 +308,7 @@
             <div class="department-card">
                 <div class="department-image">
                     @if($department->image)
-                        <img src="{{ asset($department->image) }}" alt="{{ $department->name }}">
+                        <img src="{{ Storage::url($department->image) }}" alt="{{ $department->name }}">
                     @else
                         <i class="fa-solid fa-hospital"></i>
                     @endif

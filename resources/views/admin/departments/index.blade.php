@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('title', __('messages.our_departments'))
+@php use Illuminate\Support\Facades\Storage; @endphp
 
 @push('styles')
 <style>
@@ -50,6 +51,31 @@
     .departments-hero-content {
         position: relative;
         z-index: 1;
+    }
+
+    .hero-actions {
+        margin-top: 2rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .btn-add-department {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.8rem 1.4rem;
+        border-radius: 12px;
+        font-weight: 800;
+        text-decoration: none;
+        color: #fff;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        box-shadow: 0 8px 20px rgba(0, 119, 182, 0.25);
+        transition: all 0.3s ease;
+    }
+
+    .btn-add-department:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 26px rgba(0, 119, 182, 0.35);
     }
 
     .sec-tag {
@@ -296,6 +322,12 @@
             <span class="sec-tag">{{ __('messages.departments') }}</span>
             <h2>{{ __('messages.our_departments') }}</h2>
             <p>{{ __('messages.departments_description') }}</p>
+            <div class="hero-actions">
+                <a href="{{ route('admin.departments.create') }}" class="btn-add-department">
+                    <i class="fa-solid fa-plus"></i>
+                    إضافة قسم
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -307,7 +339,7 @@
             <div class="department-card">
                 <div class="department-image">
                     @if($department->image)
-                        <img src="{{ asset($department->image) }}" alt="{{ $department->name }}">
+                        <img src="{{ Storage::url($department->image) }}" alt="{{ $department->name }}">
                     @else
                         <i class="fa-solid fa-hospital"></i>
                     @endif
@@ -352,6 +384,10 @@
         <div style="text-align: center; padding: 4rem 2rem; color: var(--gray-500);">
             <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.5;"></i>
             <p style="font-size: 1.1rem; font-weight: 600;">{{ __('messages.no_departments_available') }}</p>
+            <a href="{{ route('admin.departments.create') }}" class="btn-add-department" style="margin-top: 1.25rem;">
+                <i class="fa-solid fa-plus"></i>
+                إضافة أول قسم
+            </a>
         </div>
     @endif
 </div>

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'تعديل القسم: ' . $department->name)
+@php use Illuminate\Support\Facades\Storage; @endphp
 
 @section('content')
 <div class="container section">
@@ -45,7 +46,7 @@
                         <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
                         @if($department->image)
                             <div style="margin-top: .5rem;">
-                                <img src="{{ asset($department->image) }}" alt="{{ $department->name }}" style="width: 100px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                <img src="{{ Storage::url($department->image) }}" alt="{{ $department->name }}" style="width: 100px; height: 60px; object-fit: cover; border-radius: 8px;">
                                 <p style="font-size: .75rem; color: var(--muted);">الصورة الحالية</p>
                             </div>
                         @endif
