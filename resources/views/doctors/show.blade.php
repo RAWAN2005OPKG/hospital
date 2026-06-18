@@ -3,11 +3,11 @@
 @section('title', 'عرض الملف الشخصي')
 
 @section('content')
-<div style="padding-top: 80px; min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); padding: 3rem 1.5rem;">
+<div style="padding-top: 120px; min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); padding: 3rem 1.5rem;">
     <div style="max-width: 1000px; margin: 0 auto;">
         
         <!-- Header Section -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap;">
             <div style="display: flex; align-items: center; gap: 1rem;">
                 <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #3b82f6, #2563eb); border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; box-shadow: 0 10px 15px rgba(59, 130, 246, 0.2);">
                     <i class="fas fa-id-card"></i>
@@ -35,9 +35,15 @@
                         @endif
                     </div>
                     <h2 style="font-size: 1.5rem; font-weight: 800; color: #111827; margin: 0 0 0.5rem 0;">{{ $doctor->user->name }}</h2>
-                    <span style="display: inline-block; padding: 0.4rem 1rem; background: #dbeafe; color: #1e40af; font-weight: bold; border-radius: 2rem; font-size: 0.85rem;">
-                        <i class="fas fa-user-tag" style="margin-left: 0.25rem;"></i> {{ $doctor->user->role == 'patient' ? 'مريض' : 'طبيب' }}
-                    </span>
+                    <div style="display:flex; flex-wrap:wrap; gap:0.75rem; justify-content:center; align-items:center;">
+                        <span style="display: inline-block; padding: 0.4rem 1rem; background: #dbeafe; color: #1e40af; font-weight: bold; border-radius: 2rem; font-size: 0.85rem;">
+                            <i class="fas fa-user-tag" style="margin-left: 0.25rem;"></i> {{ $doctor->user->role == 'patient' ? 'مريض' : 'طبيب' }}
+                        </span>
+                        <a href="{{ route('appointments.create', ['doctor' => $doctor->id]) }}" style="padding: 0.65rem 1rem; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; font-weight: bold; border-radius: 2rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 10px 15px rgba(37, 99, 235, 0.2);">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>حجز موعد</span>
+                        </a>
+                    </div>
                     
                     <div style="margin-top: 2rem; text-align: right; display: flex; flex-direction: column; gap: 1rem;">
                         <div style="display: flex; align-items: center; gap: 0.75rem; color: #4b5563;">

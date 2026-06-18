@@ -130,7 +130,7 @@
                                 سجلاتك الطبية ستظهر هنا تلقائياً بعد إتمام أول زيارة للطبيب
                             </p>
                             <div class="space-y-4">
-                                <a href="{{ route('appointments.search') }}" class="block w-full max-w-md mx-auto inline-flex items-center justify-center px-12 py-6 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-bold text-xl rounded-3xl shadow-2xl hover:shadow-4xl transition-all transform hover:-translate-y-2 mx-auto group">
+<a href="{{ route('appointments.book') }}" class="block w-full max-w-md mx-auto inline-flex items-center justify-center px-12 py-6 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-bold text-xl rounded-3xl shadow-2xl hover:shadow-4xl transition-all transform hover:-translate-y-2 mx-auto group">
                                     <i class="fas fa-calendar-plus text-2xl mr-4 group-hover:animate-bounce"></i>
                                     {{ __('messages.book_first_appointment_now') }}
                                 </a>

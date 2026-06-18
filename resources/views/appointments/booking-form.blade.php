@@ -39,6 +39,98 @@
             
             <!-- Reason -->
             <div class="mb-6">
+PHP 8.1.10
+10.50.2
+Class "App\Mail\ContactFormMail" not found
+
+Expand vendor frames
+App
+ \ 
+Http
+ \ 
+Controllers
+ \ 
+ContactController
+ 
+: 31
+store
+12 vendor frames
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+SetLocale
+ 
+: 19
+handle
+32 vendor frames
+E:\laragon\www\app_hospital\public\index
+.php
+ 
+: 52
+[top]
+E:\laragon\www\app_hospital\app\Http\Controllers\ContactController
+.php
+ 
+: 31
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function show()
+
+    {
+
+        return view("contact");
+
+    }
+
+
+
+    public function store(Request $request)
+
+    {
+
+        $validated = $request->validate([
+
+            "name" => "required|string|max:255",
+
+            "email" => "required|email",
+
+            "subject" => "required|string|max:255",
+
+            "message" => "required|string",
+
+        ]);
                 <label class="block text-lg font-bold text-gray-800 mb-3">
                     <i class="fas fa-notes-medical ml-2 text-blue-600"></i>سبب الزيارة (اختياري)
                 </label>
@@ -73,7 +165,7 @@
                 <button type="submit" class="btn-primary flex-1">
                     <i class="fas fa-check-circle ml-2"></i>تأكيد الحجز
                 </button>
-                <a href="{{ route('appointments.search') }}" class="btn-outline flex-1 text-center">
+<a href="{{ route('doctors.show', $doctor->id) }}" class="btn-outline flex-1 text-center">
                     <i class="fas fa-times-circle ml-2"></i>إلغاء
                 </a>
             </div>
@@ -86,7 +178,6 @@
 document.querySelector('input[name="appointment_date"]').addEventListener('change', function() {
     const date = this.value;
     const doctorId = {{ $doctor->id }};
-    
     fetch(`{{ route('appointments.available-slots', '') }}/${doctorId}/slots?date=${date}`)
         .then(response => response.json())
         .then(data => {

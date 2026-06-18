@@ -653,6 +653,9 @@
                         </li>
                     </ul>
                 </div>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-outline btn-sm">{{ app()->getLocale() === 'ar' ? 'تسجيل دخول' : 'Login' }}</a>
+                <a href="{{ route('register') }}" class="btn btn-primary btn-sm">{{ app()->getLocale() === 'ar' ? 'مستخدم جديد' : 'New user' }}</a>
             @endauth
         </div>
     </nav>
