@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'السجلات الطبية')
+@section('title', __('messages.medical_records_title'))
 
 @section('content')
 <div style="padding-top: 80px; min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); padding: 3rem 1.5rem;">
@@ -11,8 +11,8 @@
                     <i class="fas fa-file-medical text-2xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-4xl font-bold text-gray-900 dark:text-white">السجلات الطبية</h1>
-                    <p class="text-gray-600 dark:text-gray-400 text-lg mt-2">تاريخك الطبي الكامل والتقارير والفحوصات</p>
+                    <h1 class="text-4xl font-bold text-gray-900 dark:text-white">{{ __('messages.medical_records_title') }}</h1>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg mt-2">{{ __('messages.medical_records_subtitle') }}</p>
                 </div>
             </div>
             <p class="text-gray-600 dark:text-gray-400 text-base leading-relaxed">تابع كافة تقاريرك الطبية ونتائج الفحوصات في مكان واحد آمن وسهل الوصول إليه</p>
@@ -122,10 +122,10 @@
                         </div>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">لا توجد سجلات</h3>
-                    <p class="text-gray-600 dark:text-gray-400 text-lg">لا توجد سجلات طبية متاحة حالياً</p>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg">{{ __('messages.no_medical_records') }}</p>
                     <button class="mt-6 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-3xl transition-all hover:shadow-lg">
                         <i class="fas fa-plus mr-2"></i>
-                        حجز موعد جديد
+                        {{ __('messages.book_new_appointment') }}
                     </button>
                 </div>
                 @endforelse

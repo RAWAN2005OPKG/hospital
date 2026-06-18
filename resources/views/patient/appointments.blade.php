@@ -1,9 +1,9 @@
 {{-- patient/appointments.blade.php --}}
 @extends('layouts.app')
-@section('title','مواعيدي')
+@section('title', __('messages.my_appointments_title'))
 @section('content')
 <div class="page-header">
-    <div class="container"><h1>مواعيدي</h1><p>جميع حجوزاتك الطبية</p></div>
+    <div class="container"><h1>{{ __('messages.my_appointments_title') }}</h1><p>{{ __('messages.my_appointments_subtitle') }}</p></div>
 </div>
 <section class="section-sm"><div class="container">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
@@ -50,9 +50,9 @@
 @else
 <div style="text-align:center;padding:5rem;color:var(--muted)">
     <i class="fa-solid fa-calendar-xmark" style="font-size:3rem;margin-bottom:1rem;display:block;opacity:.2"></i>
-    لا توجد حجوزات بعد.
+    {{ __('messages.no_appointments_yet') }}
     <div style="margin-top:1.25rem">
-        <a href="{{ route('doctors.index') }}" class="btn btn-primary"><i class="fa-solid fa-calendar-plus"></i> احجز موعدك الأول</a>
+        <a href="{{ route('doctors.index') }}" class="btn btn-primary"><i class="fa-solid fa-calendar-plus"></i> {{ __('messages.book_first_appointment') }}</a>
     </div>
 </div>
 @endif

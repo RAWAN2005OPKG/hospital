@@ -7,8 +7,8 @@
         
         <!-- Welcome Header -->
         <div style="margin-bottom: 3rem;">
-            <h1 style="font-size: 2.5rem; font-weight: 900; color: #111827; margin: 0 0 0.5rem 0;">مرحباً بك، {{ auth()->user()->name }}</h1>
-            <p style="font-size: 1.1rem; color: #6b7280; margin: 0;">لوحة تحكم الطبيب - إدارة المواعيد والمرضى</p>
+            <h1 style="font-size: 2.5rem; font-weight: 900; color: #111827; margin: 0 0 0.5rem 0;">{{ __('messages.doctor_welcome') }} {{ auth()->user()->name }}</h1>
+            <p style="font-size: 1.1rem; color: #6b7280; margin: 0;">{{ __('messages.doctor_dashboard_subtitle') }}</p>
         </div>
 
         <!-- Stats Cards -->

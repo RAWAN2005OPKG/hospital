@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'تعديل الملف الشخصي')
+@section('title', __('messages.profile_edit'))
 
 @section('content')
 <div class="container section">
     <div class="mb-8" style="display: flex; justify-content: space-between; align-items: center;">
         <div>
-            <h1 class="page-title">تعديل الملف الشخصي</h1>
-            <p class="page-subtitle">تحديث بياناتك الشخصية وكلمة المرور</p>
+            <h1 class="page-title">{{ __('messages.profile_edit') }}</h1>
+            <p class="page-subtitle">{{ __('messages.profile_edit_subtitle') }}</p>
         </div>
         <a href="{{ route('profile.show') }}" class="btn btn-outline">
             <i class="fa-solid fa-arrow-right"></i> رجوع

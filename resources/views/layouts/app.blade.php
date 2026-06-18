@@ -602,17 +602,17 @@
         </a>
         
         <ul class="navbar-nav">
-            <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}"><i class="fas fa-home"></i> الرئيسية</a></li>
-            <li><a href="{{ route('services.index') }}" class="{{ request()->routeIs('services.index') ? 'active' : '' }}"><i class="fas fa-concierge-bell"></i> الخدمات</a></li>
-            <li><a href="{{ route('departments') }}" class="{{ request()->routeIs('departments') ? 'active' : '' }}"><i class="fas fa-building-medical"></i> الأقسام</a></li>
-            <li><a href="{{ route('doctors.index') }}" class="{{ request()->routeIs('doctors.index') ? 'active' : '' }}"><i class="fas fa-user-md"></i> الأطباء</a></li>
+            <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}"><i class="fas fa-home"></i> {{ __('messages.nav_home') }}</a></li>
+            <li><a href="{{ route('services.index') }}" class="{{ request()->routeIs('services.index') ? 'active' : '' }}"><i class="fas fa-concierge-bell"></i> {{ __('messages.nav_services') }}</a></li>
+            <li><a href="{{ route('departments') }}" class="{{ request()->routeIs('departments') ? 'active' : '' }}"><i class="fas fa-building-medical"></i> {{ __('messages.nav_departments') }}</a></li>
+            <li><a href="{{ route('doctors.index') }}" class="{{ request()->routeIs('doctors.index') ? 'active' : '' }}"><i class="fas fa-user-md"></i> {{ __('messages.nav_doctors') }}</a></li>
             @auth
                 @if(Auth::user()->isPatient())
-                    <li><a href="{{ route('appointments.book') }}" class="{{ request()->routeIs('appointments.book') ? 'active' : '' }}"><i class="fas fa-calendar-plus"></i> حجز موعد</a></li>
-                    <li><a href="{{ route('consultations.index') }}" class="{{ request()->routeIs('consultations.index') ? 'active' : '' }}"><i class="fas fa-comments"></i> استشارات</a></li>
+                    <li><a href="{{ route('appointments.book') }}" class="{{ request()->routeIs('appointments.book') ? 'active' : '' }}"><i class="fas fa-calendar-plus"></i> {{ __('messages.nav_book_appointment') }}</a></li>
+                    <li><a href="{{ route('consultations.index') }}" class="{{ request()->routeIs('consultations.index') ? 'active' : '' }}"><i class="fas fa-comments"></i> {{ __('messages.nav_consultations') }}</a></li>
                 @endif
             @endauth
-            <li><a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}"><i class="fas fa-envelope"></i> تواصل معنا</a></li>
+            <li><a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}"><i class="fas fa-envelope"></i> {{ __('messages.nav_contact_us') }}</a></li>
         </ul>
         
         <div class="navbar-actions">
@@ -626,28 +626,28 @@
                     </button>
                     <ul class="dropdown-menu shadow-lg border-0 rounded-3xl p-2 mt-2" aria-labelledby="userDropdown" style="min-width: 240px;">
                         <li class="px-3 py-2 border-bottom mb-2">
-                            <p class="text-xs text-gray-400 mb-0">مرحباً بك</p>
+                            <p class="text-xs text-gray-400 mb-0">{{ __('messages.nav_welcome') }}</p>
                             <p class="font-bold text-gray-800 mb-0">{{ Auth::user()->name }}</p>
                         </li>
                         @if(Auth::user()->isPatient())
-                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('patient.dashboard') }}"><i class="fas fa-th-large text-blue-500"></i> لوحة المريض</a></li>
-                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('patient.appointments') }}"><i class="fas fa-calendar-check text-emerald-500"></i> مواعيدي</a></li>
-                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('patient.medical_records_list') }}"><i class="fas fa-file-medical text-purple-500"></i> السجلات الطبية</a></li>
-                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('patient.prescriptions_list') }}"><i class="fas fa-pills text-orange-500"></i> الوصفات الطبية</a></li>
-                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('patient.ai.symptoms') }}"><i class="fas fa-robot text-indigo-500"></i> AI — توجيه الأعراض</a></li>
+                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('patient.dashboard') }}"><i class="fas fa-th-large text-blue-500"></i> {{ __('messages.nav_patient_dashboard') }}</a></li>
+                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('patient.appointments') }}"><i class="fas fa-calendar-check text-emerald-500"></i> {{ __('messages.nav_my_appointments') }}</a></li>
+                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('patient.medical_records_list') }}"><i class="fas fa-file-medical text-purple-500"></i> {{ __('messages.nav_medical_records') }}</a></li>
+                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('patient.prescriptions_list') }}"><i class="fas fa-pills text-orange-500"></i> {{ __('messages.nav_prescriptions') }}</a></li>
+                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('patient.ai.symptoms') }}"><i class="fas fa-robot text-indigo-500"></i> AI — {{ __('messages.ai_symptom_guidance') }}</a></li>
                         @elseif(Auth::user()->isDoctor())
-                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('doctor.dashboard') }}"><i class="fas fa-chart-line text-blue-500"></i> لوحة الطبيب</a></li>
-                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('doctor.appointments') }}"><i class="fas fa-calendar-alt text-emerald-500"></i> المواعيد</a></li>
+                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('doctor.dashboard') }}"><i class="fas fa-chart-line text-blue-500"></i> {{ __('messages.nav_doctor_dashboard') }}</a></li>
+                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('doctor.appointments') }}"><i class="fas fa-calendar-alt text-emerald-500"></i> {{ __('messages.appointments') }}</a></li>
                         @elseif(Auth::user()->isStaff())
-                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('admin.dashboard') }}"><i class="fas fa-user-shield text-red-500"></i> {{ app()->getLocale() === 'ar' ? 'لوحة الإدارة' : 'Admin dashboard' }}</a></li>
+                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('admin.dashboard') }}"><i class="fas fa-user-shield text-red-500"></i> {{ __('messages.nav_admin_dashboard') }}</a></li>
                         @endif
-                        <li><a class="dropdown-item rounded-xl py-2" href="{{ route('profile.show') }}"><i class="fas fa-user-circle text-gray-500"></i> الملف الشخصي</a></li>
+                        <li><a class="dropdown-item rounded-xl py-2" href="{{ route('profile.show') }}"><i class="fas fa-user-circle text-gray-500"></i> {{ __('messages.nav_profile') }}</a></li>
                         <li><hr class="dropdown-divider mx-2"></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="dropdown-item rounded-xl py-2 text-red-600 font-bold w-100 text-start">
-                                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                                    <i class="fas fa-sign-out-alt"></i> {{ __('messages.nav_logout') }}
                                 </button>
                             </form>
                         </li>
@@ -666,29 +666,29 @@
     <footer class="footer">
         <div class="footer-grid">
             <div>
-                <h4>عن المستشفى</h4>
-                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">مستشفى صحتي - نقدم أفضل الخدمات الطبية بأحدث التقنيات</p>
+                <h4>{{ __('messages.footer_about_hospital') }}</h4>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">{{ __('messages.integrated_medical_platform') }}</p>
             </div>
             <div>
-                <h4>الخدمات</h4>
-                <a href="#">الاستشارات الطبية</a>
-                <a href="#">الفحوصات</a>
-                <a href="#">الجراحات</a>
+                <h4>{{ __('messages.footer_services') }}</h4>
+                <a href="#">{{ __('messages.footer_medical_consultations') }}</a>
+                <a href="#">{{ __('messages.footer_tests') }}</a>
+                <a href="#">{{ __('messages.footer_surgeries') }}</a>
             </div>
             <div>
-                <h4>روابط سريعة</h4>
-                <a href="#">الرئيسية</a>
-                <a href="#">الأطباء</a>
-                <a href="#">المواعيد</a>
+                <h4>{{ __('messages.footer_quick_links') }}</h4>
+                <a href="{{ route('home') }}">{{ __('messages.footer_home') }}</a>
+                <a href="{{ route('doctors.index') }}">{{ __('messages.nav_doctors') }}</a>
+                <a href="{{ route('appointments.book') }}">{{ __('messages.footer_appointments') }}</a>
             </div>
             <div>
-                <h4>تواصل معنا</h4>
-                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">البريد: info@sehhaty.com</p>
-                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">الهاتف: +970 590000000</p>
+                <h4>{{ __('messages.footer_contact_us') }}</h4>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">{{ __('messages.footer_email') }}: {{ __('messages.email') }}</p>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">{{ __('messages.footer_phone') }}: {{ __('messages.phone') }}</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 مستشفى صحتي. جميع الحقوق محفوظة.</p>
+            <p>&copy; 2024 {{ __('messages.footer_copyright') }}</p>
         </div>
     </footer>
 

@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex items-center">
             <i class="fas fa-file-medical text-3xl text-emerald-600 mr-4"></i>
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">السجلات الطبية</h2>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">{{ __('messages.medical_records_title') }}</h2>
         </div>
     </x-slot>
 
@@ -33,7 +33,7 @@
             <div class="bg-gradient-to-r from-emerald-500 to-teal-600 p-8 border-b border-white/30 flex items-center justify-between">
                 <h3 class="text-3xl font-bold text-white flex items-center">
                     <i class="fas fa-timeline mr-4 text-2xl"></i>
-                    تاريخ السجلات الطبية
+                    {{ __('messages.medical_records_history') }}
                 </h3>
                 <div class="flex space-x-3 rtl:space-x-reverse">
                     <button id="timeline-prev" class="w-14 h-14 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white font-bold shadow-lg hover:shadow-xl transition-all">
@@ -132,10 +132,10 @@
                             <div class="space-y-4">
                                 <a href="{{ route('appointments.search') }}" class="block w-full max-w-md mx-auto inline-flex items-center justify-center px-12 py-6 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-bold text-xl rounded-3xl shadow-2xl hover:shadow-4xl transition-all transform hover:-translate-y-2 mx-auto group">
                                     <i class="fas fa-calendar-plus text-2xl mr-4 group-hover:animate-bounce"></i>
-                                    حجز موعدك الأول الآن
+                                    {{ __('messages.book_first_appointment_now') }}
                                 </a>
                                 <p class="text-lg text-gray-500 dark:text-gray-400 text-center">
-                                    أو <a href="{{ route('doctors.index') }}" class="text-emerald-600 hover:text-emerald-700 font-semibold">تصفح الأطباء</a>
+                                    أو <a href="{{ route('doctors.index') }}" class="text-emerald-600 hover:text-emerald-700 font-semibold">{{ __('messages.browse_doctors') }}</a>
                                 </p>
                             </div>
                         </div>

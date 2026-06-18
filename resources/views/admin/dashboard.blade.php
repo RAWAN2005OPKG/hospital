@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'لوحة الإدارة - صحتي')
+@section('title', __('messages.admin_dashboard_full'))
 
 @section('content')
 <div class="page-header">
@@ -54,14 +54,14 @@
     <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
             <div>
-                <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem;">مواعيد قيد الانتظار</p>
-                <h3 style="font-size: 2rem; font-weight: 900; color: var(--red);">{{ $pendingAppointments }}</h3>
+                <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem;">رسائل التواصل</p>
+                <h3 style="font-size: 2rem; font-weight: 900; color: var(--red);">{{ $unreadMessages ?? 0 }}</h3>
             </div>
             <div style="width: 50px; height: 50px; border-radius: 10px; background: rgba(239, 68, 68, 0.1); display: flex; align-items: center; justify-content: center; color: var(--red); font-size: 1.5rem;">
-                <i class="fa-solid fa-hourglass-end"></i>
+                <i class="fa-solid fa-envelope"></i>
             </div>
         </div>
-        <a href="{{ route('admin.appointments') }}" style="color: var(--red); text-decoration: none; font-size: 0.9rem; font-weight: 600;">عرض المعلقة →</a>
+        <a href="{{ route('admin.contact-messages') }}" style="color: var(--red); text-decoration: none; font-size: 0.9rem; font-weight: 600;">عرض الرسائل →</a>
     </div>
 </div>
 

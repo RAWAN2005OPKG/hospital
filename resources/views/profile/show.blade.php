@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'عرض الملف الشخصي')
+@section('title', __('messages.profile_show'))
 
 @php
     $user = $user ?? Auth::user();
@@ -15,7 +15,7 @@
                 <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #3b82f6, #2563eb); border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; box-shadow: 0 10px 15px rgba(59, 130, 246, 0.2);">
                     <i class="fas fa-id-card"></i>
                 </div>
-                <h1 style="font-size: 2rem; font-weight: 900; color: #111827; margin: 0;">الملف الشخصي</h1>
+                <h1 style="font-size: 2rem; font-weight: 900; color: #111827; margin: 0;">{{ __('messages.nav_profile') }}</h1>
             </div>
             <a href="{{ route('profile.edit') }}" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #10b981, #059669); color: white; font-weight: bold; border-radius: 1rem; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 10px 15px rgba(16, 185, 129, 0.2); transition: all 0.3s ease;">
                 <i class="fas fa-edit"></i>
@@ -129,7 +129,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <h3 style="font-size: 1.3rem; font-weight: bold; color: #111827; margin: 0; display: flex; align-items: center; gap: 0.75rem;">
                             <i class="fas fa-history" style="color: #6366f1;"></i>
-                            آخر السجلات الطبية
+                            {{ __('messages.recent_medical_records') }}
                         </h3>
                     </div>
                     

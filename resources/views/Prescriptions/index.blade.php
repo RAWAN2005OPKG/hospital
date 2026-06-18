@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'الوصفات الطبية')
+@section('title', __('messages.prescriptions_title'))
 
 @section('content')
 <div style="padding-top: 80px; min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); padding: 3rem 1.5rem;">
@@ -11,11 +11,11 @@
                     <i class="fas fa-prescription-bottle-medical text-2xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-4xl font-bold text-gray-900 dark:text-white">الوصفات الطبية</h1>
-                    <p class="text-gray-600 dark:text-gray-400 text-lg mt-2">أدويتك والجرعات المحددة</p>
+                    <h1 class="text-4xl font-bold text-gray-900 dark:text-white">{{ __('messages.prescriptions_title') }}</h1>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg mt-2">{{ __('messages.prescriptions_subtitle') }}</p>
                 </div>
             </div>
-            <p class="text-gray-600 dark:text-gray-400 text-base leading-relaxed">تابع أدويتك، مواعيد تناولها، والجرعات المحددة من قبل الأطباء بسهولة وأمان</p>
+            <p class="text-gray-600 dark:text-gray-400 text-base leading-relaxed">{{ __('messages.prescriptions_description') }}</p>
         </div>
     </div>
 
@@ -119,10 +119,10 @@
                 </div>
             </div>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">لا توجد وصفات نشطة</h3>
-            <p class="text-gray-600 dark:text-gray-400 text-lg mb-8">لا توجد وصفات طبية نشطة حالياً</p>
+            <p class="text-gray-600 dark:text-gray-400 text-lg mb-8">{{ __('messages.no_prescriptions') }}</p>
             <a href="{{ route('appointments.create') }}" class="inline-block px-8 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-bold rounded-3xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
                 <i class="fas fa-calendar-plus mr-2"></i>
-                حجز موعد جديد
+                {{ __('messages.book_new_appointment') }}
             </a>
         </div>
         @endforelse

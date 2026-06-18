@@ -8,6 +8,7 @@ use App\Models\Department;
 use App\Models\Specialization;
 use App\Models\Appointment;
 use App\Models\Setting;
+use App\Models\ContactMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -32,6 +33,7 @@ class AdminController extends Controller
         $totalDoctors = Doctor::count();
         $totalAppointments = Appointment::count();
         $pendingAppointments = Appointment::where('status', 'pending')->count();
+        $unreadMessages = ContactMessage::where('status', 'new')->count();
         
         // Stats for chart
         $appointmentsPerMonth = Appointment::selectRaw('MONTH(appointment_date) as month, COUNT(*) as count')
@@ -45,7 +47,8 @@ class AdminController extends Controller
             "totalDoctors",
             "totalAppointments",
             "pendingAppointments",
-            "appointmentsPerMonth"
+            "appointmentsPerMonth",
+            "unreadMessages"
         ));
     }
 
@@ -310,8 +313,8 @@ class AdminController extends Controller
     
     public function contactMessages()
     {
-        $messages = \App\Models\ContactMessage::orderBy('created_at', 'desc')->paginate(20);
-        $unreadCount = \App\Models\ContactMessage::where('status', 'new')->count();
+        $messages = ContactMessage::orderBy('created_at', 'desc')->paginate(20);
+        $unreadCount = ContactMessage::where('status', 'new')->count();
         return view("admin.contact-messages", compact("messages", "unreadCount"));
     }
 }

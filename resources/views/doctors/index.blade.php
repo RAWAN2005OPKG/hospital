@@ -25,7 +25,7 @@
                         </div>
                         
                         <div class="card-body p-4">
-                            <h5 class="fw-bold mb-1">د. {{ $doctor->user->name }}</h5>
+                            <h5 class="fw-bold mb-1">{{ __('messages.dr') }} {{ $doctor->user->name }}</h5>
                             <p class="text-primary small fw-bold mb-2">{{ $doctor->specialization->name ?? __('messages.specialization') }}</p>
                             <p class="text-muted small mb-3">{{ $doctor->department->name ?? __('messages.department') }}</p>
                             

@@ -1,17 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'لوحة المريض - صحتي')
+@section('title', __('messages.patient_dashboard_title'))
 
 @section('content')
 <div style="background: linear-gradient(135deg, rgba(0, 102, 204, 0.05), rgba(0, 188, 212, 0.05)); padding: 2rem 0;">
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <div>
-                <h1 style="font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem;">مرحباً، {{ Auth::user()->name }}</h1>
-                <p style="color: var(--muted);">هنا يمكنك إدارة مواعيدك وسجلاتك الطبية</p>
+                <h1 style="font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem;">{{ __('messages.patient_welcome') }} {{ Auth::user()->name }}</h1>
+                <p style="color: var(--muted);">{{ __('messages.patient_dashboard_subtitle') }}</p>
             </div>
             <a href="{{ route('appointments.create') }}" class="btn btn-primary">
-                <i class="fa-solid fa-calendar-plus"></i> احجز موعداً جديداً
+                <i class="fa-solid fa-calendar-plus"></i> {{ __('messages.book_new_appointment_btn') }}
             </a>
         </div>
         
@@ -33,7 +33,7 @@
             <div style="background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
                     <div>
-                        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem;">السجلات الطبية</p>
+                        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem;">{{ __('messages.nav_medical_records') }}</p>
                         <h3 style="font-size: 2rem; font-weight: 900; color: var(--green);">{{ $medicalRecordsCount }}</h3>
                     </div>
                     <div style="width: 50px; height: 50px; border-radius: 10px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.1)); display: flex; align-items: center; justify-content: center; color: var(--green); font-size: 1.5rem;">
@@ -86,8 +86,8 @@
             @else
                 <div style="text-align: center; padding: 2rem;">
                     <i class="fa-solid fa-calendar-xmark" style="font-size: 3rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
-                    <p style="color: var(--muted); margin-bottom: 1rem;">لا توجد مواعيد قادمة</p>
-                    <a href="{{ route('appointments.create') }}" class="btn btn-primary">احجز موعداً الآن</a>
+                    <p style="color: var(--muted); margin-bottom: 1rem;">{{ __('messages.no_upcoming_appointments') }}</p>
+                    <a href="{{ route('appointments.create') }}" class="btn btn-primary">{{ __('messages.book_appointment_now') }}</a>
                 </div>
             @endif
         </div>

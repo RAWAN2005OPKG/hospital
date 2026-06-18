@@ -189,7 +189,7 @@
                     'desc' => __('messages.emergency_desc'),
                     'link_doctors' => route('doctors.index'),
                     'link_patient' => route('patient.dashboard'),
-                    'specialization' => 'طوارئ'
+                    'specialization' => __('messages.emergency_specialization')
                 ],
                 [
                     'icon' => 'fa-flask-vial', 
@@ -197,7 +197,7 @@
                     'desc' => __('messages.lab_desc'),
                     'link_doctors' => route('doctors.index'),
                     'link_patient' => route('patient.medical-records'),
-                    'specialization' => 'مختبر'
+                    'specialization' => __('messages.lab_specialization')
                 ],
                 [
                     'icon' => 'fa-x-ray', 
@@ -205,7 +205,7 @@
                     'desc' => __('messages.radiology_desc'),
                     'link_doctors' => route('doctors.index'),
                     'link_patient' => route('patient.medical-records'),
-                    'specialization' => 'أشعة'
+                    'specialization' => __('messages.radiology_specialization')
                 ],
                 [
                     'icon' => 'fa-pills', 
@@ -213,7 +213,7 @@
                     'desc' => __('messages.pharmacy_desc'),
                     'link_doctors' => route('doctors.index'),
                     'link_patient' => route('patient.dashboard'),
-                    'specialization' => 'صيدلة'
+                    'specialization' => __('messages.pharmacy_specialization')
                 ],
                 [
                     'icon' => 'fa-user-doctor', 
@@ -221,7 +221,7 @@
                     'desc' => __('messages.outpatient_clinics_desc'),
                     'link_doctors' => route('doctors.index'),
                     'link_patient' => route('appointments.book'),
-                    'specialization' => 'عيادات'
+                    'specialization' => __('messages.clinics_specialization')
                 ],
                 [
                     'icon' => 'fa-bed-pulse', 
@@ -229,7 +229,7 @@
                     'desc' => __('messages.intensive_care_desc'),
                     'link_doctors' => route('doctors.index'),
                     'link_patient' => route('patient.dashboard'),
-                    'specialization' => 'عناية'
+                    'specialization' => __('messages.icu_specialization')
                 ]
             ];
         @endphp
@@ -245,11 +245,11 @@
             </div>
             
             <div class="card-actions">
-                <a href="{{ $service['link_doctors'] }}" class="btn-service btn-primary-custom" title="عرض أطباء {{ $service['title'] }}">
+                <a href="{{ $service['link_doctors'] }}" class="btn-service btn-primary-custom" title="{{ __('messages.view_doctors_for_service') }} {{ $service['title'] }}">
                     <i class="fa-solid fa-user-md"></i>
                     {{ __('messages.view_doctors') }}
                 </a>
-                <a href="{{ $service['link_patient'] }}" class="btn-service btn-outline-custom" title="بوابة المريض">
+                <a href="{{ $service['link_patient'] }}" class="btn-service btn-outline-custom" title="{{ __('messages.patient_portal_btn') }}">
                     <i class="fa-solid fa-hospital-user"></i>
                     {{ __('messages.patient_portal') }}
                 </a>

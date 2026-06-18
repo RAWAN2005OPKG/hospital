@@ -126,8 +126,8 @@
             <div style="width:64px;height:64px;border-radius:20px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:2rem;backdrop-filter:blur(10px)">
                 <i class="fa-solid fa-heart-pulse"></i>
             </div>
-            <h2 style="font-size:2.25rem;font-weight:900;margin-bottom:1.5rem;line-height:1.2">{{ app()->getLocale() === 'ar' ? 'مرحباً بك في' : 'Welcome to' }}<br>{{ __('messages.sehati') }}</h2>
-            <p style="opacity:0.9;font-size:1.1rem;line-height:1.7;margin-bottom:2.5rem">{{ app()->getLocale() === 'ar' ? 'سجّل دخولك للوصول إلى لوحة التحكم الخاصة بك وإدارة المواعيد والحجوزات الطبية بسهولة.' : 'Sign in to access your dashboard and manage your appointments and medical bookings easily.' }}</p>
+            <h2 style="font-size:2.25rem;font-weight:900;margin-bottom:1.5rem;line-height:1.2">{{ __('messages.login_welcome') }}<br>{{ __('messages.sehati') }}</h2>
+            <p style="opacity:0.9;font-size:1.1rem;line-height:1.7;margin-bottom:2.5rem">{{ __('messages.login_subtitle') }}</p>
             <div style="display:flex;flex-direction:column;gap:1.25rem">
                 <div style="display:flex;align-items:center;gap:1rem">
                     <i class="fa-solid fa-check-circle" style="color:#fff"></i>
