@@ -1,4 +1,4 @@
-<x-app-layout>
+index.blade.php<x-app-layout>
     <x-slot name="header">
         <div class="flex items-center">
             <i class="fas fa-file-medical text-3xl text-emerald-600 mr-4"></i>

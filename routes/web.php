@@ -166,7 +166,11 @@ Route::middleware(['auth', 'role:doctor'])->group(function () {
     Route::post('/doctor/appointments/{appointment}/medical-record', [DoctorDashboardController::class, 'addMedicalRecord'])->name('doctor.add-medical-record');
     Route::get('/doctor/schedule', [DoctorDashboardController::class, 'schedule'])->name('doctor.schedule');
     Route::get('/doctor/patient-records', [DoctorDashboardController::class, 'patientRecords'])->name('doctor.patient-records');
-});
+    Route::get('/doctor/consultations', [\App\Http\Controllers\ChatController::class, 'index'])->name('doctor.consultations');
+    Route::get('/doctor/chat/{otherUser}', [\App\Http\Controllers\ChatController::class, 'show'])->name('doctor.chat.show');
+    Route::post('/chat/store/{receiver}', [\App\Http\Controllers\ChatController::class, 'store'])->name('chat.store');
+
+    });
 
 // Old duplicate admin routes removed to prevent conflicts
 

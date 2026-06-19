@@ -1,53 +1,60 @@
 @extends('layouts.app')
+
 @section('title', 'الاستشارات الطبية')
 
 @section('content')
-<div class="section-head" style="margin-top: 100px;">
-    <span class="sec-tag">الاستشارات</span>
-    <h2>استشارات طبية عن بعد</h2>
-    <p>تواصل مع نخبة من الأطباء من منزلك وبكل خصوصية</p>
-</div>
-
-<div class="container">
-    <div style="display: grid; grid-template-columns: 1fr 350px; gap: 2rem;">
-        <div>
-            <div class="card" style="margin-bottom: 1.5rem;">
-                <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem;">
-                    <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa-solid fa-robot"></i>
-                    </div>
-                    <div>
-                        <h4 style="margin: 0;">مساعدك الطبي الذكي</h4>
-                        <p style="margin: 0; font-size: 0.85rem; color: var(--gray-500);">اطرح أسئلتك وسيجيبك الذكاء الاصطناعي فوراً</p>
-                    </div>
-                </div>
-                <div style="background: var(--gray-50); border-radius: 12px; padding: 1.5rem; min-height: 200px; margin-bottom: 1rem; border: 1px solid var(--gray-200);">
-                    <p style="color: var(--gray-500); text-align: center; margin-top: 70px;">ابدأ المحادثة الآن...</p>
-                </div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <input type="text" class="form-control" placeholder="اكتب سؤالك هنا...">
-                    <button class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i></button>
-                </div>
-            </div>
+<div class="py-12 bg-gray-50 dark:bg-gray-900 min-h-screen" style="margin-top: 80px;">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <span class="inline-block px-4 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-bold mb-4">الاستشارات</span>
+            <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">استشارات طبية عن بعد</h2>
+            <p class="text-lg text-gray-600 dark:text-gray-400">تواصل مع نخبة من الأطباء من منزلك وبكل خصوصية</p>
         </div>
 
-        <div class="card">
-            <h4 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--gray-200); padding-bottom: 0.5rem;">أطباء متاحون الآن</h4>
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                @foreach([
-                    ['name' => 'د. أحمد محمود', 'spec' => 'طب عام', 'img' => 'https://i.pravatar.cc/150?u=1'],
-                    ['name' => 'د. سارة علي', 'spec' => 'أطفال', 'img' => 'https://i.pravatar.cc/150?u=2'],
-                    ['name' => 'د. خالد حسن', 'spec' => 'باطنة', 'img' => 'https://i.pravatar.cc/150?u=3']
-                ] as $doc)
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <img src="{{ $doc['img'] }}" style="width: 50px; height: 50px; border-radius: 12px; object-fit: cover;">
-                    <div style="flex: 1;">
-                        <div style="font-weight: 700; font-size: 0.9rem;">{{ $doc['name'] }}</div>
-                        <div style="font-size: 0.8rem; color: var(--primary);">{{ $doc['spec'] }}</div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Chat Section -->
+            <div class="lg:col-span-2">
+                <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 border border-gray-100 dark:border-gray-700">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl shadow-lg">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-bold text-gray-900 dark:text-white">مساعدك الطبي الذكي</h4>
+                        </div>
                     </div>
-                    <button class="btn btn-outline btn-sm" style="padding: 0.3rem 0.6rem;">اتصال</button>
+                    <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 min-h-[300px] mb-6 border border-gray-200 dark:border-gray-700 flex justify-center items-center text-gray-400">
+                        ابدأ المحادثة الآن لوصف حالتك...
+                    </div>
+                    <form action="#" class="flex gap-3">
+                        <input type="text" class="flex-1 px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none dark:text-white" placeholder="اكتب سؤالك هنا...">
+                        <button class="px-8 py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-lg">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
                 </div>
-                @endforeach
+            </div>
+
+            <!-- Sidebar Doctors -->
+            <div class="lg:col-span-1">
+                <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 border border-gray-100 dark:border-gray-700">
+                    <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-6">أطباء متاحون الآن</h4>
+                    <div class="space-y-6">
+                        @php $realDoctors = \App\Models\Doctor::with('user', 'specialization')->limit(5)->get(); @endphp
+                        @foreach($realDoctors as $doc)
+                        <div class="flex items-center gap-4 p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
+                            <div class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                                {{ mb_substr($doc->user->name, 0, 1) }}
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-bold text-gray-900 dark:text-white">{{ $doc->user->name }}</div>
+                                <div class="text-xs text-blue-600">{{ $doc->specialization->name ?? 'طبيب عام' }}</div>
+                            </div>
+                            <a href="{{ route('doctors.show', $doc) }}" class="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-sm font-bold">اتصال</a>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
     </div>
