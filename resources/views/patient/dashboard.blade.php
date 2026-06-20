@@ -46,6 +46,19 @@
             <div style="background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
                     <div>
+                        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem;">الاستشارات الطبية</p>
+                        <h3 style="font-size: 2rem; font-weight: 900; color: #06b6d4;">استشارة</h3>
+                    </div>
+                    <div style="width: 50px; height: 50px; border-radius: 10px; background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(8, 145, 178, 0.1)); display: flex; align-items: center; justify-content: center; color: #06b6d4; font-size: 1.5rem;">
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                </div>
+                <a href="{{ route('consultations.index') }}" style="color: #06b6d4; text-decoration: none; font-size: 0.9rem; font-weight: 600;">بدء استشارة →</a>
+            </div>
+            
+            <div style="background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <div>
                         <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem;">إجمالي المواعيد</p>
                         <h3 style="font-size: 2rem; font-weight: 900; color: var(--purple);">{{ $totalAppointments }}</h3>
                     </div>

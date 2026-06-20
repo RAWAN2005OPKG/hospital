@@ -39,7 +39,7 @@
 /* role pick cards */
 .role-pick{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 1.25rem;
     margin-bottom: 2.5rem;
 }
@@ -64,6 +64,9 @@
 
 .role-card.active[data-role="doctor"] { border-color: #10b981; background: #f0fdf4; }
 .role-card.active[data-role="doctor"] i, .role-card.active[data-role="doctor"] span { color: #10b981; }
+
+.role-card.active[data-role="pharmacist"] { border-color: #8b5cf6; background: #faf5ff; }
+.role-card.active[data-role="pharmacist"] i, .role-card.active[data-role="pharmacist"] span { color: #8b5cf6; }
 
 .role-card.active[data-role="admin"] { border-color: #1e293b; background: #f1f5f9; }
 .role-card.active[data-role="admin"] i, .role-card.active[data-role="admin"] span { color: #1e293b; }
@@ -175,6 +178,12 @@
                             <i class="fa-solid fa-user-md"></i>
                             <span>{{ app()->getLocale() === 'ar' ? 'دكتور' : 'Doctor' }}</span>
                             <small>{{ app()->getLocale() === 'ar' ? 'أريد إدارة مواعيدي ومرضاي' : 'I want to manage my schedule and patients' }}</small>
+                        </label>
+                        <label class="role-card {{ old('role') == 'pharmacist' ? 'active' : '' }}" data-role="pharmacist">
+                            <input type="radio" name="role" value="pharmacist" {{ old('role') == 'pharmacist' ? 'checked' : '' }} onchange="updateRoleUI(this)">
+                            <i class="fa-solid fa-prescription-bottle-medical"></i>
+                            <span>{{ app()->getLocale() === 'ar' ? 'صيدلي' : 'Pharmacist' }}</span>
+                            <small>{{ app()->getLocale() === 'ar' ? 'أريد إدارة الأدوية والوصفات' : 'I want to manage medicines and prescriptions' }}</small>
                         </label>
                         <label class="role-card {{ old('role') == 'admin' ? 'active' : '' }}" data-role="admin" id="adminCard">
                             <input type="radio" name="role" value="admin" {{ old('role') == 'admin' ? 'checked' : '' }} onchange="updateRoleUI(this)">

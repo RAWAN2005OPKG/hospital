@@ -15,6 +15,7 @@ class Prescription extends Model
         'medications',
         'dosage',
         'notes',
+        'status',
     ];
 
     protected $casts = [
@@ -29,5 +30,12 @@ class Prescription extends Model
     public function doctor()
     {
         return $this->belongsTo(Doctor::class);
+    }
+
+    public function medicines()
+    {
+        return $this->belongsToMany(Medicine::class, 'prescription_medicines')
+                    ->withPivot('dosage', 'days', 'notes')
+                    ->withTimestamps();
     }
 }

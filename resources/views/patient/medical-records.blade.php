@@ -1,104 +1,110 @@
-index.blade.php<x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center">
-            <i class="fas fa-file-medical text-3xl text-emerald-600 mr-4"></i>
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">{{ __('messages.medical_records_title') }}</h2>
-        </div>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="space-y-12">
+@section('title', __('messages.medical_records_title'))
+
+@section('content')
+<div style="padding-top: 80px; min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); padding: 3rem 1.5rem;">
+    <div style="max-width: 1400px; margin: 0 auto;">
+        <div style="margin-bottom: 2rem;">
+            <h1 style="font-size: 2.5rem; font-weight: 900; color: #111827; margin: 0 0 0.5rem 0; display: flex; align-items: center; gap: 1rem;">
+                <i class="fas fa-file-medical" style="color: #10b981;"></i>
+                {{ __('messages.medical_records_title') }}
+            </h1>
+            <p style="font-size: 1.1rem; color: #6b7280; margin: 0;">سجل طبيك ومراجعة تاريخك الصحي</p>
+        </div>
+        
         {{-- Enhanced Header Stats --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="group bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-8 rounded-3xl shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all backdrop-blur-xl border border-white/20 text-center cursor-pointer" onclick="printRecords()">
-                <i class="fas fa-file-alt text-5xl mb-4 opacity-90 group-hover:scale-110 transition-transform"></i>
-                <div class="text-4xl font-bold mb-2">{{ $records ? $records->count() : 0 }}</div>
-                <div class="text-emerald-100 font-semibold text-lg">السجلات الكلية</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+            <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 2rem; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3); text-align: center; cursor: pointer; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.2);" onclick="printRecords()">
+                <i class="fas fa-file-alt" style="font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.9;"></i>
+                <div style="font-size: 2.5rem; font-weight: 900; margin-bottom: 0.5rem;">{{ $records ? $records->count() : 0 }}</div>
+                <div style="font-size: 1.1rem; font-weight: 600; opacity: 0.9;">السجلات الكلية</div>
             </div>
             
-            <div class="group bg-gradient-to-br from-blue-500 to-blue-600 text-white p-8 rounded-3xl shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all backdrop-blur-xl border border-white/20 text-center">
-                <i class="fas fa-calendar-week text-5xl mb-4 opacity-90 group-hover:scale-110 transition-transform"></i>
-                <div class="text-4xl font-bold mb-2">{{ $recentRecords ?? 0 }}</div>
-                <div class="text-blue-100 font-semibold text-lg">السجلات الأخيرة</div>
+            <div style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 2rem; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3); text-align: center; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.2);">
+                <i class="fas fa-calendar-week" style="font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.9;"></i>
+                <div style="font-size: 2.5rem; font-weight: 900; margin-bottom: 0.5rem;">{{ $recentRecords ?? 0 }}</div>
+                <div style="font-size: 1.1rem; font-weight: 600; opacity: 0.9;">السجلات الأخيرة</div>
             </div>
             
-            <div class="group bg-gradient-to-br from-purple-500 to-indigo-600 text-white p-8 rounded-3xl shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all backdrop-blur-xl border border-white/20 text-center cursor-pointer" onclick="exportPDF()">
-                <i class="fas fa-file-pdf text-5xl mb-4 opacity-90 group-hover:scale-110 transition-transform"></i>
-                <div class="text-xl font-bold mb-1">تصدير PDF</div>
-                <div class="text-purple-100 text-sm">تنزيل السجلات</div>
+            <div style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 2rem; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3); text-align: center; cursor: pointer; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.2);" onclick="exportPDF()">
+                <i class="fas fa-file-pdf" style="font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.9;"></i>
+                <div style="font-size: 1.5rem; font-weight: 900; margin-bottom: 0.5rem;">تصدير PDF</div>
+                <div style="font-size: 1rem; font-weight: 600; opacity: 0.9;">تنزيل السجلات</div>
             </div>
         </div>
 
         {{-- Records Timeline --}}
-        <div class="bg-white/70 dark:bg-gray-900/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
-            <div class="bg-gradient-to-r from-emerald-500 to-teal-600 p-8 border-b border-white/30 flex items-center justify-between">
-                <h3 class="text-3xl font-bold text-white flex items-center">
-                    <i class="fas fa-timeline mr-4 text-2xl"></i>
+        <div style="background: white; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; overflow: hidden;">
+            <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 2rem; border-bottom: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: space-between;">
+                <h2 style="font-size: 1.75rem; font-weight: bold; color: white; margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-timeline"></i>
                     {{ __('messages.medical_records_history') }}
-                </h3>
-                <div class="flex space-x-3 rtl:space-x-reverse">
-                    <button id="timeline-prev" class="w-14 h-14 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white font-bold shadow-lg hover:shadow-xl transition-all">
-                        <i class="fas fa-chevron-right text-xl"></i>
+                </h2>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button id="timeline-prev" style="width: 3.5rem; height: 3.5rem; background: rgba(255,255,255,0.2); border: none; border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
+                        <i class="fas fa-chevron-right"></i>
                     </button>
-                    <button id="timeline-next" class="w-14 h-14 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white font-bold shadow-lg hover:shadow-xl transition-all">
-                        <i class="fas fa-chevron-left text-xl"></i>
+                    <button id="timeline-next" style="width: 3.5rem; height: 3.5rem; background: rgba(255,255,255,0.2); border: none; border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
+                        <i class="fas fa-chevron-left"></i>
                     </button>
                 </div>
             </div>
             
-            <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-800">
-                <div class="p-8 min-w-max relative">
+            <div style="overflow-x: auto;">
+                <div style="padding: 2rem; min-width: max-content; position: relative;">
                     {{-- Vertical timeline line --}}
-                    <div class="absolute left-10 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500 to-blue-500 rounded-full shadow-lg"></div>
+                    <div style="position: absolute; left: 2.5rem; top: 0; bottom: 0; width: 0.25rem; background: linear-gradient(to bottom, #10b981, #3b82f6); border-radius: 9999px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);"></div>
                     
                     @forelse($records ?? collect() as $index => $record)
-                        <div class="mb-16 flex items-start min-w-[600px]">
+                        <div style="margin-bottom: 4rem; display: flex; align-items: flex-start; min-width: 600px;">
                             {{-- Timeline dot --}}
-                            <div class="relative z-10 flex-shrink-0">
-                                <div class="w-6 h-6 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full shadow-lg ring-8 ring-white/50 dark:ring-gray-900/50 flex items-center justify-center mr-6 -ml-3">
-                                    <i class="fas fa-chart-line text-white text-xs"></i>
+                            <div style="position: relative; z-index: 10; flex-shrink: 0;">
+                                <div style="width: 1.5rem; height: 1.5rem; background: linear-gradient(to right, #10b981, #3b82f6); border-radius: 9999px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); display: flex; align-items: center; justify-content: center; margin-right: 1.5rem; margin-left: -0.75rem; border: 0.5rem solid white;">
+                                    <i class="fas fa-chart-line" style="color: white; font-size: 0.75rem;"></i>
                                 </div>
                             </div>
                             
                             {{-- Record Card --}}
-                            <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700 hover:shadow-3xl hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-300 flex-1 max-w-4xl">
-                                <div class="flex flex-wrap items-start justify-between gap-6 mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+                            <div style="background: white; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 2rem; border: 1px solid #e5e7eb; flex: 1; max-width: 56rem; transition: all 0.3s ease; hover: box-shadow: 0 15px 35px rgba(0,0,0,0.1); hover: border-color: #10b981;">
+                                <div style="display: flex; flex-wrap: align-items: flex-start; justify-content: space-between; gap: 1.5rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb;">
                                     <div>
-                                        <h4 class="text-3xl font-bold text-gray-900 dark:text-white mb-3">{{ $record->doctor->user->name ?? 'غير محدد' }}</h4>
-                                        <div class="flex items-center text-emerald-600 font-bold text-xl mb-2">
-                                            <i class="fas fa-clock mr-2"></i>
+                                        <h3 style="font-size: 1.75rem; font-weight: bold; color: #111827; margin: 0 0 0.75rem 0;">{{ $record->doctor->user->name ?? 'غير محدد' }}</h3>
+                                        <div style="display: flex; align-items: center; color: #10b981; font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem;">
+                                            <i class="fas fa-clock" style="margin-left: 0.5rem;"></i>
                                             {{ \Carbon\Carbon::parse($record->created_at)->format('d M Y, H:i') }}
                                         </div>
-                                        <span class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-emerald-500 text-white text-lg font-bold rounded-2xl shadow-lg">
+                                        <span style="display: inline-flex; align-items: center; padding: 0.5rem 1rem; background: linear-gradient(to right, #3b82f6, #10b981); color: white; font-size: 1rem; font-weight: bold; border-radius: 1rem; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);">
                                             {{ $record->appointment->reason ?? 'فحص روتيني' }}
                                         </span>
                                     </div>
-                                    <a href="/patient/medical-records/{{ $record->id }}" class="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-bold rounded-3xl shadow-2xl hover:shadow-3xl transition-all group-hover:-translate-y-1">
-                                        <i class="fas fa-eye mr-3 text-xl group-hover:animate-pulse"></i>
+                                    <a href="/patient/medical-records/{{ $record->id }}" style="display: inline-flex; align-items: center; padding: 1rem 2rem; background: linear-gradient(to right, #10b981, #3b82f6); color: white; font-weight: bold; border-radius: 1.5rem; text-decoration: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); transition: all 0.3s ease; gap: 0.75rem;">
+                                        <i class="fas fa-eye"></i>
                                         عرض التفاصيل
                                     </a>
                                 </div>
                                 
                                 {{-- Content Grid --}}
-                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
                                     <div>
-                                        <h5 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-                                            <i class="fas fa-stethoscope text-red-500 mr-3 text-xl"></i>
+                                        <h4 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.75rem;">
+                                            <i class="fas fa-stethoscope" style="color: #ef4444;"></i>
                                             التشخيص
-                                        </h5>
-                                        <div class="bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 p-8 rounded-3xl border border-red-200 dark:border-red-800 shadow-lg">
-                                            <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                                        </h4>
+                                        <div style="background: linear-gradient(to bottom right, #fef2f2, #fce7f3); padding: 1.5rem; border-radius: 1.25rem; border: 1px solid #fecaca; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.1);">
+                                            <div style="font-size: 1rem; line-height: 1.75; color: #374151; white-space: pre-wrap;">
                                                 {{ Str::limit($record->diagnosis, 400, '...') }}
                                             </div>
                                         </div>
                                     </div>
                                     
                                     <div>
-                                        <h5 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-                                            <i class="fas fa-pills text-orange-500 mr-3 text-xl"></i>
+                                        <h4 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.75rem;">
+                                            <i class="fas fa-pills" style="color: #f97316;"></i>
                                             خطة العلاج
-                                        </h5>
-                                        <div class="bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-900/20 dark:to-yellow-900/20 p-8 rounded-3xl border border-orange-200 dark:border-orange-800 shadow-lg">
-                                            <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                                        </h4>
+                                        <div style="background: linear-gradient(to bottom right, #fff7ed, #fef9c3); padding: 1.5rem; border-radius: 1.25rem; border: 1px solid #fed7aa; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.1);">
+                                            <div style="font-size: 1rem; line-height: 1.75; color: #374151; white-space: pre-wrap;">
                                                 {{ Str::limit($record->treatment, 400, '...') }}
                                             </div>
                                         </div>
@@ -106,13 +112,13 @@ index.blade.php<x-app-layout>
                                 </div>
                                 
                                 @if($record->prescription)
-                                    <div class="mt-12 pt-10 border-t-4 border-gradient-to-r border-blue-200 dark:border-blue-800">
-                                        <h5 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-                                            <i class="fas fa-prescription-bottle-alt text-blue-500 mr-3 text-xl"></i>
+                                    <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e5e7eb;">
+                                        <h4 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.75rem;">
+                                            <i class="fas fa-prescription-bottle-alt" style="color: #3b82f6;"></i>
                                             الوصفة الطبية
-                                        </h5>
-                                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-10 rounded-3xl border-4 border-blue-200 dark:border-blue-800 shadow-2xl backdrop-blur-sm">
-                                            <div class="text-xl text-gray-800 dark:text-gray-200 leading-relaxed font-mono whitespace-pre-wrap text-center">
+                                        </h4>
+                                        <div style="background: linear-gradient(to right, #eff6ff, #e0e7ff); padding: 2rem; border-radius: 1.25rem; border: 2px solid #bfdbfe; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);">
+                                            <div style="font-size: 1.1rem; color: #374151; line-height: 1.75; font-family: monospace; white-space: pre-wrap; text-align: center;">
                                                 {{ $record->prescription }}
                                             </div>
                                         </div>
@@ -121,21 +127,21 @@ index.blade.php<x-app-layout>
                             </div>
                         </div>
                     @empty
-                        <div class="min-w-max text-center py-32 px-20">
-                            <div class="w-32 h-32 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl">
-                                <i class="fas fa-file-medical text-5xl text-gray-400 dark:text-gray-500"></i>
+                        <div style="min-width: max-content; text-align: center; padding: 5rem;">
+                            <div style="width: 8rem; height: 8rem; background: linear-gradient(to bottom right, #e5e7eb, #d1d5db); border-radius: 9999px; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                                <i class="fas fa-file-medical" style="font-size: 3rem; color: #9ca3af;"></i>
                             </div>
-                            <h3 class="text-4xl font-bold text-gray-900 dark:text-white mb-6">لا توجد سجلات طبية بعد</h3>
-                            <p class="text-2xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+                            <h3 style="font-size: 2rem; font-weight: bold; color: #111827; margin: 0 0 1rem 0;">لا توجد سجلات طبية بعد</h3>
+                            <p style="font-size: 1.25rem; color: #6b7280; margin: 0 0 2rem; max-width: 32rem; margin-left: auto; margin-right: auto; line-height: 1.75;">
                                 سجلاتك الطبية ستظهر هنا تلقائياً بعد إتمام أول زيارة للطبيب
                             </p>
-                            <div class="space-y-4">
-<a href="{{ route('appointments.book') }}" class="block w-full max-w-md mx-auto inline-flex items-center justify-center px-12 py-6 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-bold text-xl rounded-3xl shadow-2xl hover:shadow-4xl transition-all transform hover:-translate-y-2 mx-auto group">
-                                    <i class="fas fa-calendar-plus text-2xl mr-4 group-hover:animate-bounce"></i>
+                            <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+                                <a href="{{ route('appointments.book') }}" style="display: inline-flex; align-items: center; justify-content: center; padding: 1.25rem 2.5rem; background: linear-gradient(to right, #10b981, #3b82f6); color: white; font-weight: bold; font-size: 1.25rem; border-radius: 1.5rem; text-decoration: none; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3); transition: all 0.3s ease; gap: 1rem;">
+                                    <i class="fas fa-calendar-plus"></i>
                                     {{ __('messages.book_first_appointment_now') }}
                                 </a>
-                                <p class="text-lg text-gray-500 dark:text-gray-400 text-center">
-                                    أو <a href="{{ route('doctors.index') }}" class="text-emerald-600 hover:text-emerald-700 font-semibold">{{ __('messages.browse_doctors') }}</a>
+                                <p style="font-size: 1rem; color: #6b7280; text-align: center;">
+                                    أو <a href="{{ route('doctors.index') }}" style="color: #10b981; font-weight: bold; text-decoration: none;">{{ __('messages.browse_doctors') }}</a>
                                 </p>
                             </div>
                         </div>
@@ -146,64 +152,52 @@ index.blade.php<x-app-layout>
 
         {{-- Enhanced Pagination --}}
         @if(isset($records) && $records->hasPages())
-        <div class="flex justify-center">
+        <div style="display: flex; justify-content: center; margin-top: 2rem;">
             {{ $records->appends(request()->query())->links('vendor.pagination.tailwindcss-modern') }}
         </div>
         @endif
     </div>
+</div>
 
-    <script>
-        function printRecords() {
-            window.print();
+<script>
+    function printRecords() {
+        window.print();
+    }
+
+    function exportPDF() {
+        alert('قريباً سيتم إضافة تصدير PDF');
+    }
+
+    // Enhanced Timeline Navigation
+    let currentSlide = 0;
+    const timelineContainer = document.querySelector('.overflow-x-auto');
+    const slideWidth = 650;
+
+    document.getElementById('timeline-next')?.addEventListener('click', () => {
+        if (timelineContainer.scrollLeft < timelineContainer.scrollWidth - timelineContainer.clientWidth - 50) {
+            timelineContainer.scrollLeft += slideWidth;
         }
+    });
 
-        function exportPDF() {
-            alert('قريباً سيتم إضافة تصدير PDF');
-            // window.open('/patient/medical-records/export-pdf');
+    document.getElementById('timeline-prev')?.addEventListener('click', () => {
+        if (timelineContainer.scrollLeft > 50) {
+            timelineContainer.scrollLeft -= slideWidth;
         }
+    });
 
-        // Enhanced Timeline Navigation
-        let currentSlide = 0;
-        const timelineContainer = document.querySelector('.overflow-x-auto');
-        const slideWidth = 650;
-
-        document.getElementById('timeline-next')?.addEventListener('click', () => {
-            if (timelineContainer.scrollLeft < timelineContainer.scrollWidth - timelineContainer.clientWidth - 50) {
-                timelineContainer.scrollLeft += slideWidth;
+    // Auto-scroll on hover
+    timelineContainer?.addEventListener('mouseenter', () => clearInterval(window.timelineInterval));
+    timelineContainer?.addEventListener('mouseleave', () => {
+        window.timelineInterval = setInterval(() => {
+            if (timelineContainer.scrollLeft < timelineContainer.scrollWidth - timelineContainer.clientWidth) {
+                timelineContainer.scrollLeft += 2;
             }
-        });
+        }, 50);
+    });
 
-        document.getElementById('timeline-prev')?.addEventListener('click', () => {
-            if (timelineContainer.scrollLeft > 50) {
-                timelineContainer.scrollLeft -= slideWidth;
-            }
-        });
-
-        // Auto-scroll on hover
-        timelineContainer?.addEventListener('mouseenter', () => clearInterval(window.timelineInterval));
-        timelineContainer?.addEventListener('mouseleave', () => {
-            window.timelineInterval = setInterval(() => {
-                if (timelineContainer.scrollLeft < timelineContainer.scrollWidth - timelineContainer.clientWidth) {
-                    timelineContainer.scrollLeft += 2;
-                }
-            }, 50);
-        });
-
-        function viewDetail(id) {
-            window.location.href = `/patient/medical-records/${id}`;
-        }
-    </script>
-
-    <style>
-        .border-gradient-to-r {
-            border-image: linear-gradient(to right, #10b981, #3b82f6) 1;
-        }
-        .scrollbar-thin {
-            scrollbar-width: thin;
-        }
-        .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
-            background-color: #d1d5db;
-        }
-    </style>
-</x-app-layout>
+    function viewDetail(id) {
+        window.location.href = `/patient/medical-records/${id}`;
+    }
+</script>
+@endsection
 

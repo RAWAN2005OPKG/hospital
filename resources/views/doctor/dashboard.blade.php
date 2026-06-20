@@ -2,7 +2,7 @@
 @section('title', 'لوحة تحكم الطبيب')
 
 @section('content')
-<div style="padding-top: 80px; min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); padding: 3rem 1.5rem;">
+<div style="padding-top: 120px; min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); padding: 3rem 1.5rem;">
     <div style="max-width: 1200px; margin: 0 auto;">
         
         <!-- Welcome Header -->
@@ -72,6 +72,10 @@
             <a href="{{ route('doctor.appointments') }}" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 1.5rem; border-radius: 1.25rem; text-decoration: none; text-align: center; font-weight: bold; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
                 <i class="fas fa-calendar-alt"></i>
                 <span>عرض المواعيد</span>
+            </a>
+            <a href="{{ route('doctor.consultations') }}" style="background: linear-gradient(135deg, #06b6d4, #0891b2); color: white; padding: 1.5rem; border-radius: 1.25rem; text-decoration: none; text-align: center; font-weight: bold; box-shadow: 0 10px 25px rgba(6, 182, 212, 0.2); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+                <i class="fas fa-comments"></i>
+                <span>الاستشارات</span>
             </a>
             <a href="{{ route('doctor.patient-records') }}" style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1.5rem; border-radius: 1.25rem; text-decoration: none; text-align: center; font-weight: bold; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
                 <i class="fas fa-file-medical"></i>

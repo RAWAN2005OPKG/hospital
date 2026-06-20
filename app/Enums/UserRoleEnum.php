@@ -8,9 +8,10 @@ enum UserRoleEnum: string
     case Receptionist = 'receptionist';
     case Doctor = 'doctor';
     case Patient = 'patient';
+    case Pharmacist = 'pharmacist';
 
     public function isStaff(): bool
     {
-        return $this === self::Admin || $this === self::Receptionist;
+        return $this === self::Admin || $this === self::Receptionist || $this === self::Pharmacist;
     }
 }

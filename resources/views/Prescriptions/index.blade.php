@@ -40,75 +40,85 @@
     <!-- Prescriptions Grid -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @forelse($prescriptions ?? [] as $presc)
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-            <div class="bg-white dark:bg-gray-800 rounded-4xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
-                <!-- Card Header -->
-                <div class="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-gray-700 dark:to-gray-600 px-8 py-6 border-b-2 border-gray-200 dark:border-gray-600 flex justify-between items-start">
-                    <div class="w-14 h-14 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-3xl flex items-center justify-center text-white shadow-lg">
-                        <i class="fas fa-pills text-xl"></i>
+        <div class="mb-12">
+            <div class="flex items-center justify-between mb-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center font-bold">
+                        #{{ $presc->id }}
                     </div>
-                    <span class="text-sm font-bold text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 px-3 py-1 rounded-full">
-                        {{ $presc->created_at->format('d/m/Y') }}
-                    </span>
-                </div>
-
-                <!-- Card Body -->
-                <div class="px-8 py-6 space-y-4">
-                    <!-- Medicine Name -->
                     <div>
-                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">{{ $presc->medicine_name }}</h3>
-                        <div class="flex items-center gap-2">
-                            <span class="inline-block w-2 h-2 bg-emerald-500 rounded-full"></span>
-                            <span class="text-sm text-gray-600 dark:text-gray-400">دواء نشط</span>
-                        </div>
-                    </div>
-
-                    <!-- Dosage -->
-                    <div class="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 px-4 py-3 rounded-2xl border border-emerald-200 dark:border-emerald-700">
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">الجرعة</p>
-                        <p class="text-xl font-bold text-emerald-700 dark:text-emerald-400">{{ $presc->dosage }}</p>
-                    </div>
-
-                    <!-- Instructions -->
-                    <div class="bg-blue-50 dark:bg-blue-900/20 px-4 py-3 rounded-2xl border border-blue-200 dark:border-blue-700">
-                        <div class="flex gap-2">
-                            <i class="fas fa-circle-info text-blue-600 dark:text-blue-400 mt-1 flex-shrink-0"></i>
-                            <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">تعليمات الاستخدام</p>
-                                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $presc->instructions }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Doctor Info -->
-                    <div class="border-t-2 border-gray-200 dark:border-gray-700 pt-4 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                                {{ substr($presc->doctor->user->name, 0, 1) }}
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-600 dark:text-gray-400">وصف من</p>
-                                <p class="font-bold text-gray-900 dark:text-white">{{ $presc->doctor->user->name }}</p>
-                            </div>
-                        </div>
-                        <button class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl transition-all hover:shadow-lg text-sm">
-                            <i class="fas fa-redo mr-1"></i>
-                            تكرار
-                        </button>
+                        <h2 class="font-bold text-gray-800 dark:text-white">وصفة طبية</h2>
+                        <p class="text-sm text-gray-500">{{ $presc->created_at->format('d/m/Y h:i A') }}</p>
                     </div>
                 </div>
-
-                <!-- Card Footer -->
-                <div class="bg-gray-50 dark:bg-gray-700 px-8 py-4 border-t-2 border-gray-200 dark:border-gray-600 flex gap-3">
-                    <button class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all hover:shadow-lg flex items-center justify-center gap-2 text-sm">
-                        <i class="fas fa-download"></i>
-                        تحميل
-                    </button>
-                    <button class="flex-1 px-4 py-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-gray-900 dark:text-white font-bold rounded-2xl transition-all hover:shadow-lg flex items-center justify-center gap-2 text-sm">
-                        <i class="fas fa-share"></i>
-                        مشاركة
-                    </button>
+                <div>
+                    @if($presc->status === 'delivered')
+                        <span class="px-4 py-2 bg-emerald-100 text-emerald-700 rounded-full text-sm font-bold"><i class="fas fa-check-circle mr-1"></i> تم التسليم</span>
+                    @else
+                        <span class="px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-bold"><i class="fas fa-clock mr-1"></i> قيد الانتظار</span>
+                    @endif
                 </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @forelse($presc->medicines as $medicine)
+                <div class="bg-white dark:bg-gray-800 rounded-4xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:-translate-y-2 transition-all duration-300">
+                    <!-- Card Header -->
+                    <div class="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-gray-700 dark:to-gray-600 px-6 py-5 border-b-2 border-gray-200 dark:border-gray-600 flex justify-between items-start">
+                        <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-md">
+                            <i class="fas fa-pills text-lg"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="px-6 py-5 space-y-4">
+                        <!-- Medicine Name -->
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-1">{{ $medicine->name }}</h3>
+                        </div>
+
+                        <!-- Dosage & Days -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 px-3 py-2 rounded-xl border border-emerald-200 dark:border-emerald-700">
+                                <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">الجرعة</p>
+                                <p class="text-sm font-bold text-emerald-700 dark:text-emerald-400">{{ $medicine->pivot->dosage ?? 'غير محدد' }}</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 px-3 py-2 rounded-xl border border-blue-200 dark:border-blue-700">
+                                <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">المدة</p>
+                                <p class="text-sm font-bold text-blue-700 dark:text-blue-400">{{ $medicine->pivot->days ?? 'غير محدد' }} أيام</p>
+                            </div>
+                        </div>
+
+                        <!-- Instructions -->
+                        @if(!empty($medicine->pivot->notes))
+                        <div class="bg-gray-50 dark:bg-gray-900/20 px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700">
+                            <div class="flex gap-2">
+                                <i class="fas fa-circle-info text-gray-600 dark:text-gray-400 mt-1 flex-shrink-0"></i>
+                                <div>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">تعليمات / ملاحظات</p>
+                                    <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $medicine->pivot->notes }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                        <!-- Doctor Info -->
+                        <div class="border-t border-gray-100 dark:border-gray-700 pt-3 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xs">
+                                    {{ substr($presc->doctor->user->name ?? 'D', 0, 1) }}
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-gray-500">وصف من</p>
+                                    <p class="text-xs font-bold text-gray-900 dark:text-white">د. {{ $presc->doctor->user->name ?? 'غير معروف' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                    <div class="col-span-full text-center py-6 text-gray-500">لا توجد أدوية في هذه الوصفة.</div>
+                @endforelse
             </div>
         </div>
         @empty

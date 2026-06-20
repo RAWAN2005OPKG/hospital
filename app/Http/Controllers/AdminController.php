@@ -311,10 +311,33 @@ class AdminController extends Controller
         return back()->with('success', 'تم حذف الطبيب');
     }
     
-    public function contactMessages()
+    public function contactMessages(Request $request)
     {
-        $messages = ContactMessage::orderBy('created_at', 'desc')->paginate(20);
+        $perPage = $request->query('per_page', 10);
+        if ($perPage === 'all') {
+            $perPage = max(1, ContactMessage::count());
+        } else {
+            $perPage = in_array((int)$perPage, [10, 20], true) ? (int)$perPage : 10;
+        }
+        $messages = ContactMessage::orderBy('created_at', 'desc')->paginate($perPage)->withQueryString();
         $unreadCount = ContactMessage::where('status', 'new')->count();
-        return view("admin.contact-messages", compact("messages", "unreadCount"));
+        return view('admin.contact-messages', compact('messages', 'unreadCount'));
+    }
+
+    public function showContactMessage(ContactMessage $message)
+    {
+        if ($message->status === 'new') {
+            $message->markAsRead();
+        }
+        return view('admin.contact-message-detail', compact('message'));
+    }
+
+    public function replyContactMessage(Request $request, ContactMessage $message)
+    {
+        $request->validate([
+            'admin_reply' => 'required|string|max:5000',
+        ]);
+        $message->addReply($request->admin_reply);
+        return redirect()->route('admin.contact-messages')->with('success', 'تم إرسال الرد بنجاح');
     }
 }

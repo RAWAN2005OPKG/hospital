@@ -99,22 +99,77 @@
             <div class="form-group">
                 <label class="form-label">العلاج الموصوف <span style="color:#ef4444">*</span></label>
                 <textarea name="treatment" class="form-control @error('treatment') is-invalid @enderror"
-                    rows="3" required placeholder="اكتب العلاج والأدوية الموصوفة...">{{ old('treatment') }}</textarea>
+                    rows="3" required placeholder="اكتب العلاج الموصوف...">{{ old('treatment') }}</textarea>
                 @error('treatment')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
+            
+            <div class="form-group" style="background:#f8fafc;padding:1.5rem;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:1.5rem">
+                <label class="form-label" style="font-size:1.1rem;color:#1e293b;border-bottom:2px solid #e2e8f0;padding-bottom:0.5rem;margin-bottom:1rem">
+                    <i class="fa-solid fa-pills" style="color:#3b82f6;margin-left:0.5rem"></i> الوصفة الطبية (الصيدلية)
+                </label>
+                <div id="medicines-container">
+                    <!-- Medicines rows will be added here -->
+                </div>
+                <button type="button" onclick="addMedicineRow()" class="btn btn-outline" style="margin-top:1rem;font-size:0.9rem">
+                    <i class="fa-solid fa-plus"></i> إضافة دواء للوصفة
+                </button>
+            </div>
+
             <div class="form-group">
                 <label class="form-label">ملاحظات إضافية</label>
                 <textarea name="notes" class="form-control" rows="2"
-                    placeholder="أي ملاحظات إضافية...">{{ old('notes') }}</textarea>
+                    placeholder="أي ملاحظات إضافية للتقرير..."></textarea>
             </div>
             <div style="background:#fff3cd;border-radius:10px;padding:.8rem 1rem;margin-bottom:1.25rem;font-size:.83rem;color:#856404;display:flex;gap:.5rem">
                 <i class="fa-solid fa-triangle-exclamation" style="flex-shrink:0;margin-top:.1rem"></i>
-                <span>بإضافة السجل الطبي سيتم تغيير حالة الموعد إلى <strong>مكتمل</strong> تلقائياً.</span>
+                <span>بإضافة السجل والوصفة سيتم تغيير حالة الموعد إلى <strong>مكتمل</strong> وتُرسل الوصفة للصيدلية.</span>
             </div>
             <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:.8rem">
-                <i class="fa-solid fa-floppy-disk"></i> حفظ السجل الطبي
+                <i class="fa-solid fa-floppy-disk"></i> حفظ وإكمال الموعد
             </button>
             </form>
+
+            <script>
+                let medIndex = 0;
+                const medicinesList = @json($medicines ?? []);
+
+                function addMedicineRow() {
+                    const container = document.getElementById('medicines-container');
+                    let options = '<option value="">-- اختر الدواء --</option>';
+                    medicinesList.forEach(med => {
+                        options += `<option value="${med.id}">${med.name} (${med.stock > 0 ? 'متوفر' : 'نفد'})</option>`;
+                    });
+
+                    const row = document.createElement('div');
+                    row.className = 'medicine-row';
+                    row.style.cssText = 'display:grid;grid-template-columns:2fr 1fr 1fr 2fr auto;gap:0.75rem;margin-bottom:1rem;align-items:end;background:#fff;padding:1rem;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.02)';
+                    row.innerHTML = `
+                        <div>
+                            <label style="font-size:0.8rem;color:#64748b;margin-bottom:0.25rem;display:block">الدواء</label>
+                            <select name="medicines[${medIndex}][id]" class="form-control" required style="padding:0.6rem">
+                                ${options}
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem;color:#64748b;margin-bottom:0.25rem;display:block">الجرعة</label>
+                            <input type="text" name="medicines[${medIndex}][dosage]" class="form-control" required placeholder="مثال: حبة يومياً" style="padding:0.6rem">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem;color:#64748b;margin-bottom:0.25rem;display:block">المدة (أيام)</label>
+                            <input type="number" name="medicines[${medIndex}][days]" class="form-control" required min="1" value="7" style="padding:0.6rem">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem;color:#64748b;margin-bottom:0.25rem;display:block">ملاحظات للصيدلي/المريض</label>
+                            <input type="text" name="medicines[${medIndex}][notes]" class="form-control" placeholder="اختياري" style="padding:0.6rem">
+                        </div>
+                        <button type="button" onclick="this.parentElement.remove()" class="btn" style="background:#fee2e2;color:#ef4444;padding:0.6rem 1rem;height:100%">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    `;
+                    container.appendChild(row);
+                    medIndex++;
+                }
+            </script>
         </div>
     </div>
     @elseif($appointment->status === 'cancelled')

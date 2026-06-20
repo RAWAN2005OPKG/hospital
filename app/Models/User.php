@@ -101,4 +101,9 @@ class User extends Authenticatable
     {
         return $this->role === UserRoleEnum::Patient;
     }
+
+    public function isPharmacist()
+    {
+        return $this->role === UserRoleEnum::Pharmacist;
+    }
 }

@@ -3,57 +3,65 @@
 @section('title', 'الاستشارات الطبية')
 
 @section('content')
-<div class="py-12 bg-gray-50 dark:bg-gray-900 min-h-screen" style="margin-top: 80px;">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <span class="inline-block px-4 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-bold mb-4">الاستشارات</span>
-            <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">استشارات طبية عن بعد</h2>
-            <p class="text-lg text-gray-600 dark:text-gray-400">تواصل مع نخبة من الأطباء من منزلك وبكل خصوصية</p>
+<div style="padding-top: 120px; min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); padding: 3rem 1.5rem;">
+    <div style="max-width: 1400px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <span style="display: inline-block; padding: 0.5rem 1.5rem; background: linear-gradient(135deg, #06b6d4, #0891b2); color: white; border-radius: 2rem; font-size: 0.9rem; font-weight: bold; margin-bottom: 1.5rem; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);">
+                الاستشارات الطبية
+            </span>
+            <h1 style="font-size: 3rem; font-weight: 900; color: #111827; margin: 0 0 1rem 0;">استشارات طبية عن بعد</h1>
+            <p style="font-size: 1.25rem; color: #6b7280; margin: 0; max-width: 600px; margin-left: auto; margin-right: auto;">تواصل مع نخبة من الأطباء من منزلك وبكل خصوصية</p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem;">
             <!-- Chat Section -->
-            <div class="lg:col-span-2">
-                <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 border border-gray-100 dark:border-gray-700">
-                    <div class="flex items-center gap-4 mb-8">
-                        <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl shadow-lg">
-                            <i class="fa-solid fa-robot"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-xl font-bold text-gray-900 dark:text-white">مساعدك الطبي الذكي</h4>
-                        </div>
+            <div style="background: white; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 2rem; border: 1px solid #e5e7eb;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #06b6d4, #0891b2); border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.75rem; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);">
+                        <i class="fa-solid fa-robot"></i>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 min-h-[300px] mb-6 border border-gray-200 dark:border-gray-700 flex justify-center items-center text-gray-400">
-                        ابدأ المحادثة الآن لوصف حالتك...
+                    <div>
+                        <h2 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin: 0;">مساعدك الطبي الذكي</h2>
+                        <p style="font-size: 0.9rem; color: #6b7280; margin: 0.25rem 0 0 0;">متاح 24/7 للإجابة على استفساراتك</p>
                     </div>
-                    <form action="#" class="flex gap-3">
-                        <input type="text" class="flex-1 px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none dark:text-white" placeholder="اكتب سؤالك هنا...">
-                        <button class="px-8 py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-lg">
-                            <i class="fa-solid fa-paper-plane"></i>
-                        </button>
-                    </form>
                 </div>
+                <div style="background: #f9fafb; border-radius: 1.25rem; padding: 2rem; min-height: 300px; margin-bottom: 1.5rem; border: 1px solid #e5e7eb; display: flex; justify-content: center; align-items: center; color: #9ca3af;">
+                    <div style="text-align: center;">
+                        <i class="fa-solid fa-comments" style="font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.3;"></i>
+                        <p style="margin: 0; font-weight: 600;">ابدأ المحادثة الآن لوصف حالتك...</p>
+                    </div>
+                </div>
+                <form action="#" style="display: flex; gap: 1rem;">
+                    <input type="text" style="flex: 1; padding: 1rem 1.5rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 1.25rem; outline: none; color: #111827; font-size: 1rem; transition: all 0.3s ease;" placeholder="اكتب سؤالك هنا...">
+                    <button type="submit" style="padding: 1rem 2rem; background: linear-gradient(135deg, #06b6d4, #0891b2); color: white; font-weight: bold; border-radius: 1.25rem; border: none; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        إرسال
+                    </button>
+                </form>
             </div>
 
             <!-- Sidebar Doctors -->
-            <div class="lg:col-span-1">
-                <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 border border-gray-100 dark:border-gray-700">
-                    <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-6">أطباء متاحون الآن</h4>
-                    <div class="space-y-6">
-                        @php $realDoctors = \App\Models\Doctor::with('user', 'specialization')->limit(5)->get(); @endphp
-                        @foreach($realDoctors as $doc)
-                        <div class="flex items-center gap-4 p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
-                            <div class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
-                                {{ mb_substr($doc->user->name, 0, 1) }}
-                            </div>
-                            <div class="flex-1">
-                                <div class="font-bold text-gray-900 dark:text-white">{{ $doc->user->name }}</div>
-                                <div class="text-xs text-blue-600">{{ $doc->specialization->name ?? 'طبيب عام' }}</div>
-                            </div>
-                            <a href="{{ route('doctors.show', $doc) }}" class="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-sm font-bold">اتصال</a>
+            <div style="background: white; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 2rem; border: 1px solid #e5e7eb;">
+                <h2 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin: 0 0 1.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-user-doctor" style="color: #06b6d4;"></i>
+                    أطباء متاحون الآن
+                </h2>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    @php $realDoctors = \App\Models\Doctor::with('user', 'specialization')->limit(5)->get(); @endphp
+                    @foreach($realDoctors as $doc)
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f9fafb; border-radius: 1rem; border: 1px solid #e5e7eb; transition: all 0.3s ease; hover: background: #ecfeff; hover: border-color: #06b6d4;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #06b6d4, #0891b2); border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.25rem; flex-shrink: 0;">
+                            {{ mb_substr($doc->user->name, 0, 1) }}
                         </div>
-                        @endforeach
+                        <div style="flex: 1;">
+                            <div style="font-weight: bold; color: #111827; margin-bottom: 0.25rem;">{{ $doc->user->name }}</div>
+                            <div style="font-size: 0.85rem; color: #06b6d4; font-weight: 600;">{{ $doc->specialization->name ?? 'طبيب عام' }}</div>
+                        </div>
+                        <a href="{{ route('doctors.show', $doc) }}" style="padding: 0.5rem 1rem; background: linear-gradient(135deg, #06b6d4, #0891b2); color: white; border-radius: 0.75rem; font-size: 0.85rem; font-weight: bold; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(6, 182, 212, 0.2);">
+                            <i class="fas fa-phone"></i> اتصال
+                        </a>
                     </div>
+                    @endforeach
                 </div>
             </div>
         </div>

@@ -160,6 +160,9 @@
                     <button type="button" class="role-tab" id="tabDoctor" onclick="setRole('doctor')">
                         <i class="fa-solid fa-user-md"></i> {{ app()->getLocale() === 'ar' ? 'دكتور' : 'Doctor' }}
                     </button>
+                    <button type="button" class="role-tab" id="tabPharmacist" onclick="setRole('pharmacist')">
+                        <i class="fa-solid fa-prescription-bottle-medical"></i> {{ app()->getLocale() === 'ar' ? 'صيدلي' : 'Pharmacist' }}
+                    </button>
                     <button type="button" class="role-tab" id="tabAdmin" onclick="setRole('admin')" style="display:none">
                         <i class="fa-solid fa-user-shield"></i> {{ app()->getLocale() === 'ar' ? 'أدمن' : 'Admin' }}
                     </button>
@@ -244,10 +247,12 @@ function handleSecretClick() {
 
 function setRole(role) {
     const isDoc = role === 'doctor';
+    const isPharm = role === 'pharmacist';
     const isAdmin = role === 'admin';
     
     document.getElementById('tabPatient').classList.toggle('active', role === 'patient');
     document.getElementById('tabDoctor').classList.toggle('active', isDoc);
+    document.getElementById('tabPharmacist').classList.toggle('active', isPharm);
     document.getElementById('tabAdmin').classList.toggle('active', isAdmin);
     
     document.getElementById('roleInput').value = role;
@@ -258,6 +263,9 @@ function setRole(role) {
     if (isDoc) {
         btnText = locale === 'ar' ? 'دخول كدكتور' : 'Login as Doctor';
         btnBg = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    } else if (isPharm) {
+        btnText = locale === 'ar' ? 'دخول كصيدلي' : 'Login as Pharmacist';
+        btnBg = 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)';
     } else if (isAdmin) {
         btnText = locale === 'ar' ? 'دخول كأدمن' : 'Login as Admin';
         btnBg = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)';

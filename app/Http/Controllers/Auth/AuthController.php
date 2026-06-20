@@ -28,7 +28,7 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|string|email|max:255',
             'password' => 'required|string',
-            'role' => 'required|in:patient,doctor,admin',
+            'role' => 'required|in:patient,doctor,admin,pharmacist',
         ]);
 
         $user = User::query()
@@ -50,7 +50,8 @@ class AuthController extends Controller
             $roleNames = [
                 'patient' => 'مريض',
                 'doctor' => 'طبيب',
-                'admin' => 'مدير نظام'
+                'admin' => 'مدير نظام',
+                'pharmacist' => 'صيدلي'
             ];
             
             throw ValidationException::withMessages([
@@ -76,7 +77,7 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|max:20|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:patient,doctor,admin',
+            'role' => 'required|in:patient,doctor,admin,pharmacist',
         ]);
 
         $user = User::create([
@@ -149,6 +150,9 @@ class AuthController extends Controller
 
     protected function redirectAfterLogin(User $user): \Illuminate\Http\RedirectResponse
     {
+        if ($user->isPharmacist()) {
+            return redirect()->intended(route('pharmacist.dashboard'));
+        }
         if ($user->isStaff()) {
             return redirect()->intended(route('admin.dashboard'));
         }

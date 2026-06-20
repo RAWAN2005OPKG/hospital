@@ -77,7 +77,9 @@ class DoctorDashboardController extends Controller
         $this->assertOwnAppointment($appointment);
         $appointment->load(['patient.user', 'medicalRecord', 'doctor.user']);
 
-        return view('admin.appointment-detail', compact('appointment'));
+        $medicines = \App\Models\Medicine::where('is_active', true)->get();
+
+        return view('admin.appointment-detail', compact('appointment', 'medicines'));
     }
 
     public function confirmAppointment(Appointment $appointment)
@@ -126,19 +128,44 @@ class DoctorDashboardController extends Controller
             'treatment' => 'required|string|max:5000',
             'prescription' => 'nullable|string|max:5000',
             'notes' => 'nullable|string|max:5000',
+            'medicines' => 'nullable|array',
+            'medicines.*.id' => 'required_with:medicines|exists:medicines,id',
+            'medicines.*.dosage' => 'required_with:medicines|string|max:255',
+            'medicines.*.days' => 'required_with:medicines|integer|min:1',
+            'medicines.*.notes' => 'nullable|string|max:500',
         ]);
 
-        MedicalRecord::create([
-            'patient_id' => $appointment->patient->user_id,
-            'doctor_id' => $appointment->doctor_id,
-            'appointment_id' => $appointment->id,
-            'diagnosis' => $validated['diagnosis'],
-            'treatment' => $validated['treatment'],
-            'prescription' => $validated['prescription'] ?? null,
-            'notes' => $validated['notes'] ?? null,
-        ]);
+        \Illuminate\Support\Facades\DB::transaction(function() use ($validated, $appointment) {
+            MedicalRecord::create([
+                'patient_id' => $appointment->patient->user_id,
+                'doctor_id' => $appointment->doctor_id,
+                'appointment_id' => $appointment->id,
+                'diagnosis' => $validated['diagnosis'],
+                'treatment' => $validated['treatment'],
+                'prescription' => $validated['prescription'] ?? null,
+                'notes' => $validated['notes'] ?? null,
+            ]);
 
-        $appointment->update(['status' => 'completed']);
+            if (!empty($validated['medicines'])) {
+                $prescription = \App\Models\Prescription::create([
+                    'patient_id' => $appointment->patient_id,
+                    'doctor_id' => $appointment->doctor_id,
+                    'status' => 'pending',
+                ]);
+
+                $syncData = [];
+                foreach ($validated['medicines'] as $med) {
+                    $syncData[$med['id']] = [
+                        'dosage' => $med['dosage'],
+                        'days' => $med['days'],
+                        'notes' => $med['notes'] ?? null,
+                    ];
+                }
+                $prescription->medicines()->sync($syncData);
+            }
+
+            $appointment->update(['status' => 'completed']);
+        });
 
         return redirect()->route('doctor.appointments')->with('success', 'تم حفظ التقرير الطبي وإكمال الموعد.');
     }

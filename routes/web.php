@@ -122,6 +122,16 @@ Route::middleware(['auth', 'role:admin,receptionist'])->prefix($adminPath)->as('
         'update' => 'specializations.update',
         'destroy' => 'specializations.destroy',
     ]);
+
+    // Medicines
+    Route::resource('medicines', \App\Http\Controllers\Admin\MedicineController::class)->names([
+        'index' => 'medicines.index',
+        'create' => 'medicines.create',
+        'store' => 'medicines.store',
+        'edit' => 'medicines.edit',
+        'update' => 'medicines.update',
+        'destroy' => 'medicines.destroy',
+    ]);
 });
 
 Route::get('/doctors', [DoctorController::class, 'index'])->name('doctors.index');
@@ -153,8 +163,25 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
     })->name('patient.medical_records_list');
     
     Route::get('/my-prescriptions', function() {
-        return view('Prescriptions.index');
+        $patient = Auth::user()->patient;
+        if (!$patient) {
+            $prescriptions = collect();
+        } else {
+            $prescriptions = \App\Models\Prescription::where('patient_id', $patient->id)
+                ->with(['medicines', 'doctor.user'])
+                ->latest()
+                ->get();
+        }
+        return view('Prescriptions.index', compact('prescriptions'));
     })->name('patient.prescriptions_list');
+});
+
+// Pharmacist Routes
+Route::middleware(['auth', 'role:pharmacist'])->prefix('pharmacist')->as('pharmacist.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Pharmacist\DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/prescriptions', [\App\Http\Controllers\Pharmacist\PrescriptionController::class, 'index'])->name('prescriptions.index');
+    Route::get('/prescriptions/{prescription}', [\App\Http\Controllers\Pharmacist\PrescriptionController::class, 'show'])->name('prescriptions.show');
+    Route::post('/prescriptions/{prescription}/deliver', [\App\Http\Controllers\Pharmacist\PrescriptionController::class, 'markAsDelivered'])->name('prescriptions.deliver');
 });
 
 Route::middleware(['auth', 'role:doctor'])->group(function () {

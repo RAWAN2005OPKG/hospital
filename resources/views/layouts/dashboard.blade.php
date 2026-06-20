@@ -260,6 +260,7 @@
                 <a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users*') ? 'active' : '' }}"><i class="fa-solid fa-users"></i> {{ __('messages.nav_users') }}</a>
                 <a href="{{ route('admin.doctors') }}" class="{{ request()->routeIs('admin.doctors*') ? 'active' : '' }}"><i class="fa-solid fa-user-md"></i> {{ __('messages.nav_doctors') }}</a>
                 <a href="{{ route('admin.appointments') }}" class="{{ request()->routeIs('admin.appointments*') ? 'active' : '' }}"><i class="fa-solid fa-calendar-alt"></i> {{ __('messages.appointments') }}</a>
+                <a href="{{ route('admin.medicines.index') }}" class="{{ request()->routeIs('admin.medicines*') ? 'active' : '' }}"><i class="fa-solid fa-pills"></i> الأدوية</a>
                 <a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings*') ? 'active' : '' }}"><i class="fa-solid fa-cog"></i> {{ __('messages.nav_settings') }}</a>
             </nav>
 
