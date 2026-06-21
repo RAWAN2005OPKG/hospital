@@ -55,11 +55,24 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Top selling medicines (last 30 days)
+        $topSellingMedicines = Medicine::select('medicines.*')
+            ->join('prescription_medicines', 'medicines.id', '=', 'prescription_medicines.medicine_id')
+            ->join('prescriptions', 'prescription_medicines.prescription_id', '=', 'prescriptions.id')
+            ->where('prescriptions.status', 'delivered')
+            ->where('prescriptions.created_at', '>=', now()->subDays(30))
+            ->selectRaw('medicines.*, COUNT(prescription_medicines.medicine_id) as sales_count')
+            ->groupBy('medicines.id')
+            ->orderBy('sales_count', 'desc')
+            ->take(5)
+            ->get();
+
         return view('pharmacist.dashboard', compact(
             'stats',
             'recentPrescriptions',
             'lowStockMedicines',
-            'expiringSoonMedicines'
+            'expiringSoonMedicines',
+            'topSellingMedicines'
         ));
     }
 }

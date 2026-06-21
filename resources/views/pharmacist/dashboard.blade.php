@@ -200,6 +200,15 @@
             <a href="{{ route('pharmacist.invoices.index') }}" class="action-btn" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
                 <i class="fa-solid fa-file-invoice-dollar"></i> الفواتير
             </a>
+            <a href="{{ route('pharmacist.sales.index') }}" class="action-btn" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);">
+                <i class="fa-solid fa-chart-line"></i> المبيعات
+            </a>
+            <a href="{{ route('pharmacist.reports.index') }}" class="action-btn" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
+                <i class="fa-solid fa-chart-bar"></i> التقارير
+            </a>
+            <a href="{{ route('pharmacist.notifications.index') }}" class="action-btn" style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);">
+                <i class="fa-solid fa-bell"></i> الإشعارات
+            </a>
         </div>
     </div>
 
@@ -226,6 +235,92 @@
             @endforeach
         </div>
         @endif
+    </div>
+    @endif
+
+    <!-- Recent Prescriptions -->
+    @if(isset($recentPrescriptions) && $recentPrescriptions->count() > 0)
+    <div style="background: #fff; border-radius: 20px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 2rem;">
+        <h3 style="font-size: 1.2rem; font-weight: 800; color: #1e293b; margin-bottom: 1.5rem;"><i class="fa-solid fa-file-prescription" style="color:#3b82f6;margin-left:0.5rem"></i> آخر الوصفات المستلمة</h3>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f8fafc;">
+                        <th style="padding: 1rem; text-align: right; font-weight: 700; color: #64748b; border-bottom: 2px solid #e2e8f0;">رقم الوصفة</th>
+                        <th style="padding: 1rem; text-align: right; font-weight: 700; color: #64748b; border-bottom: 2px solid #e2e8f0;">المريض</th>
+                        <th style="padding: 1rem; text-align: right; font-weight: 700; color: #64748b; border-bottom: 2px solid #e2e8f0;">الطبيب</th>
+                        <th style="padding: 1rem; text-align: right; font-weight: 700; color: #64748b; border-bottom: 2px solid #e2e8f0;">الحالة</th>
+                        <th style="padding: 1rem; text-align: right; font-weight: 700; color: #64748b; border-bottom: 2px solid #e2e8f0;">التاريخ</th>
+                        <th style="padding: 1rem; text-align: right; font-weight: 700; color: #64748b; border-bottom: 2px solid #e2e8f0;">إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($recentPrescriptions as $prescription)
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 1rem;">#{{ $prescription->id }}</td>
+                        <td style="padding: 1rem;">{{ $prescription->patient->user->name ?? '-' }}</td>
+                        <td style="padding: 1rem;">{{ $prescription->doctor->user->name ?? '-' }}</td>
+                        <td style="padding: 1rem;">
+                            <span style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+                                background: {{ $prescription->status == 'pending' ? '#fef3c7; color: #92400e;' :
+                                         ($prescription->status == 'preparing' ? '#dbeafe; color: #1e40af;' :
+                                         ($prescription->status == 'ready' ? '#d1fae5; color: #065f46;' :
+                                         ($prescription->status == 'delivered' ? '#dcfce7; color: #166534;' :
+                                         '#fee2e2; color: #991b1b;'))) }}">
+                                {{ $prescription->status }}
+                            </span>
+                        </td>
+                        <td style="padding: 1rem;">{{ $prescription->created_at ? $prescription->created_at->format('Y-m-d H:i') : '-' }}</td>
+                        <td style="padding: 1rem;">
+                            <a href="{{ route('pharmacist.prescriptions.show', $prescription) }}" style="color: #3b82f6; text-decoration: none; font-weight: 600;">
+                                <i class="fa-solid fa-eye"></i> عرض
+                            </a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
+
+    <!-- Top Selling Medicines -->
+    @if(isset($topSellingMedicines) && $topSellingMedicines->count() > 0)
+    <div style="background: #fff; border-radius: 20px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+        <h3 style="font-size: 1.2rem; font-weight: 800; color: #1e293b; margin-bottom: 1.5rem;"><i class="fa-solid fa-trophy" style="color:#f59e0b;margin-left:0.5rem"></i> أكثر الأدوية صرفاً (آخر 30 يوم)</h3>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f8fafc;">
+                        <th style="padding: 1rem; text-align: right; font-weight: 700; color: #64748b; border-bottom: 2px solid #e2e8f0;">الدواء</th>
+                        <th style="padding: 1rem; text-align: right; font-weight: 700; color: #64748b; border-bottom: 2px solid #e2e8f0;">الشركة المصنعة</th>
+                        <th style="padding: 1rem; text-align: right; font-weight: 700; color: #64748b; border-bottom: 2px solid #e2e8f0;">السعر</th>
+                        <th style="padding: 1rem; text-align: right; font-weight: 700; color: #64748b; border-bottom: 2px solid #e2e8f0;">المخزون</th>
+                        <th style="padding: 1rem; text-align: right; font-weight: 700; color: #64748b; border-bottom: 2px solid #e2e8f0;">عدد المرات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($topSellingMedicines as $index => $medicine)
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 1rem;">
+                            @if($index == 0)
+                                <i class="fa-solid fa-medal" style="color: #fbbf24; margin-left: 0.5rem;"></i>
+                            @elseif($index == 1)
+                                <i class="fa-solid fa-medal" style="color: #9ca3af; margin-left: 0.5rem;"></i>
+                            @elseif($index == 2)
+                                <i class="fa-solid fa-medal" style="color: #b45309; margin-left: 0.5rem;"></i>
+                            @endif
+                            {{ $medicine->name }}
+                        </td>
+                        <td style="padding: 1rem;">{{ $medicine->manufacturer ?? '-' }}</td>
+                        <td style="padding: 1rem;">{{ number_format($medicine->price, 2) }}</td>
+                        <td style="padding: 1rem;">{{ $medicine->stock }}</td>
+                        <td style="padding: 1rem;"><strong>{{ $medicine->sales_count ?? 0 }}</strong></td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
     @endif
 </div>
