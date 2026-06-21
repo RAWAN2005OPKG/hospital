@@ -644,6 +644,11 @@
                         @elseif(Auth::user()->isDoctor())
                             <li><a class="dropdown-item rounded-xl py-2" href="{{ route('doctor.dashboard') }}"><i class="fas fa-chart-line text-blue-500"></i> {{ __('messages.nav_doctor_dashboard') }}</a></li>
                             <li><a class="dropdown-item rounded-xl py-2" href="{{ route('doctor.appointments') }}"><i class="fas fa-calendar-alt text-emerald-500"></i> {{ __('messages.appointments') }}</a></li>
+                        @elseif(Auth::user()->isPharmacist())
+                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('pharmacist.dashboard') }}"><i class="fas fa-staff-snake text-emerald-500"></i> لوحة الصيدلية</a></li>
+                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('pharmacist.prescriptions.index') }}"><i class="fas fa-file-prescription text-blue-500"></i> الوصفات</a></li>
+                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('pharmacist.inventory.index') }}"><i class="fas fa-boxes-stacked text-purple-500"></i> المخزون</a></li>
+                            <li><a class="dropdown-item rounded-xl py-2" href="{{ route('pharmacist.invoices.index') }}"><i class="fas fa-file-invoice-dollar text-orange-500"></i> الفواتير</a></li>
                         @elseif(Auth::user()->isStaff())
                             <li><a class="dropdown-item rounded-xl py-2" href="{{ route('admin.dashboard') }}"><i class="fas fa-user-shield text-red-500"></i> {{ __('messages.nav_admin_dashboard') }}</a></li>
                         @endif

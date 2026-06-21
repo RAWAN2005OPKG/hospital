@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Appointment;
 use App\Models\MedicalRecord;
+use App\Models\Prescription;
+use App\Models\Invoice;
 
 class PatientDashboardController extends Controller
 {
@@ -23,8 +25,28 @@ class PatientDashboardController extends Controller
 
         $totalAppointments = $patient->appointments()->count();
         $medicalRecordsCount = $patient->medicalRecords()->count();
+        
+        // Pharmacy-related statistics
+        $totalPrescriptions = $patient->prescriptions()->count();
+        $pendingPrescriptions = $patient->prescriptions()->where('status', 'pending')->count();
+        $readyPrescriptions = $patient->prescriptions()->where('status', 'ready')->count();
+        $deliveredPrescriptions = $patient->prescriptions()->where('status', 'delivered')->count();
+        $totalInvoices = Invoice::where('patient_id', Auth::id())->count();
+        $pendingInvoices = Invoice::where('patient_id', Auth::id())->where('status', 'pending')->count();
+        $paidInvoices = Invoice::where('patient_id', Auth::id())->where('status', 'paid')->count();
 
-        return view("patient.dashboard", compact("upcomingAppointments", "totalAppointments", "medicalRecordsCount"));
+        return view("patient.dashboard", compact(
+            "upcomingAppointments", 
+            "totalAppointments", 
+            "medicalRecordsCount",
+            "totalPrescriptions",
+            "pendingPrescriptions",
+            "readyPrescriptions",
+            "deliveredPrescriptions",
+            "totalInvoices",
+            "pendingInvoices",
+            "paidInvoices"
+        ));
     }
 
     public function appointments()

@@ -191,9 +191,36 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
 // Pharmacist Routes
 Route::middleware(['auth', 'role:pharmacist'])->prefix('pharmacist')->as('pharmacist.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Pharmacist\DashboardController::class, 'dashboard'])->name('dashboard');
+    
+    // Prescriptions
     Route::get('/prescriptions', [\App\Http\Controllers\Pharmacist\PrescriptionController::class, 'index'])->name('prescriptions.index');
     Route::get('/prescriptions/{prescription}', [\App\Http\Controllers\Pharmacist\PrescriptionController::class, 'show'])->name('prescriptions.show');
+    Route::post('/prescriptions/{prescription}/accept', [\App\Http\Controllers\Pharmacist\PrescriptionController::class, 'accept'])->name('prescriptions.accept');
+    Route::post('/prescriptions/{prescription}/reject', [\App\Http\Controllers\Pharmacist\PrescriptionController::class, 'reject'])->name('prescriptions.reject');
+    Route::post('/prescriptions/{prescription}/ready', [\App\Http\Controllers\Pharmacist\PrescriptionController::class, 'markAsReady'])->name('prescriptions.ready');
     Route::post('/prescriptions/{prescription}/deliver', [\App\Http\Controllers\Pharmacist\PrescriptionController::class, 'markAsDelivered'])->name('prescriptions.deliver');
+    Route::post('/prescriptions/{prescription}/invoice', [\App\Http\Controllers\Pharmacist\PrescriptionController::class, 'createInvoice'])->name('prescriptions.create-invoice');
+    
+    // Inventory
+    Route::get('/inventory', [\App\Http\Controllers\Pharmacist\InventoryController::class, 'index'])->name('inventory.index');
+    Route::get('/inventory/create', [\App\Http\Controllers\Pharmacist\InventoryController::class, 'create'])->name('inventory.create');
+    Route::post('/inventory', [\App\Http\Controllers\Pharmacist\InventoryController::class, 'store'])->name('inventory.store');
+    Route::get('/inventory/{medicine}', [\App\Http\Controllers\Pharmacist\InventoryController::class, 'show'])->name('inventory.show');
+    Route::get('/inventory/{medicine}/edit', [\App\Http\Controllers\Pharmacist\InventoryController::class, 'edit'])->name('inventory.edit');
+    Route::put('/inventory/{medicine}', [\App\Http\Controllers\Pharmacist\InventoryController::class, 'update'])->name('inventory.update');
+    Route::delete('/inventory/{medicine}', [\App\Http\Controllers\Pharmacist\InventoryController::class, 'destroy'])->name('inventory.destroy');
+    Route::post('/inventory/{medicine}/stock', [\App\Http\Controllers\Pharmacist\InventoryController::class, 'updateStock'])->name('inventory.update-stock');
+    
+    // Invoices
+    Route::get('/invoices', [\App\Http\Controllers\Pharmacist\InvoiceController::class, 'index'])->name('invoices.index');
+    Route::get('/invoices/create', [\App\Http\Controllers\Pharmacist\InvoiceController::class, 'create'])->name('invoices.create');
+    Route::post('/invoices', [\App\Http\Controllers\Pharmacist\InvoiceController::class, 'store'])->name('invoices.store');
+    Route::get('/invoices/{invoice}', [\App\Http\Controllers\Pharmacist\InvoiceController::class, 'show'])->name('invoices.show');
+    Route::get('/invoices/{invoice}/edit', [\App\Http\Controllers\Pharmacist\InvoiceController::class, 'edit'])->name('invoices.edit');
+    Route::put('/invoices/{invoice}', [\App\Http\Controllers\Pharmacist\InvoiceController::class, 'update'])->name('invoices.update');
+    Route::post('/invoices/{invoice}/pay', [\App\Http\Controllers\Pharmacist\InvoiceController::class, 'markAsPaid'])->name('invoices.pay');
+    Route::post('/invoices/{invoice}/cancel', [\App\Http\Controllers\Pharmacist\InvoiceController::class, 'cancel'])->name('invoices.cancel');
+    Route::delete('/invoices/{invoice}', [\App\Http\Controllers\Pharmacist\InvoiceController::class, 'destroy'])->name('invoices.destroy');
 });
 
 Route::middleware(['auth', 'role:doctor'])->group(function () {

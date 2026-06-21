@@ -9,6 +9,7 @@ use App\Models\Patient;
 use App\Models\Doctor;
 use App\Models\Department;
 use App\Models\Specialization;
+use App\Models\Prescription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,6 +45,13 @@ class DoctorDashboardController extends Controller
         $upcomingAppointments = $doctor ? $doctor->appointments()->where('appointment_date', '>=', now())->with('patient.user')->limit(5)->get() : collect();
         $totalPatients = $doctor ? Patient::whereHas('appointments', function($q) use ($doctor) { $q->where('doctor_id', $doctor->id); })->count() : 0;
         $totalPrescriptions = $doctor ? $doctor->prescriptions()->count() : 0;
+        
+        // Pharmacy-related statistics
+        $pendingPrescriptions = $doctor ? $doctor->prescriptions()->where('status', 'pending')->count() : 0;
+        $deliveredPrescriptions = $doctor ? $doctor->prescriptions()->where('status', 'delivered')->count() : 0;
+        $recentPatients = $doctor ? Patient::whereHas('appointments', function($q) use ($doctor) { 
+            $q->where('doctor_id', $doctor->id); 
+        })->with('user')->latest()->take(5)->get() : collect();
 
         return view('doctor.dashboard', [
             'totalAppointments' => $doctor ? $doctor->appointments()->count() : 0,
@@ -52,7 +60,10 @@ class DoctorDashboardController extends Controller
             'pendingAppointments' => $doctor ? $doctor->appointments()->where('status', 'pending')->count() : 0,
             'todayAppointmentsList' => $upcomingAppointments,
             'totalPatients' => $totalPatients,
-            'totalPrescriptions' => $totalPrescriptions
+            'totalPrescriptions' => $totalPrescriptions,
+            'pendingPrescriptions' => $pendingPrescriptions,
+            'deliveredPrescriptions' => $deliveredPrescriptions,
+            'recentPatients' => $recentPatients
         ]);
     }
 
