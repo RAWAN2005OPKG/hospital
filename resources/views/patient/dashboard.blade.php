@@ -53,7 +53,7 @@
                         <i class="fa-solid fa-comments"></i>
                     </div>
                 </div>
-                <a href="{{ route('consultations.index') }}" style="color: #06b6d4; text-decoration: none; font-size: 0.9rem; font-weight: 600;">بدء استشارة →</a>
+                <a href="{{ route('patient.consultations') }}" style="color: #06b6d4; text-decoration: none; font-size: 0.9rem; font-weight: 600;">بدء استشارة →</a>
             </div>
             
             <div style="background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">

@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'عرض الملف الشخصي')
+@section('title', 'د. ' . $doctor->user->name)
 
 @section('content')
-<div style="padding-top: 120px; min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); padding: 3rem 1.5rem;">
+<div style="min-height: 80vh; background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); padding: 2rem 1.5rem 4rem;">
     <div style="max-width: 1000px; margin: 0 auto;">
         
         <!-- Header Section -->

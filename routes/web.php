@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\AdminController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Doctor\DoctorDashboardController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\Patient\AiHealthController;
 use App\Http\Controllers\PatientController;
@@ -56,13 +58,13 @@ Route::get('/services/pharmacy', function () {
     return view('services.pharmacy');
 })->name('services.pharmacy');
 
-Route::get('/services', function () {
-    return view('services.index');
-})->name('services.index');
+Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
 
-Route::get('/consultations', function () {
-    return view('consultations.index');
-})->name('consultations.index');
+Route::get('/services/surgeries', function () {
+    return redirect()->route('services.index')->withFragment('surgeries');
+})->name('services.surgeries');
+
+Route::get('/consultations', [\App\Http\Controllers\ConsultationController::class, 'index'])->name('consultations.index');
 
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
@@ -174,6 +176,16 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
         }
         return view('Prescriptions.index', compact('prescriptions'));
     })->name('patient.prescriptions_list');
+
+    Route::post('/patient/prescriptions/{prescription}/confirm', function (\App\Models\Prescription $prescription) {
+        $patient = Auth::user()->patient;
+        abort_unless($patient && $prescription->patient_id === $patient->id, 403);
+        $prescription->update(['status' => 'confirmed']);
+        return back()->with('success', 'تم تأكيد استلام الطلب بنجاح');
+    })->name('patient.prescriptions.confirm');
+
+    Route::get('/patient/consultations', [\App\Http\Controllers\ChatController::class, 'index'])->name('patient.consultations');
+    Route::get('/patient/chat/{otherUser}', [\App\Http\Controllers\ChatController::class, 'show'])->name('patient.chat.show');
 });
 
 // Pharmacist Routes
@@ -195,7 +207,6 @@ Route::middleware(['auth', 'role:doctor'])->group(function () {
     Route::get('/doctor/patient-records', [DoctorDashboardController::class, 'patientRecords'])->name('doctor.patient-records');
     Route::get('/doctor/consultations', [\App\Http\Controllers\ChatController::class, 'index'])->name('doctor.consultations');
     Route::get('/doctor/chat/{otherUser}', [\App\Http\Controllers\ChatController::class, 'show'])->name('doctor.chat.show');
-    Route::post('/chat/store/{receiver}', [\App\Http\Controllers\ChatController::class, 'store'])->name('chat.store');
 
     });
 
@@ -206,6 +217,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::match(['post', 'patch'], '/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.change-password');
+    Route::post('/chat/store/{receiver}', [\App\Http\Controllers\ChatController::class, 'store'])->name('chat.store');
 });
 
 require __DIR__.'/auth.php';
@@ -213,4 +225,6 @@ require __DIR__.'/auth.php';
 // Contact Messages Routes (Admin Only)
 Route::middleware(['auth', 'role:admin,receptionist'])->prefix($adminPath)->as('admin.')->group(function () {
     Route::get('/contact-messages', [AdminController::class, 'contactMessages'])->name('contact-messages');
+    Route::post('/contact-messages/{message}/read', [AdminController::class, 'markContactMessageRead'])->name('contact-messages.read');
+    Route::post('/contact-messages/{message}/reply', [AdminController::class, 'replyContactMessage'])->name('contact-messages.reply');
 });

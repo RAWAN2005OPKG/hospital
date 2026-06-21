@@ -2,64 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Service;
-use Illuminate\Http\Request;
+use App\Models\Appointment;
+use App\Models\Department;
+use App\Models\Doctor;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $departments = Department::withCount('doctors')->get();
+
+        $managers = [
+            'emergency' => $this->findDepartment($departments, ['طوارئ', 'emergency']),
+            'lab' => $this->findDepartment($departments, ['مختبر', 'تحاليل', 'lab']),
+            'radiology' => $this->findDepartment($departments, ['أشعة', 'اشعة', 'radiology']),
+            'pharmacy' => $this->findDepartment($departments, ['صيدل', 'pharmacy']),
+            'outpatient' => $this->findDepartment($departments, ['عيادات', 'خارجي', 'outpatient', 'clinic']),
+            'icu' => $this->findDepartment($departments, ['عناية', 'مركزة', 'icu', ' intensive']),
+            'consultations' => $this->findDepartment($departments, ['استشارات', 'consultation']),
+            'surgeries' => $this->findDepartment($departments, ['جراح', 'surgery', 'عمليات']),
+        ];
+
+        $patientAppointments = collect();
+        if (Auth::check() && Auth::user()->isPatient() && Auth::user()->patient) {
+            $patientAppointments = Appointment::where('patient_id', Auth::user()->patient->id)
+                ->with(['doctor.user', 'doctor.department', 'doctor.specialization'])
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->orderBy('appointment_date')
+                ->get();
+        }
+
+        return view('services.index', compact('managers', 'patientAppointments'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    private function findDepartment($departments, array $keywords): ?Department
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Service $service)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Service $service)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Service $service)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Service $service)
-    {
-        //
+        return $departments->first(function ($dept) use ($keywords) {
+            $name = mb_strtolower($dept->name);
+            foreach ($keywords as $keyword) {
+                if (str_contains($name, mb_strtolower($keyword))) {
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 }

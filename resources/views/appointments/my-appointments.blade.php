@@ -71,7 +71,7 @@
     <div class="card text-center py-12">
         <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
         <p class="text-gray-600 text-lg">لا توجد مواعيد</p>
-        <a href="{{ route('appointments.search') }}" class="btn-primary mt-4 inline-block">
+        <a href="{{ route('appointments.create') }}" class="btn-primary mt-4 inline-block">
             <i class="fas fa-calendar-check ml-2"></i>احجز موعد
         </a>
     </div>

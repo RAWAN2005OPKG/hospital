@@ -4,34 +4,45 @@
 @push('styles')
 <style>
 .hero {
-    min-height:calc(100vh - 80px);
-    background:linear-gradient(135deg,#eff6ff 0%,#ecfeff 50%,#f0fdf4 100%);
-    display:flex; align-items:center;
-    position:relative; overflow:hidden;
-    padding:4rem 0;
+    min-height: 70vh;
+    background: linear-gradient(135deg,#eff6ff 0%,#ecfeff 50%,#f0fdf4 100%);
+    display: flex; align-items: center;
+    padding: 3rem 0;
 }
-.hero-inner {
-    display:grid; grid-template-columns:1fr 1fr;
-    gap:4rem; align-items:center; position:relative; z-index:1;
+.hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+.hero h1 { font-size: 2.75rem; font-weight: 900; line-height: 1.2; margin-bottom: 1.25rem; color: #1f2937; }
+.hero-desc { font-size: 1.1rem; color: #4b5563; max-width: 480px; margin-bottom: 2rem; line-height: 1.8; }
+.hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+.home-section { padding: 4rem 0; }
+.sec-head { text-align: center; margin-bottom: 3rem; }
+.sec-tag { display: inline-block; background: #e0f2fe; color: #0369a1; font-size: 0.8rem; font-weight: 800; padding: 0.35rem 1rem; border-radius: 50px; margin-bottom: 0.75rem; }
+.sec-head h2 { font-size: 2.25rem; font-weight: 900; color: #1f2937; }
+.dept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+.dept-card {
+    background: #fff; border-radius: 1.25rem; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;
+    text-decoration: none; color: inherit; transition: transform 0.3s, box-shadow 0.3s;
+    display: flex; flex-direction: column;
 }
-.hero h1 {
-    font-size:3rem; font-weight:900; line-height:1.2;
-    margin-bottom:1.25rem; color:#1f2937;
+.dept-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+.dept-card-img { height: 140px; background: linear-gradient(135deg, #e0f4ff, #ecfeff); display: flex; align-items: center; justify-content: center; }
+.dept-card-img i { font-size: 3rem; color: #0077B6; }
+.dept-card-body { padding: 1.25rem; text-align: center; }
+.dept-card-body h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 0.35rem; }
+.services-quick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+.service-quick-link {
+    background: #fff; border-radius: 1rem; padding: 1.25rem; text-align: center;
+    text-decoration: none; color: #1f2937; border: 1px solid #e5e7eb;
+    transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
-.hero-desc { font-size:1.05rem; color:#4b5563; max-width:480px; margin-bottom:2.5rem; line-height:1.8; }
-.hero-btns { display:flex; gap:1rem; flex-wrap:wrap; }
-.section { padding: 5rem 0; }
-.sec-head { text-align:center; margin-bottom:3.5rem; }
-.sec-tag { display:inline-block; background:#e0f2fe; color:#0369a1; font-size:.75rem; font-weight:800; padding:.3rem 1rem; border-radius:50px; margin-bottom:.75rem; text-transform:uppercase; }
-.dept-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1.25rem; }
-.dept-card { background:#fff; padding:1.5rem; border-radius:1rem; text-align:center; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); transition: transform 0.3s; }
-.dept-card:hover { transform: translateY(-5px); }
+.service-quick-link:hover { border-color: #0077B6; transform: translateY(-4px); color: #0077B6; }
+.service-quick-link i { font-size: 1.75rem; color: #0077B6; display: block; margin-bottom: 0.5rem; }
+@media (max-width: 768px) { .hero-inner { grid-template-columns: 1fr; } .services-quick { grid-template-columns: 1fr; } }
 </style>
 @endpush
 
 @section('content')
 
-{{-- HERO --}}
 <section class="hero">
 <div class="container">
 <div class="hero-inner">
@@ -40,9 +51,21 @@
         <h1>{{ __('messages.hero_title') }}</h1>
         <p class="hero-desc">{{ __('messages.hero_subtitle') }}</p>
         <div class="hero-btns">
-            <a href="{{ route('doctors.index') }}" class="btn btn-primary btn-lg">
+            @auth
+                @if(Auth::user()->isPatient())
+                <a href="{{ route('appointments.create') }}" class="btn btn-primary btn-lg">
+                    <i class="fa-solid fa-calendar-plus"></i> {{ __('messages.book_now') }}
+                </a>
+                @else
+                <a href="{{ route('doctors.index') }}" class="btn btn-primary btn-lg">
+                    <i class="fa-solid fa-calendar-plus"></i> {{ __('messages.book_now') }}
+                </a>
+                @endif
+            @else
+            <a href="{{ route('login') }}" class="btn btn-primary btn-lg">
                 <i class="fa-solid fa-calendar-plus"></i> {{ __('messages.book_now') }}
             </a>
+            @endauth
             <a href="{{ route('departments') }}" class="btn btn-outline-primary btn-lg">
                 <i class="fa-solid fa-hospital"></i> {{ __('messages.explore_departments') }}
             </a>
@@ -55,42 +78,57 @@
 </div>
 </section>
 
-{{-- DEPARTMENTS --}}
-<section class="section bg-white">
+<section class="home-section bg-white">
 <div class="container">
     <div class="sec-head">
-        <div class="sec-tag">{{ __('messages.our_departments' ) }}</div>
+        <div class="sec-tag">{{ __('messages.our_departments') }}</div>
         <h2>{{ __('messages.discover_departments') }}</h2>
-        <p>{{ __('messages.departments_description') }}</p>
+        <p class="text-muted">{{ __('messages.departments_description') }}</p>
     </div>
     <div class="dept-grid">
         @foreach($departments as $dept)
-        <a href="{{ route('departments.show', $dept) }}" class="dept-card text-decoration-none text-dark">
-            <div class="mb-3 text-primary" style="font-size: 2rem;">
+        <a href="{{ route('departments.show', $dept) }}" class="dept-card">
+            <div class="dept-card-img">
                 <i class="fa-solid fa-{{ $dept->icon ?? 'hospital' }}"></i>
             </div>
-            <h3 class="h5 font-weight-bold">{{ $dept->name }}</h3>
-            <p class="text-muted small">{{ $dept->doctors_count }} {{ __('messages.doctors_count') }}</p>
+            <div class="dept-card-body">
+                <h3>{{ $dept->name }}</h3>
+                <p class="text-muted small mb-0">{{ $dept->doctors_count }} {{ __('messages.doctors_count') }}</p>
+            </div>
         </a>
         @endforeach
+    </div>
+
+    <div class="services-quick">
+        <a href="{{ route('consultations.index') }}" class="service-quick-link">
+            <i class="fa-solid fa-comments"></i>
+            <strong>{{ __('messages.footer_medical_consultations') }}</strong>
+        </a>
+        <a href="{{ route('services.lab') }}" class="service-quick-link">
+            <i class="fa-solid fa-flask-vial"></i>
+            <strong>{{ __('messages.footer_tests') }}</strong>
+        </a>
+        <a href="{{ route('services.index') }}#surgeries" class="service-quick-link">
+            <i class="fa-solid fa-user-doctor"></i>
+            <strong>{{ __('messages.footer_surgeries') }}</strong>
+        </a>
     </div>
 </div>
 </section>
 
-{{-- WHY US --}}
-<section class="section">
+<section class="home-section">
 <div class="container">
     <div class="row align-items-center">
         <div class="col-md-6">
             <div class="sec-tag">{{ __('messages.why_choose_us') }}</div>
-            <h2 class="mb-4">{{ __('messages.best_choice') }}</h2>
+            <h2 class="mb-4 fw-bold">{{ __('messages.best_choice') }}</h2>
             <div class="list-group list-group-flush">
                 <div class="list-group-item bg-transparent border-0 px-0 mb-3">
-                    <h5 class="font-weight-bold text-primary"><i class="fa-solid fa-user-doctor me-2"></i> {{ __('messages.outstanding_doctors') }}</h5>
+                    <h5 class="fw-bold text-primary"><i class="fa-solid fa-user-doctor me-2"></i> {{ __('messages.outstanding_doctors') }}</h5>
                     <p class="text-muted">{{ __('messages.outstanding_doctors_desc') }}</p>
                 </div>
                 <div class="list-group-item bg-transparent border-0 px-0 mb-3">
-                    <h5 class="font-weight-bold text-primary"><i class="fa-solid fa-clock me-2"></i> {{ __('messages.continuous_service') }}</h5>
+                    <h5 class="fw-bold text-primary"><i class="fa-solid fa-clock me-2"></i> {{ __('messages.continuous_service') }}</h5>
                     <p class="text-muted">{{ __('messages.continuous_service_desc') }}</p>
                 </div>
             </div>

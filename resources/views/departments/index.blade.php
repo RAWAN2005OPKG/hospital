@@ -19,7 +19,7 @@
     }
 
     .departments-hero {
-        padding: 120px 0 80px;
+        padding: 2rem 0 3rem;
         text-align: center;
         background: linear-gradient(180deg, rgba(224, 244, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
         position: relative;

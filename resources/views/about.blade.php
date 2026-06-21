@@ -100,7 +100,7 @@
         <h2 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 1rem;">هل أنت مستعد لتجربة رعاية صحية أفضل؟</h2>
         <p style="font-size: 1.1rem; opacity: .9; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">احجز موعدك الآن مع أحد استشاريينا المتميزين وابدأ رحلتك نحو صحة أفضل.</p>
         <div style="display: flex; gap: 1rem; justify-content: center;">
-            <a href="{{ route('doctors.index') }}" class="btn btn-white" style="padding: 1rem 2.5rem; font-size: 1.1rem;">احجز موعداً</a>
+            <a href="{{ route('appointments.create') }}" class="btn btn-white" style="padding: 1rem 2.5rem; font-size: 1.1rem;">احجز موعداً</a>
             <a href="{{ route('contact') }}" class="btn btn-outline" style="padding: 1rem 2.5rem; font-size: 1.1rem; border-color: #fff; color: #fff;">تواصل معنا</a>
         </div>
     </div>

@@ -37,7 +37,7 @@
                 </div>
             </div>
             
-            <a href="{{ route('appointments.booking-form', $doctor->id) }}" class="btn-primary w-full text-center">
+            <a href="{{ route('appointments.create', $doctor) }}" class="btn-primary w-full text-center">
                 <i class="fas fa-calendar-check ml-2"></i>احجز موعد
             </a>
         </div>

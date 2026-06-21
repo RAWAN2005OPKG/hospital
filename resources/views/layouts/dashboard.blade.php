@@ -261,6 +261,8 @@
                 <a href="{{ route('admin.doctors') }}" class="{{ request()->routeIs('admin.doctors*') ? 'active' : '' }}"><i class="fa-solid fa-user-md"></i> {{ __('messages.nav_doctors') }}</a>
                 <a href="{{ route('admin.appointments') }}" class="{{ request()->routeIs('admin.appointments*') ? 'active' : '' }}"><i class="fa-solid fa-calendar-alt"></i> {{ __('messages.appointments') }}</a>
                 <a href="{{ route('admin.medicines.index') }}" class="{{ request()->routeIs('admin.medicines*') ? 'active' : '' }}"><i class="fa-solid fa-pills"></i> الأدوية</a>
+                <a href="{{ route('admin.contact-messages') }}" class="{{ request()->routeIs('admin.contact-messages*') ? 'active' : '' }}"><i class="fa-solid fa-envelope"></i> رسائل التواصل</a>
+                <a href="{{ route('admin.departments') }}" class="{{ request()->routeIs('admin.departments*') ? 'active' : '' }}"><i class="fa-solid fa-building"></i> الأقسام</a>
                 <a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings*') ? 'active' : '' }}"><i class="fa-solid fa-cog"></i> {{ __('messages.nav_settings') }}</a>
             </nav>
 
@@ -280,5 +282,6 @@
         @yield('content')
     </main>
     @stack('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

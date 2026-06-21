@@ -68,6 +68,17 @@
 
 <!-- Messages Table -->
 <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:1rem;">
+        <strong>قائمة الرسائل</strong>
+        <form method="GET" style="display:flex;align-items:center;gap:0.5rem;">
+            <label style="color:var(--muted);font-size:0.9rem;">عرض:</label>
+            <select name="per_page" onchange="this.form.submit()" style="padding:0.4rem 0.75rem;border-radius:8px;border:1px solid var(--border);">
+                <option value="10" {{ request('per_page', '10') == '10' ? 'selected' : '' }}>10</option>
+                <option value="20" {{ request('per_page') == '20' ? 'selected' : '' }}>20</option>
+                <option value="all" {{ request('per_page') == 'all' ? 'selected' : '' }}>الكل</option>
+            </select>
+        </form>
+    </div>
     @if($messages->count())
     <div style="overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse;">
@@ -107,10 +118,11 @@
                     </td>
                     <td style="padding: 1rem; text-align: right;">
                         <button 
-                            class="btn btn-primary" 
-                            style="padding: 0.5rem 1rem; font-size: 0.9rem; border: none; background-color: var(--primary); color: white; border-radius: 6px; cursor: pointer; transition: background-color 0.2s;"
+                            class="btn btn-primary view-msg-btn" 
+                            style="padding: 0.5rem 1rem; font-size: 0.9rem; border: none; background-color: var(--primary); color: white; border-radius: 6px; cursor: pointer;"
                             data-bs-toggle="modal" 
-                            data-bs-target="#messageModal{{ $message->id }}">
+                            data-bs-target="#messageModal{{ $message->id }}"
+                            data-read-url="{{ route('admin.contact-messages.read', $message) }}">
                             <i class="fa-solid fa-eye"></i> عرض
                         </button>
                     </td>
@@ -177,7 +189,23 @@
                                 @endif
                             </div>
                             <div class="modal-footer" style="border-top: 1px solid var(--border); padding: 1rem;">
+                                @if(!$message->admin_reply)
+                                <form action="{{ route('admin.contact-messages.reply', $message) }}" method="POST" style="width:100%;">
+                                    @csrf
+                                    <div style="margin-bottom:0.75rem;">
+                                        <label style="font-weight:600;display:block;margin-bottom:0.35rem;">الرد على الرسالة</label>
+                                        <textarea name="admin_reply" rows="3" required style="width:100%;padding:0.75rem;border:1px solid var(--border);border-radius:8px;resize:vertical;" placeholder="اكتب ردك هنا..."></textarea>
+                                    </div>
+                                    <div style="display:flex;gap:0.5rem;justify-content:flex-end;">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                                        <button type="submit" class="btn btn-primary" style="background:var(--primary);color:#fff;border:none;padding:0.5rem 1.25rem;border-radius:6px;">
+                                            <i class="fa-solid fa-reply"></i> إرسال الرد
+                                        </button>
+                                    </div>
+                                </form>
+                                @else
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="padding: 0.5rem 1.5rem; border-radius: 6px;">إغلاق</button>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -225,12 +253,18 @@
     }
 
     @keyframes pulse {
-        0%, 100% {
-            opacity: 1;
-        }
-        50% {
-            opacity: 0.7;
-        }
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
     }
 </style>
+<script>
+document.querySelectorAll('.view-msg-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const url = this.dataset.readUrl;
+        if (url) {
+            fetch(url, { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' } });
+        }
+    });
+});
+</script>
 @endsection

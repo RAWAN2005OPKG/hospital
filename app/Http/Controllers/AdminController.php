@@ -324,12 +324,12 @@ class AdminController extends Controller
         return view('admin.contact-messages', compact('messages', 'unreadCount'));
     }
 
-    public function showContactMessage(ContactMessage $message)
+    public function markContactMessageRead(ContactMessage $message)
     {
         if ($message->status === 'new') {
             $message->markAsRead();
         }
-        return view('admin.contact-message-detail', compact('message'));
+        return response()->json(['ok' => true]);
     }
 
     public function replyContactMessage(Request $request, ContactMessage $message)

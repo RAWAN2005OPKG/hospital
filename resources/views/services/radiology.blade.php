@@ -39,7 +39,7 @@
   <div class="service-hero">
     <h1 class="text-4xl md:text-5xl font-black mb-4">أشعة وتصوير طبي</h1>
     <p class="text-xl md:text-2xl opacity-95">أحدث الأجهزة التشخيصية بدقة فائقة</p>
-    <a href="{{ route('contact') }}" class="inline-block mt-8 bg-white text-blue-600 px-10 py-4 rounded-full font-bold text-xl hover:bg-blue-50 transition-all">
+    <a href="{{ route('appointments.create') }}" class="inline-block mt-8 bg-white text-blue-600 px-10 py-4 rounded-full font-bold text-xl hover:bg-blue-50 transition-all">
       احجز موعد تصوير
     </a>
   </div>

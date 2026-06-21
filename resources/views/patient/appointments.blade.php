@@ -8,7 +8,7 @@
 <section class="section-sm"><div class="container">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
     <h2 style="font-size:1.05rem;font-weight:800">سجل الحجوزات</h2>
-    <a href="{{ route('doctors.index') }}" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> حجز جديد</a>
+    <a href="{{ route('appointments.create') }}" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> حجز جديد</a>
 </div>
 @if($appointments->count())
 <div style="display:flex;flex-direction:column;gap:1rem">
@@ -52,7 +52,7 @@
     <i class="fa-solid fa-calendar-xmark" style="font-size:3rem;margin-bottom:1rem;display:block;opacity:.2"></i>
     {{ __('messages.no_appointments_yet') }}
     <div style="margin-top:1.25rem">
-        <a href="{{ route('doctors.index') }}" class="btn btn-primary"><i class="fa-solid fa-calendar-plus"></i> {{ __('messages.book_first_appointment') }}</a>
+        <a href="{{ route('appointments.create') }}" class="btn btn-primary"><i class="fa-solid fa-calendar-plus"></i> {{ __('messages.book_first_appointment') }}</a>
     </div>
 </div>
 @endif

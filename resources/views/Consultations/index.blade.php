@@ -1,69 +1,58 @@
 @extends('layouts.app')
-
 @section('title', 'الاستشارات الطبية')
 
+@push('styles')
+<style>
+.consult-page { background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); min-height: 80vh; padding: 2rem 0 4rem; }
+.consult-hero { text-align: center; margin-bottom: 2.5rem; }
+.consult-hero h1 { font-size: 2.5rem; font-weight: 900; color: #111827; }
+.consult-hero p { color: #6b7280; font-size: 1.1rem; max-width: 600px; margin: 0.5rem auto 0; }
+.consult-tag { display: inline-block; padding: 0.4rem 1.2rem; background: #e0f4ff; color: #0077B6; border-radius: 50px; font-weight: 700; font-size: 0.85rem; }
+.doctor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+.doc-card { background: #fff; border-radius: 1rem; padding: 1.5rem; border: 1px solid #e5e7eb; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.doc-avatar { width: 56px; height: 56px; border-radius: 14px; background: linear-gradient(135deg, #06b6d4, #0891b2); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; margin: 0 auto 0.75rem; }
+.ai-box { background: #fff; border-radius: 1.25rem; padding: 2rem; border: 1px solid #e5e7eb; margin-top: 2rem; text-align: center; }
+</style>
+@endpush
+
 @section('content')
-<div style="padding-top: 120px; min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 38%, #ecfeff 100%); padding: 3rem 1.5rem;">
-    <div style="max-width: 1400px; margin: 0 auto;">
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <span style="display: inline-block; padding: 0.5rem 1.5rem; background: linear-gradient(135deg, #06b6d4, #0891b2); color: white; border-radius: 2rem; font-size: 0.9rem; font-weight: bold; margin-bottom: 1.5rem; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);">
-                الاستشارات الطبية
-            </span>
-            <h1 style="font-size: 3rem; font-weight: 900; color: #111827; margin: 0 0 1rem 0;">استشارات طبية عن بعد</h1>
-            <p style="font-size: 1.25rem; color: #6b7280; margin: 0; max-width: 600px; margin-left: auto; margin-right: auto;">تواصل مع نخبة من الأطباء من منزلك وبكل خصوصية</p>
+<div class="consult-page">
+    <div class="container">
+        <div class="consult-hero">
+            <span class="consult-tag">الاستشارات الطبية</span>
+            <h1>استشارات طبية عن بعد</h1>
+            <p>تواصل مع نخبة من الأطباء من منزلك وبكل خصوصية</p>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem;">
-            <!-- Chat Section -->
-            <div style="background: white; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 2rem; border: 1px solid #e5e7eb;">
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #06b6d4, #0891b2); border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.75rem; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);">
-                        <i class="fa-solid fa-robot"></i>
-                    </div>
-                    <div>
-                        <h2 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin: 0;">مساعدك الطبي الذكي</h2>
-                        <p style="font-size: 0.9rem; color: #6b7280; margin: 0.25rem 0 0 0;">متاح 24/7 للإجابة على استفساراتك</p>
-                    </div>
-                </div>
-                <div style="background: #f9fafb; border-radius: 1.25rem; padding: 2rem; min-height: 300px; margin-bottom: 1.5rem; border: 1px solid #e5e7eb; display: flex; justify-content: center; align-items: center; color: #9ca3af;">
-                    <div style="text-align: center;">
-                        <i class="fa-solid fa-comments" style="font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.3;"></i>
-                        <p style="margin: 0; font-weight: 600;">ابدأ المحادثة الآن لوصف حالتك...</p>
-                    </div>
-                </div>
-                <form action="#" style="display: flex; gap: 1rem;">
-                    <input type="text" style="flex: 1; padding: 1rem 1.5rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 1.25rem; outline: none; color: #111827; font-size: 1rem; transition: all 0.3s ease;" placeholder="اكتب سؤالك هنا...">
-                    <button type="submit" style="padding: 1rem 2rem; background: linear-gradient(135deg, #06b6d4, #0891b2); color: white; font-weight: bold; border-radius: 1.25rem; border: none; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);">
-                        <i class="fa-solid fa-paper-plane"></i>
-                        إرسال
-                    </button>
-                </form>
+        <h3 style="font-weight:800;margin-bottom:0.5rem;"><i class="fas fa-user-doctor" style="color:#06b6d4;"></i> أطباء متاحون للاستشارة</h3>
+        <div class="doctor-grid">
+            @foreach($doctors as $doc)
+            <div class="doc-card">
+                <div class="doc-avatar">{{ mb_substr($doc->user->name, 0, 1) }}</div>
+                <div style="font-weight:700;">د. {{ $doc->user->name }}</div>
+                <div style="font-size:0.85rem;color:#06b6d4;margin:0.25rem 0 1rem;">{{ $doc->specialization->name ?? 'طبيب عام' }}</div>
+                @auth
+                    @if(auth()->user()->isPatient())
+                    <a href="{{ route('patient.chat.show', $doc->user_id) }}" class="btn btn-primary btn-sm w-100">
+                        <i class="fas fa-comment-medical"></i> بدء استشارة
+                    </a>
+                    @else
+                    <a href="{{ route('doctors.show', $doc) }}" class="btn btn-outline-primary btn-sm w-100">عرض الملف</a>
+                    @endif
+                @else
+                <a href="{{ route('login') }}" class="btn btn-primary btn-sm w-100">
+                    <i class="fas fa-sign-in-alt"></i> سجّل دخولك للاستشارة
+                </a>
+                @endauth
             </div>
+            @endforeach
+        </div>
 
-            <!-- Sidebar Doctors -->
-            <div style="background: white; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 2rem; border: 1px solid #e5e7eb;">
-                <h2 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin: 0 0 1.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fas fa-user-doctor" style="color: #06b6d4;"></i>
-                    أطباء متاحون الآن
-                </h2>
-                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    @php $realDoctors = \App\Models\Doctor::with('user', 'specialization')->limit(5)->get(); @endphp
-                    @foreach($realDoctors as $doc)
-                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f9fafb; border-radius: 1rem; border: 1px solid #e5e7eb; transition: all 0.3s ease; hover: background: #ecfeff; hover: border-color: #06b6d4;">
-                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #06b6d4, #0891b2); border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.25rem; flex-shrink: 0;">
-                            {{ mb_substr($doc->user->name, 0, 1) }}
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="font-weight: bold; color: #111827; margin-bottom: 0.25rem;">{{ $doc->user->name }}</div>
-                            <div style="font-size: 0.85rem; color: #06b6d4; font-weight: 600;">{{ $doc->specialization->name ?? 'طبيب عام' }}</div>
-                        </div>
-                        <a href="{{ route('doctors.show', $doc) }}" style="padding: 0.5rem 1rem; background: linear-gradient(135deg, #06b6d4, #0891b2); color: white; border-radius: 0.75rem; font-size: 0.85rem; font-weight: bold; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(6, 182, 212, 0.2);">
-                            <i class="fas fa-phone"></i> اتصال
-                        </a>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
+        <div class="ai-box">
+            <i class="fa-solid fa-robot" style="font-size:2.5rem;color:#06b6d4;margin-bottom:1rem;"></i>
+            <h3 style="font-weight:700;">مساعدك الطبي الذكي</h3>
+            <p style="color:#6b7280;margin:0.5rem 0 1rem;">للحصول على استشارة مباشرة مع طبيب، سجّل دخولك كمريض واختر الطبيب المناسب</p>
+            <a href="{{ auth()->check() ? route('patient.ai.symptoms') : route('login') }}" class="btn btn-outline-primary">تحليل الأعراض بالذكاء الاصطناعي</a>
         </div>
     </div>
 </div>

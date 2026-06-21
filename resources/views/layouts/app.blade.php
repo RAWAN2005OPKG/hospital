@@ -246,8 +246,14 @@
         }
 
         /* Main Content */
-        main {
+        main, .site-main {
             padding-top: 100px;
+            min-height: calc(100vh - 80px);
+        }
+
+        .site-main > .container-fluid,
+        .site-main > section:first-child {
+            margin-top: 0;
         }
 
         /* Container & Spacing */
@@ -608,7 +614,7 @@
             <li><a href="{{ route('doctors.index') }}" class="{{ request()->routeIs('doctors.index') ? 'active' : '' }}"><i class="fas fa-user-md"></i> {{ __('messages.nav_doctors') }}</a></li>
             @auth
                 @if(Auth::user()->isPatient())
-                    <li><a href="{{ route('appointments.book') }}" class="{{ request()->routeIs('appointments.book') ? 'active' : '' }}"><i class="fas fa-calendar-plus"></i> {{ __('messages.nav_book_appointment') }}</a></li>
+                    <li><a href="{{ route('appointments.create') }}" class="{{ request()->routeIs('appointments.create') ? 'active' : '' }}"><i class="fas fa-calendar-plus"></i> {{ __('messages.nav_book_appointment') }}</a></li>
                     <li><a href="{{ route('consultations.index') }}" class="{{ request()->routeIs('consultations.index') ? 'active' : '' }}"><i class="fas fa-comments"></i> {{ __('messages.nav_consultations') }}</a></li>
                 @endif
             @endauth
@@ -661,7 +667,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="container section">
+    <main class="site-main">
         @yield('content')
     </main>
 
@@ -674,15 +680,15 @@
             </div>
             <div>
                 <h4>{{ __('messages.footer_services') }}</h4>
-                <a href="#">{{ __('messages.footer_medical_consultations') }}</a>
-                <a href="#">{{ __('messages.footer_tests') }}</a>
-                <a href="#">{{ __('messages.footer_surgeries') }}</a>
+                <a href="{{ route('consultations.index') }}">{{ __('messages.footer_medical_consultations') }}</a>
+                <a href="{{ route('services.lab') }}">{{ __('messages.footer_tests') }}</a>
+                <a href="{{ route('services.index') }}#surgeries">{{ __('messages.footer_surgeries') }}</a>
             </div>
             <div>
                 <h4>{{ __('messages.footer_quick_links') }}</h4>
                 <a href="{{ route('home') }}">{{ __('messages.footer_home') }}</a>
                 <a href="{{ route('doctors.index') }}">{{ __('messages.nav_doctors') }}</a>
-                <a href="{{ route('appointments.book') }}">{{ __('messages.footer_appointments') }}</a>
+                <a href="{{ route('appointments.create') }}">{{ __('messages.footer_appointments') }}</a>
             </div>
             <div>
                 <h4>{{ __('messages.footer_contact_us') }}</h4>
