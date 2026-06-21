@@ -13,8 +13,12 @@ class Medicine extends Model
         'name',
         'description',
         'stock',
+        'quantity',
         'low_stock_threshold',
         'price',
+        'expiration_date',
+        'manufacturer',
+        'batch_number',
         'is_active',
     ];
 

@@ -60,6 +60,11 @@ class User extends Authenticatable
         return $this->hasOne(Doctor::class);
     }
 
+    public function pharmacist()
+    {
+        return $this->hasOne(Pharmacist::class);
+    }
+
     public function notifications()
     {
         return $this->hasMany(Notification::class);

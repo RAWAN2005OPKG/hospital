@@ -18,6 +18,8 @@ class Prescription extends Model
         'status',
     ];
 
+    // Status options: pending, preparing, ready, delivered, cancelled
+
     protected $casts = [
         'medications' => 'array',
     ];
@@ -37,5 +39,25 @@ class Prescription extends Model
         return $this->belongsToMany(Medicine::class, 'prescription_medicines')
                     ->withPivot('dosage', 'days', 'notes')
                     ->withTimestamps();
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
+    }
+
+    public function canBeDispensed()
+    {
+        if ($this->status !== 'pending' && $this->status !== 'preparing') {
+            return false;
+        }
+
+        foreach ($this->medicines as $medicine) {
+            if ($medicine->stock <= 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
