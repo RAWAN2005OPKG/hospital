@@ -41,8 +41,8 @@ class DoctorDashboardController extends Controller
             ]);
         }
 
-        $todayAppointments = $doctor ? $doctor->appointments()->whereDate('appointment_date', now())->count() : 0;
-        $upcomingAppointments = $doctor ? $doctor->appointments()->where('appointment_date', '>=', now())->with('patient.user')->limit(5)->get() : collect();
+        $todayAppointments = $doctor ? $doctor->appointments()->whereDate('appointment_date', now()->toDateString())->count() : 0;
+        $upcomingAppointments = $doctor ? $doctor->appointments()->where('appointment_date', '>=', now()->toDateString())->with('patient.user')->limit(5)->get() : collect();
         $totalPatients = $doctor ? Patient::whereHas('appointments', function($q) use ($doctor) { $q->where('doctor_id', $doctor->id); })->count() : 0;
         $totalPrescriptions = $doctor ? $doctor->prescriptions()->count() : 0;
         

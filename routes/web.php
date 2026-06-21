@@ -221,6 +221,33 @@ Route::middleware(['auth', 'role:pharmacist'])->prefix('pharmacist')->as('pharma
     Route::post('/invoices/{invoice}/pay', [\App\Http\Controllers\Pharmacist\InvoiceController::class, 'markAsPaid'])->name('invoices.pay');
     Route::post('/invoices/{invoice}/cancel', [\App\Http\Controllers\Pharmacist\InvoiceController::class, 'cancel'])->name('invoices.cancel');
     Route::delete('/invoices/{invoice}', [\App\Http\Controllers\Pharmacist\InvoiceController::class, 'destroy'])->name('invoices.destroy');
+
+    // Sales
+    Route::get('/sales', [\App\Http\Controllers\Pharmacist\SalesController::class, 'index'])->name('sales.index');
+    Route::get('/sales/{invoice}', [\App\Http\Controllers\Pharmacist\SalesController::class, 'show'])->name('sales.show');
+
+    // Reports
+    Route::get('/reports', [\App\Http\Controllers\Pharmacist\ReportsController::class, 'index'])->name('reports.index');
+    Route::get('/reports/daily-sales', [\App\Http\Controllers\Pharmacist\ReportsController::class, 'dailySales'])->name('reports.daily-sales');
+    Route::get('/reports/monthly-sales', [\App\Http\Controllers\Pharmacist\ReportsController::class, 'monthlySales'])->name('reports.monthly-sales');
+    Route::get('/reports/top-selling', [\App\Http\Controllers\Pharmacist\ReportsController::class, 'topSellingMedicines'])->name('reports.top-selling');
+    Route::get('/reports/low-stock', [\App\Http\Controllers\Pharmacist\ReportsController::class, 'lowStockMedicines'])->name('reports.low-stock');
+    Route::get('/reports/expiring', [\App\Http\Controllers\Pharmacist\ReportsController::class, 'expiringMedicines'])->name('reports.expiring');
+    Route::get('/reports/daily-sales/export', [\App\Http\Controllers\Pharmacist\ReportsController::class, 'exportDailySales'])->name('reports.daily-sales.export');
+    Route::get('/reports/monthly-sales/export', [\App\Http\Controllers\Pharmacist\ReportsController::class, 'exportMonthlySales'])->name('reports.monthly-sales.export');
+
+    // Notifications
+    Route::get('/notifications', [\App\Http\Controllers\Pharmacist\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{notification}/mark-read', [\App\Http\Controllers\Pharmacist\NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+    Route::post('/notifications/mark-all-read', [\App\Http\Controllers\Pharmacist\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+    Route::get('/notifications/system', [\App\Http\Controllers\Pharmacist\NotificationController::class, 'generateSystemNotifications'])->name('notifications.system');
+
+    // Patients History
+    Route::get('/patients', [\App\Http\Controllers\Pharmacist\PatientHistoryController::class, 'index'])->name('patients.index');
+    Route::get('/patients/{patient}', [\App\Http\Controllers\Pharmacist\PatientHistoryController::class, 'show'])->name('patients.show');
+    Route::get('/patients/{patient}/prescriptions', [\App\Http\Controllers\Pharmacist\PatientHistoryController::class, 'prescriptionHistory'])->name('patients.prescriptions');
+    Route::get('/patients/{patient}/invoices', [\App\Http\Controllers\Pharmacist\PatientHistoryController::class, 'invoiceHistory'])->name('patients.invoices');
+    Route::get('/patients/{patient}/medicines', [\App\Http\Controllers\Pharmacist\PatientHistoryController::class, 'medicineHistory'])->name('patients.medicines');
 });
 
 Route::middleware(['auth', 'role:doctor'])->group(function () {

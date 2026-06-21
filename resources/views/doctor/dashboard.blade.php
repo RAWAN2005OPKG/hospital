@@ -110,7 +110,7 @@
                             </div>
                             <div>
                                 <p style="font-weight: bold; color: #111827; margin: 0;">{{ $appointment->patient->user->name ?? 'مريض' }}</p>
-                                <p style="font-size: 0.8rem; color: #6b7280; margin: 0;">{{ $appointment->appointment_date->format('H:i') }}</p>
+                                <p style="font-size: 0.8rem; color: #6b7280; margin: 0;">{{ $appointment->appointment_date ? $appointment->appointment_date->format('H:i') : '--:--' }}</p>
                             </div>
                         </div>
                         <div style="display: flex; gap: 0.75rem; align-items: center;">

@@ -81,6 +81,32 @@
                 @enderror
             </div>
 
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                <div class="form-group">
+                    <label class="form-label">الاسم بالعربية</label>
+                    <input type="text" class="form-control" name="name_ar" placeholder="الاسم بالعربية">
+                    @error('name_ar')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">الاسم بالإنجليزية</label>
+                    <input type="text" class="form-control" name="name_en" placeholder="English Name">
+                    @error('name_en')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">صورة الدواء</label>
+                <input type="file" class="form-control" name="image" accept="image/*">
+                @error('image')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
             <div class="form-group">
                 <label class="form-label">الوصف</label>
                 <textarea class="form-control" name="description" rows="3" placeholder="وصف الدواء (اختياري)"></textarea>
@@ -107,6 +133,22 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="form-label">الكمية المحجوزة</label>
+                    <input type="number" class="form-control" name="reserved_quantity" min="0" step="0.01" placeholder="0">
+                    @error('reserved_quantity')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">الكمية المتاحة</label>
+                    <input type="number" class="form-control" name="available_quantity" min="0" step="0.01" placeholder="0">
+                    @error('available_quantity')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
                     <label class="form-label">الحد الأدنى للمخزون *</label>
                     <input type="number" class="form-control" name="low_stock_threshold" required min="0" placeholder="10">
                     @error('low_stock_threshold')
@@ -120,6 +162,14 @@
                     <label class="form-label">السعر *</label>
                     <input type="number" class="form-control" name="price" required min="0" step="0.01" placeholder="0.00">
                     @error('price')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">تاريخ الإنتاج</label>
+                    <input type="date" class="form-control" name="production_date">
+                    @error('production_date')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
@@ -145,6 +195,18 @@
                 <label class="form-label">رقم الدفعة</label>
                 <input type="text" class="form-control" name="batch_number" placeholder="رقم الدفعة">
                 @error('batch_number')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">حالة التوفر</label>
+                <select class="form-control" name="availability_status">
+                    <option value="available">متوفر</option>
+                    <option value="unavailable">غير متوفر</option>
+                    <option value="discontinued">متوقف</option>
+                </select>
+                @error('availability_status')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>

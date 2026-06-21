@@ -35,16 +35,35 @@ class InventoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'name_ar' => 'nullable|string|max:255',
+            'name_en' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048',
             'stock' => 'required|integer|min:0',
             'quantity' => 'required|numeric|min:0',
+            'reserved_quantity' => 'nullable|numeric|min:0',
+            'available_quantity' => 'nullable|numeric|min:0',
             'low_stock_threshold' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
+            'production_date' => 'nullable|date|before_or_equal:today',
             'expiration_date' => 'nullable|date|after:today',
             'manufacturer' => 'nullable|string|max:255',
             'batch_number' => 'nullable|string|max:255',
             'is_active' => 'boolean',
+            'availability_status' => 'nullable|string|in:available,unavailable,discontinued',
         ]);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('medicines', 'public');
+            $validated['image'] = $imagePath;
+        }
+
+        // Set default values
+        $validated['reserved_quantity'] = $validated['reserved_quantity'] ?? 0;
+        $validated['available_quantity'] = $validated['available_quantity'] ?? $validated['stock'];
+        $validated['availability_status'] = $validated['availability_status'] ?? 'available';
+        $validated['is_active'] = $request->has('is_active');
 
         Medicine::create($validated);
 
@@ -70,16 +89,33 @@ class InventoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'name_ar' => 'nullable|string|max:255',
+            'name_en' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048',
             'stock' => 'required|integer|min:0',
             'quantity' => 'required|numeric|min:0',
+            'reserved_quantity' => 'nullable|numeric|min:0',
+            'available_quantity' => 'nullable|numeric|min:0',
             'low_stock_threshold' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
+            'production_date' => 'nullable|date|before_or_equal:today',
             'expiration_date' => 'nullable|date',
             'manufacturer' => 'nullable|string|max:255',
             'batch_number' => 'nullable|string|max:255',
             'is_active' => 'boolean',
+            'availability_status' => 'nullable|string|in:available,unavailable,discontinued',
         ]);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('medicines', 'public');
+            $validated['image'] = $imagePath;
+        }
+
+        // Update available quantity based on stock and reserved
+        $validated['available_quantity'] = $validated['stock'] - ($validated['reserved_quantity'] ?? 0);
+        $validated['is_active'] = $request->has('is_active');
 
         $medicine->update($validated);
 
