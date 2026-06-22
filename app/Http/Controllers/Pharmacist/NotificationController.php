@@ -12,8 +12,7 @@ class NotificationController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Notification::where('notifiable_id', auth()->id())
-            ->where('notifiable_type', 'App\\Models\\User')
+        $query = \App\Models\Notification::where('user_id', auth()->id())
             ->latest();
 
         // Filter by type
@@ -24,40 +23,38 @@ class NotificationController extends Controller
         // Filter by read status
         if ($request->filled('read')) {
             if ($request->read === 'read') {
-                $query->whereNotNull('read_at');
+                $query->where('is_read', true);
             } else {
-                $query->whereNull('read_at');
+                $query->where('is_read', false);
             }
         }
 
         $notifications = $query->paginate(20);
 
         // Get unread count
-        $unreadCount = Notification::where('notifiable_id', auth()->id())
-            ->where('notifiable_type', 'App\\Models\\User')
-            ->whereNull('read_at')
+        $unreadCount = \App\Models\Notification::where('user_id', auth()->id())
+            ->where('is_read', false)
             ->count();
 
         return view('pharmacist.notifications.index', compact('notifications', 'unreadCount'));
     }
 
-    public function markAsRead(Notification $notification)
+    public function markAsRead(\App\Models\Notification $notification)
     {
-        if ($notification->notifiable_id !== auth()->id()) {
+        if ($notification->user_id !== auth()->id()) {
             return back()->with('error', 'غير مصرح لك');
         }
 
-        $notification->update(['read_at' => now()]);
+        $notification->update(['is_read' => true]);
 
         return back()->with('success', 'تم تحديد الإشعار كمقروء');
     }
 
     public function markAllAsRead()
     {
-        Notification::where('notifiable_id', auth()->id())
-            ->where('notifiable_type', 'App\\Models\\User')
-            ->whereNull('read_at')
-            ->update(['read_at' => now()]);
+        \App\Models\Notification::where('user_id', auth()->id())
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
 
         return back()->with('success', 'تم تحديد جميع الإشعارات كمقروءة');
     }

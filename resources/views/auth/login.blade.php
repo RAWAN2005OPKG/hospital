@@ -196,7 +196,7 @@
                         <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.9rem;color:#64748b">
                             <input type="checkbox" name="remember" style="width:18px;height:18px;accent-color:#3b82f6"> {{ app()->getLocale() === 'ar' ? 'تذكرني' : 'Remember me' }}
                         </label>
-                        <a href="#" style="font-size:.9rem;color:#3b82f6;font-weight:700;text-decoration:none">{{ app()->getLocale() === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?' }}</a>
+                        <a href="{{ route('password.request') }}" style="font-size:.9rem;color:#3b82f6;font-weight:700;text-decoration:none">{{ app()->getLocale() === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?' }}</a>
                     </div>
 
                     <button type="submit" class="btn-login">

@@ -68,17 +68,23 @@ class PrescriptionController extends Controller
 
     public function markAsDelivered(Prescription $prescription)
     {
-        if ($prescription->status !== 'ready') {
-            return back()->with('error', 'لا يمكن تسليم هذه الوصفة.');
+        // Allow delivery from preparing, ready, and confirmed status
+        if (!in_array($prescription->status, ['preparing', 'ready', 'confirmed'])) {
+            return back()->with('error', 'لا يمكن تسليم هذه الوصفة. الحالة الحالية: ' . $prescription->status);
         }
 
         try {
             DB::transaction(function () use ($prescription) {
+                // Check stock availability for each medicine
+                foreach ($prescription->medicines as $medicine) {
+                    if ($medicine->stock <= 0) {
+                        throw new \Exception("الدواء '{$medicine->name}' غير متوفر في المخزون");
+                    }
+                }
+
                 // Deduct stock for each medicine
                 foreach ($prescription->medicines as $medicine) {
-                    if ($medicine->stock > 0) {
-                        $medicine->decrement('stock', 1);
-                    }
+                    $medicine->decrement('stock', 1);
                 }
 
                 $prescription->update(['status' => 'delivered']);
@@ -86,7 +92,7 @@ class PrescriptionController extends Controller
 
             return back()->with('success', 'تم تسليم الأدوية وتحديث المخزون بنجاح.');
         } catch (\Exception $e) {
-            return back()->with('error', 'حدث خطأ أثناء التحديث.');
+            return back()->with('error', 'حدث خطأ: ' . $e->getMessage());
         }
     }
 
