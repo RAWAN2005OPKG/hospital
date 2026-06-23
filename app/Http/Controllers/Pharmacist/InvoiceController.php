@@ -24,7 +24,7 @@ class InvoiceController extends Controller
     public function create()
     {
         $prescriptions = Prescription::where('status', 'pending')
-            ->with(['patient.user', 'medicines'])
+            ->with(['patient.user', 'doctor.user', 'medicines'])
             ->get();
 
         return view('pharmacist.invoices.create', compact('prescriptions'));
